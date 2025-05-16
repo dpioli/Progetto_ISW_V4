@@ -263,7 +263,7 @@ public class MenuFruitore extends Menu{
 	        
 	        //in seguito stampa solo per controllo funzionamento
 	        
-	        //DA METTERE NEL CONFIGURATORE (gia fatto)
+	        //CONTROLLO
 	        System.out.println("Proposta soddisfatta tramite ciclo di " + (catena.size() + 1) + " proposte.\n");
 	        
 	        //stampa proposte soddisfatte
@@ -272,7 +272,7 @@ public class MenuFruitore extends Menu{
 	        	System.out.println(catena.get(i).toString());
 	        	System.out.println("Fruitore: " + catena.get(i).getAssociato().getUsername());
 	        }
-	        //FINO A QUI (gia fatto)
+	        //FINE CONTROLLO 
 	        
 	        
 	        
