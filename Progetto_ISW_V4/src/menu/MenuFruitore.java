@@ -8,6 +8,7 @@ import applicazione.CategoriaFoglia;
 import applicazione.Gerarchia;
 import applicazione.Proposta;
 import applicazione.PropostaScambio;
+import applicazione.StatoProposta;
 import applicazione.TipoProposta;
 import persistenza.GestorePersistenza;
 import persistenza.LogicaPersistenza;
@@ -23,6 +24,7 @@ import util.Menu;
  */
 public class MenuFruitore extends Menu{
 	
+	private static final String MSG_PRESTAZIONE_UGUALE = "Attenzione, hai selezionato la tua richiesta. Seleziona una prestazione diversa.";
 	private Fruitore fruit;
 	private LogicaPersistenza logica;
 	
@@ -190,7 +192,13 @@ public class MenuFruitore extends Menu{
 		Proposta richiesta = new Proposta(foglie.get(scelta), TipoProposta.RICHIESTA, ore);
 
 		//OFFERTA
-		int incambio = InputDati.leggiInteroConMINeMAX(MSG_SEL_OFFERTA, 0, foglie.size()- 1);
+		int incambio;
+		do {
+			incambio = InputDati.leggiInteroConMINeMAX(MSG_SEL_OFFERTA, 0, foglie.size()- 1);
+			if(incambio == scelta) {
+				System.out.println(MSG_PRESTAZIONE_UGUALE);
+			}
+		}while(incambio == scelta);
 		ArrayList<Double> fattori = logica.getFatConversione().prendiRiga(scelta); 
 		//prendendo tutti i fdc dalla tabella uscenti da id della prestazione richiesta
 	    int valore = (int) (fattori.get(incambio) * ore);
@@ -202,12 +210,114 @@ public class MenuFruitore extends Menu{
 		if(sn) { //aggiunto alle proposte aperte
 			scambio.setFruitoreAssociato(fruit);
 			logica.addScambio(scambio);
+			verificaSoddisfacimento(scambio); //controllo che lo scambio possa essere completato
 			GestorePersistenza.salvaScambi(logica.getScambi());
 		} else {
 			System.out.println(MSG_ANNULLATO_SCAMBIO +  MSG_MENU_PRINCIPALE );
 			return;
 		}
 	}
+	
+	
+	
+	
+	
+	
+	
+	//PROVA VERIFICA SCAMBIO
+	public void verificaSoddisfacimento(PropostaScambio nuova) {
+		
+		//SCAMBIO ESCLUSIVO TRA DUE PROPOSTE
+	    for (PropostaScambio esistente : logica.getScambi()) {
+	        if (esistente.getStato() != StatoProposta.APERTA || esistente.getAssociato().getUsername().equalsIgnoreCase(nuova.getAssociato().getUsername())) continue;
+
+	        boolean categorieCompatibili =
+	        	esistente.getOfferta().getPrestazione().getNome().equalsIgnoreCase(nuova.getRichiesta().getPrestazione().getNome()) &&
+	       		esistente.getRichiesta().getPrestazione().getNome().equalsIgnoreCase(nuova.getOfferta().getPrestazione().getNome());
+
+	        if (categorieCompatibili) {
+	        	double qRichiestaNuova = nuova.getRichiesta().getQuantitaOre();
+	        	double qOffertaEsistente = esistente.getOfferta().getQuantitaOre();
+	            
+	        	if (Math.abs(qRichiestaNuova - qOffertaEsistente) < 0.001) {
+	        		nuova.setStato(StatoProposta.CHIUSA);
+	        		esistente.setStato(StatoProposta.CHIUSA);
+	        		System.out.println("Proposta soddisfatta automaticamente con una proposta esistente!");
+	        		return;
+	                
+	        	}
+	        }
+	        
+	    }
+	    
+	    //SCAMBIO TRA PIU PROPOSTE
+	    ArrayList<PropostaScambio> catena = new ArrayList<>();
+	    ArrayList<PropostaScambio> visitate = new ArrayList<>();
+
+	    if (cercaCicloCompatibile(nuova, catena, nuova.getOfferta(), visitate)) {
+	        nuova.setStato(StatoProposta.CHIUSA);
+	        for (PropostaScambio p : catena) {
+	            p.setStato(StatoProposta.CHIUSA);
+	        }
+	        System.out.println("Proposta soddisfatta tramite ciclo di " + (catena.size() + 1) + " proposte.\n");
+	        
+	        //stampa proposte soddisfatte
+	        System.out.println("Le altre proposte soddisfatte sono: ");
+	        for(int i = 0; i< catena.size(); i++) {
+	        	System.out.println(catena.get(i).toString());
+	        	System.out.println("Fruitore: " + catena.get(i).getAssociato().getUsername());
+	        }
+	        
+	    } else {
+	        System.out.println("Nessuna proposta compatibile trovata. La proposta resta in attesa.");
+	    }
+	  
+	    System.out.println("");
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	//PROVA
+	private boolean cercaCicloCompatibile(PropostaScambio nuova, ArrayList<PropostaScambio> catena, Proposta propostaCorrente, ArrayList<PropostaScambio> visitate) {
+		for (PropostaScambio p : logica.getScambi()) {
+			if (p.getStato() != StatoProposta.APERTA || visitate.contains(p) || p.getAssociato().getUsername().equalsIgnoreCase(nuova.getAssociato().getUsername())) continue;
+
+			boolean compatibile = propostaCorrente.getPrestazione().getNome().equalsIgnoreCase(p.getRichiesta().getPrestazione().getNome());
+
+			if (compatibile && Math.abs(propostaCorrente.getQuantitaOre() - p.getOfferta().getQuantitaOre()) < 0.001) {
+				visitate.add(p);
+				catena.add(p);
+
+				boolean chiusura =
+						p.getOfferta().getPrestazione().getNome().equalsIgnoreCase(nuova.getRichiesta().getPrestazione().getNome())
+						&& Math.abs(p.getOfferta().getQuantitaOre() - nuova.getRichiesta().getQuantitaOre()) < 0.001;
+
+				if (chiusura) return true;
+
+				if (cercaCicloCompatibile(nuova, catena, p.getOfferta(), visitate)) return true;
+
+				//backtrack
+				catena.remove(catena.size() - 1);
+				visitate.remove(p);
+			}
+		}
+		return false;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	/**
 	 * Metodo che recupera le foglie disponibili nel comprensorio geografico del fruitore,

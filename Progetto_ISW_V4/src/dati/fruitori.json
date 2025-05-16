@@ -1,0 +1,70 @@
+[
+  {
+    "username": "era",
+    "password": "letmein",
+    "mail": "era@gmail.com",
+    "comprensorio": {
+      "nome": "Brescia Sud",
+      "comuni": [
+        "Castel Mella",
+        "Flero",
+        "Bagnolo Mella",
+        "Capriano Del Colle"
+      ]
+    }
+  },
+  {
+    "username": "diego",
+    "password": "pioli",
+    "mail": "diegopioli@gmail.com",
+    "comprensorio": {
+      "nome": "Brescia Sud",
+      "comuni": [
+        "Castel Mella",
+        "Flero",
+        "Bagnolo Mella",
+        "Capriano Del Colle"
+      ]
+    }
+  },
+  {
+    "username": "ren",
+    "password": "p",
+    "mail": "ire@gmail.com",
+    "comprensorio": {
+      "nome": "Brescia Ovest",
+      "comuni": [
+        "Rodengo",
+        "Coccaglio"
+      ]
+    }
+  },
+  {
+    "username": "fruit1",
+    "password": "1",
+    "mail": "1@gmail",
+    "comprensorio": {
+      "nome": "Brescia Sud",
+      "comuni": [
+        "Castel Mella",
+        "Flero",
+        "Bagnolo Mella",
+        "Capriano Del Colle"
+      ]
+    }
+  },
+  {
+    "username": "fruit2",
+    "password": "2",
+    "mail": "2@gmail",
+    "comprensorio": {
+      "nome": "Brescia Sud",
+      "comuni": [
+        "Castel Mella",
+        "Flero",
+        "Bagnolo Mella",
+        "Capriano Del Colle"
+      ]
+    }
+  }
+]
