@@ -13,6 +13,7 @@ import util.Menu;
 
 public class MenuPrincipale{
 	
+	
 	private LogicaPersistenza logica;
 	private Menu menu;
 	
@@ -56,8 +57,10 @@ public class MenuPrincipale{
 	 */
 	private static final int CASE_NAVIGA = 1;
 	private static final int CASE_RICHIEDI_PRESTAZIONI = 2;
-	private static final int CASE_P_AUT = 3;
-
+	private static final int CASE_P_AUT = 5;
+	private static final int CASE_RITIRA_PROPOSTE = 4;
+	private static final int CASE_VISUALIZZA_PROPOSTE = 3;
+	
 	/**
 	 * Costruttore della pagina iniziale del programma
 	 * @param logica
@@ -189,6 +192,14 @@ public class MenuPrincipale{
 				break;
 			case CASE_RICHIEDI_PRESTAZIONI:
 				menuFruit.richiediPrestazioni();
+				break;
+			case CASE_VISUALIZZA_PROPOSTE:
+				//visualizza proposte
+				menuFruit.visualizzaProposte();
+				break;
+			case CASE_RITIRA_PROPOSTE:
+				//ritira proposte
+				menuFruit.ritiraProposte();
 				break;
 			case CASE_P_AUT:
 				break;

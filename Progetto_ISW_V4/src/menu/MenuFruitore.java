@@ -56,7 +56,7 @@ public class MenuFruitore extends Menu{
 	private static final String MSG_CHECK_COMPRENSORIO = "\nNon ci sono Gerarchie appartenenti al tuo comprensorio geografico.\n";
 	private static final String MSG_ANNULLATO_SCAMBIO = "Hai annullato la proposta di scambio...";
 	
-	private static String[] vociFruit = {NAVIGA, RICHIEDI_PRESTAZIONI, MSG_P_PRECEDENTE};
+	private static String[] vociFruit = {NAVIGA, RICHIEDI_PRESTAZIONI, "Visualizza le tue proposte", "Ritira le tue proposte", MSG_P_PRECEDENTE};
 	
 	/**
 	 * Construttore di MenuFruitore
@@ -242,7 +242,7 @@ public class MenuFruitore extends Menu{
 	        	if (Math.abs(qRichiestaNuova - qOffertaEsistente) < 0.001) {
 	        		nuova.setStato(StatoProposta.CHIUSA);
 	        		esistente.setStato(StatoProposta.CHIUSA);
-	        		System.out.println("Proposta soddisfatta automaticamente con una proposta esistente!");
+	        		System.out.println("Proposta soddisfatta automaticamente con una proposta esistente.");
 	        		return;
 	                
 	        	}
@@ -259,6 +259,9 @@ public class MenuFruitore extends Menu{
 	        for (PropostaScambio p : catena) {
 	            p.setStato(StatoProposta.CHIUSA);
 	        }
+	        
+	        
+	        //DA METTERE NEL CONFIGURATORE
 	        System.out.println("Proposta soddisfatta tramite ciclo di " + (catena.size() + 1) + " proposte.\n");
 	        
 	        //stampa proposte soddisfatte
@@ -267,6 +270,11 @@ public class MenuFruitore extends Menu{
 	        	System.out.println(catena.get(i).toString());
 	        	System.out.println("Fruitore: " + catena.get(i).getAssociato().getUsername());
 	        }
+	        //FINO A QUI
+	        
+	        
+	        
+	        System.out.println("Proposta soddisfatta automaticamente con una proposta esistente.");
 	        
 	    } else {
 	        System.out.println("Nessuna proposta compatibile trovata. La proposta resta in attesa.");
@@ -390,5 +398,107 @@ public class MenuFruitore extends Menu{
 		}
 		System.out.println(sb.toString());
 	}
+	
+	
+	
+	
+	
+	
+	
+	//opzione visualizza proposte divise in base allo stato
+	public void visualizzaProposte() {
+		
+		ArrayList<PropostaScambio> aperte = new ArrayList<>();
+		ArrayList<PropostaScambio> chiuse = new ArrayList<>();
+		ArrayList<PropostaScambio> ritirate = new ArrayList<>();
+		
+		 System.out.println("\nLe tue proposte salvate nel sistema:\n");
 
+		 for (PropostaScambio scambio : logica.getScambi()) {
+		     if (scambio.getAssociato().getUsername().equalsIgnoreCase(fruit.getUsername())) {
+		    	 
+		    	 switch (scambio.getStato()) {
+		    	    case APERTA -> aperte.add(scambio);
+		    	    case CHIUSA -> chiuse.add(scambio);
+		    	    case RITIRATA -> ritirate.add(scambio);
+		    	}
+		     }
+		 }
+		 
+		 //caso non ci sono proposte
+		 if (aperte.isEmpty() && chiuse.isEmpty() && ritirate.isEmpty()) {
+		     System.out.println("Non hai proposte registrate.");
+		     return;
+		     
+		 } else {
+			 
+			// Stampa per ogni stato
+			 stampaSezione("PROPOSTE APERTE", aperte);
+			 stampaSezione("PROPOSTE CHIUSE", chiuse);
+			 stampaSezione("PROPOSTE RITIRATE", ritirate);
+			 
+		 }
+	}
+	
+	
+	private void stampaSezione(String titolo, ArrayList<PropostaScambio> proposte) {
+	    System.out.println("--- " + titolo + " ---");
+	    if (proposte == null || proposte.isEmpty()) {
+	        System.out.println("Nessuna proposta in questa sezione.\n");
+	    } else {
+	        for (PropostaScambio p : proposte) {
+	            System.out.println(p);
+	        }
+	        System.out.println();
+	    }
+	}
+	
+	
+	
+	
+	
+	
+	//PROVA RIRITA PROPOSTE
+	public void ritiraProposte() {
+		
+		ArrayList<PropostaScambio> aperte = new ArrayList<>();
+
+	    for (PropostaScambio p : logica.getScambi()) {
+	        if (p.getAssociato().getUsername().equalsIgnoreCase(fruit.getUsername()) && p.getStato() == StatoProposta.APERTA) {
+	            aperte.add(p);
+	        }
+	    }
+
+	    if (aperte.isEmpty()) {
+	        System.out.println("Non hai proposte aperte da ritirare.");
+	        return;
+	    }
+
+	    System.out.println("\nProposte aperte disponibili per il ritiro:\n");
+	    
+	    for (int i = 0; i < aperte.size(); i++) {
+	        System.out.println((i + 1) + ". " + aperte.get(i));
+	    }
+	    
+	    System.out.println("\n0. Torna al menu.\n");
+
+	    int scelta = InputDati.leggiInteroConMINeMAX("Seleziona la proposta da ritirare > ", 0, aperte.size());
+	    if (scelta == 0) {
+	        System.out.println("Ritiro annullato.");
+	        return;
+	    }
+	    
+	    PropostaScambio selezionata = aperte.get(scelta - 1);
+
+	    boolean conferma = InputDati.yesOrNo("\nVuoi davvero ritirare questa proposta ");
+	    if (conferma) {
+	        selezionata.setStato(StatoProposta.RITIRATA);
+	        GestorePersistenza.salvaScambi(logica.getScambi());
+	        System.out.println("Proposta ritirata con successo.");
+	    } else {
+	        System.out.println("Ritiro annullato.");
+	    }
+		
+	}
+	
 }

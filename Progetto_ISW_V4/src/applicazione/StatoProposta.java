@@ -4,6 +4,6 @@ public enum StatoProposta {
 	
 	APERTA,
     CHIUSA,
-    RIFIUTATA
+    RITIRATA
 
 }

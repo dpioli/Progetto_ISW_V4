@@ -94,7 +94,7 @@
       "tipo": "OFFERTA",
       "quantitaOre": 5.0
     },
-    "stato": "APERTA",
+    "stato": "RITIRATA",
     "associato": {
       "username": "era",
       "password": "letmein",
@@ -136,6 +136,117 @@
       "username": "fruit2",
       "password": "2",
       "mail": "2@gmail",
+      "comprensorio": {
+        "nome": "Brescia Sud",
+        "comuni": [
+          "Castel Mella",
+          "Flero",
+          "Bagnolo Mella",
+          "Capriano Del Colle"
+        ]
+      }
+    }
+  },
+  {
+    "richiesta": {
+      "prestazione": {
+        "id": 7,
+        "nome": "fogliola1",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "RICHIESTA",
+      "quantitaOre": 5.0
+    },
+    "offerta": {
+      "prestazione": {
+        "id": 8,
+        "nome": "fogliola2",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "OFFERTA",
+      "quantitaOre": 5.0
+    },
+    "stato": "RITIRATA",
+    "associato": {
+      "username": "era",
+      "password": "letmein",
+      "mail": "era@gmail.com",
+      "comprensorio": {
+        "nome": "Brescia Sud",
+        "comuni": [
+          "Castel Mella",
+          "Flero",
+          "Bagnolo Mella",
+          "Capriano Del Colle"
+        ]
+      }
+    }
+  },
+  {
+    "richiesta": {
+      "prestazione": {
+        "id": 4,
+        "nome": "foglia4",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "RICHIESTA",
+      "quantitaOre": 5.0
+    },
+    "offerta": {
+      "prestazione": {
+        "id": 7,
+        "nome": "fogliola1",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "OFFERTA",
+      "quantitaOre": 5.0
+    },
+    "stato": "RITIRATA",
+    "associato": {
+      "username": "era",
+      "password": "letmein",
+      "mail": "era@gmail.com",
+      "comprensorio": {
+        "nome": "Brescia Sud",
+        "comuni": [
+          "Castel Mella",
+          "Flero",
+          "Bagnolo Mella",
+          "Capriano Del Colle"
+        ]
+      }
+    }
+  },
+  {
+    "richiesta": {
+      "prestazione": {
+        "id": 7,
+        "nome": "fogliola1",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "RICHIESTA",
+      "quantitaOre": 5.0
+    },
+    "offerta": {
+      "prestazione": {
+        "id": 4,
+        "nome": "foglia4",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "OFFERTA",
+      "quantitaOre": 5.0
+    },
+    "stato": "APERTA",
+    "associato": {
+      "username": "era",
+      "password": "letmein",
+      "mail": "era@gmail.com",
       "comprensorio": {
         "nome": "Brescia Sud",
         "comuni": [
