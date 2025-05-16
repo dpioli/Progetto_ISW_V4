@@ -261,7 +261,9 @@ public class MenuFruitore extends Menu{
 	        }
 	        
 	        
-	        //DA METTERE NEL CONFIGURATORE
+	        //in seguito stampa solo per controllo funzionamento
+	        
+	        //DA METTERE NEL CONFIGURATORE (gia fatto)
 	        System.out.println("Proposta soddisfatta tramite ciclo di " + (catena.size() + 1) + " proposte.\n");
 	        
 	        //stampa proposte soddisfatte
@@ -270,7 +272,7 @@ public class MenuFruitore extends Menu{
 	        	System.out.println(catena.get(i).toString());
 	        	System.out.println("Fruitore: " + catena.get(i).getAssociato().getUsername());
 	        }
-	        //FINO A QUI
+	        //FINO A QUI (gia fatto)
 	        
 	        
 	        
@@ -444,7 +446,7 @@ public class MenuFruitore extends Menu{
 	private void stampaSezione(String titolo, ArrayList<PropostaScambio> proposte) {
 	    System.out.println("--- " + titolo + " ---");
 	    if (proposte == null || proposte.isEmpty()) {
-	        System.out.println("Nessuna proposta in questa sezione.\n");
+	        System.out.println("\nNessuna proposta in questa sezione.\n");
 	    } else {
 	        for (PropostaScambio p : proposte) {
 	            System.out.println(p);

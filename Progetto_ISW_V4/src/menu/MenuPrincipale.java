@@ -48,8 +48,9 @@ public class MenuPrincipale{
 	private static final int CASE_V_COMPRENSORI = 3;
 	private static final int CASE_V_GERARCHIE = 4;
 	private static final int CASE_V_FAT_CONV = 5;
-	private static final int CASE_SALVA = 6;
-	private static final int CASE_P_AUTENTICAZIONE = 7;
+	private static final int CASE_V_PROPOSTE = 6;
+	private static final int CASE_SALVA = 7;
+	private static final int CASE_P_AUTENTICAZIONE = 8;
 	private static final int CASE_USCITA = 0;
 	
 	/**
@@ -57,9 +58,9 @@ public class MenuPrincipale{
 	 */
 	private static final int CASE_NAVIGA = 1;
 	private static final int CASE_RICHIEDI_PRESTAZIONI = 2;
-	private static final int CASE_P_AUT = 5;
-	private static final int CASE_RITIRA_PROPOSTE = 4;
 	private static final int CASE_VISUALIZZA_PROPOSTE = 3;
+	private static final int CASE_RITIRA_PROPOSTE = 4;
+	private static final int CASE_P_AUT = 5;
 	
 	/**
 	 * Costruttore della pagina iniziale del programma
@@ -170,6 +171,9 @@ public class MenuPrincipale{
 				break;
 			case CASE_V_FAT_CONV:
 				menuConfig.visualizzaFatConv();
+				break;
+			case CASE_V_PROPOSTE:
+				menuConfig.visualizzaProposte();
 				break;
 			case CASE_SALVA:
 				menuConfig.salva();

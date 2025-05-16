@@ -13,6 +13,7 @@ import applicazione.CategoriaNonFoglia;
 import applicazione.Comprensorio;
 import applicazione.FatConversione;
 import applicazione.Gerarchia;
+import applicazione.PropostaScambio;
 import utenti.Configuratore;
 import util.InputDati;
 import util.Menu;
@@ -80,6 +81,12 @@ public class MenuConfiguratore extends Menu {
 	 */
 	private static final String NESSUNA_GERARCHIA = "Non è ancora presente nessuna gerarchia";
 	
+	
+	
+	
+	private static final String MSG_VISUALIZZA_PROPOSTE = "Visualizza proposte";
+	
+	
 	/**
 	 * SALVATAGGIO DATI
 	 */
@@ -90,6 +97,7 @@ public class MenuConfiguratore extends Menu {
 			MSG_VISUALIZZA_COMPRENSORI,
 			MSG_VISUALIZZA_GERARCHIE,
 			MSG_VISUALIZZA_FAT_CONV,
+			MSG_VISUALIZZA_PROPOSTE,
 			MSG_SALVA,
 			MSG_P_PRECEDENTE
 	};
@@ -402,5 +410,75 @@ public class MenuConfiguratore extends Menu {
 	 */
 	private void aggiungiFDC(Integer nuova) {
 		logica.aggiungiFDC(nuova);
+	}
+	
+	
+	
+	
+	
+	//prova
+	public void visualizzaProposte() {
+		
+		ArrayList<CategoriaFoglia> foglie = logica.getCategorieFoglia();
+
+	    if (foglie.isEmpty()) {
+	        System.out.println("Nessuna categoria foglia disponibile.");
+	        return;
+	    }
+
+	    System.out.println("\nSeleziona una categoria foglia:\n");
+	    for (int i = 0; i < foglie.size(); i++) {
+	        System.out.println((i + 1) + ". " + foglie.get(i).getNome());
+	    }
+
+	    int scelta = InputDati.leggiInteroConMINeMAX("Scegli una categoria > ", 1, foglie.size()) - 1;
+	    CategoriaFoglia selezionata = foglie.get(scelta);
+
+	    ArrayList<PropostaScambio> aperte = new ArrayList<>();
+	    ArrayList<PropostaScambio> chiuse = new ArrayList<>();
+	    ArrayList<PropostaScambio> ritirate = new ArrayList<>();
+
+	    for (PropostaScambio p : logica.getScambi()) {
+	        boolean coinvolgeCategoria = p.getRichiesta().getPrestazione().getNome().equalsIgnoreCase(selezionata.getNome()) ||
+	                                     p.getOfferta().getPrestazione().getNome().equalsIgnoreCase(selezionata.getNome());
+
+	        if (coinvolgeCategoria) {
+	            switch (p.getStato()) {
+	                case APERTA -> aperte.add(p);
+	                case CHIUSA -> chiuse.add(p);
+	                case RITIRATA -> ritirate.add(p);
+	            }
+	        }
+	    }
+	    
+	    //caso non ci sono proposte
+		 if (aperte.isEmpty() && chiuse.isEmpty() && ritirate.isEmpty()) {
+		     System.out.println("Non hai proposte registrate.");
+		     return;
+		     
+		 } else {
+
+			// Stampa per ogni stato
+			 stampaSezione("PROPOSTE APERTE", aperte);
+			 stampaSezione("PROPOSTE CHIUSE", chiuse);
+			 stampaSezione("PROPOSTE RITIRATE", ritirate);
+			 
+		 }
+	
+	}
+	
+	
+	
+	
+	private void stampaSezione(String titolo, ArrayList<PropostaScambio> proposte) {
+	    System.out.println("\n--- " + titolo + " ---");
+	    if (proposte.isEmpty()) {
+	        System.out.println("\nNessuna proposta in questa sezione.");
+	    } else {
+	        for (PropostaScambio p : proposte) {
+	            System.out.println(p);
+	            System.out.println("Fruitore: " + p.getAssociato().getUsername());
+	        }
+	    }
 	}
 }
