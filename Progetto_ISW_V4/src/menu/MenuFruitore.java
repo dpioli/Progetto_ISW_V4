@@ -187,14 +187,14 @@ public class MenuFruitore extends Menu{
 		stampaPrestazioni(foglie); 
 		
 		//RICHIESTA
-		int scelta = InputDati.leggiInteroConMINeMAX(MSG_SEL_PRESTAZIONE, 0, foglie.size()- 1);
+		int scelta = InputDati.leggiInteroConMINeMAX(MSG_SEL_PRESTAZIONE, 1, foglie.size());
 		double ore = InputDati.leggiDoubleConMinimo(MSG_INS_ORE, 0);
 		Proposta richiesta = new Proposta(foglie.get(scelta), TipoProposta.RICHIESTA, ore);
 
 		//OFFERTA
 		int incambio;
 		do {
-			incambio = InputDati.leggiInteroConMINeMAX(MSG_SEL_OFFERTA, 0, foglie.size()- 1);
+			incambio = InputDati.leggiInteroConMINeMAX(MSG_SEL_OFFERTA, 1, foglie.size());
 			if(incambio == scelta) {
 				System.out.println(MSG_PRESTAZIONE_UGUALE);
 			}
@@ -209,125 +209,14 @@ public class MenuFruitore extends Menu{
 		boolean sn = InputDati.yesOrNo(MSG_CONFERMA + scambio.toString() + MSG_Y_N);
 		if(sn) { //aggiunto alle proposte aperte
 			scambio.setFruitoreAssociato(fruit);
-			logica.addScambio(scambio);
+			logica.addPropostaAperta(scambio);
 			verificaSoddisfacimento(scambio); //controllo che lo scambio possa essere completato
-			GestorePersistenza.salvaScambi(logica.getScambi());
+			GestorePersistenza.salvaProposteAperte(logica.getProposteAperte());
 		} else {
 			System.out.println(MSG_ANNULLATO_SCAMBIO +  MSG_MENU_PRINCIPALE );
 			return;
 		}
 	}
-	
-	
-	
-	
-	
-	
-	
-	//PROVA VERIFICA SCAMBIO
-	public void verificaSoddisfacimento(PropostaScambio nuova) {
-		
-		//SCAMBIO ESCLUSIVO TRA DUE PROPOSTE
-	    for (PropostaScambio esistente : logica.getScambi()) {
-	        if (esistente.getStato() != StatoProposta.APERTA || esistente.getAssociato().getUsername().equalsIgnoreCase(nuova.getAssociato().getUsername())) continue;
-
-	        boolean categorieCompatibili =
-	        	esistente.getOfferta().getPrestazione().getNome().equalsIgnoreCase(nuova.getRichiesta().getPrestazione().getNome()) &&
-	       		esistente.getRichiesta().getPrestazione().getNome().equalsIgnoreCase(nuova.getOfferta().getPrestazione().getNome());
-
-	        if (categorieCompatibili) {
-	        	double qRichiestaNuova = nuova.getRichiesta().getQuantitaOre();
-	        	double qOffertaEsistente = esistente.getOfferta().getQuantitaOre();
-	            
-	        	if (Math.abs(qRichiestaNuova - qOffertaEsistente) < 0.001) {
-	        		nuova.setStato(StatoProposta.CHIUSA);
-	        		esistente.setStato(StatoProposta.CHIUSA);
-	        		System.out.println("Proposta soddisfatta automaticamente con una proposta esistente.");
-	        		return;
-	                
-	        	}
-	        }
-	        
-	    }
-	    
-	    //SCAMBIO TRA PIU PROPOSTE
-	    ArrayList<PropostaScambio> catena = new ArrayList<>();
-	    ArrayList<PropostaScambio> visitate = new ArrayList<>();
-
-	    if (cercaCicloCompatibile(nuova, catena, nuova.getOfferta(), visitate)) {
-	        nuova.setStato(StatoProposta.CHIUSA);
-	        for (PropostaScambio p : catena) {
-	            p.setStato(StatoProposta.CHIUSA);
-	        }
-	        
-	        
-	        //in seguito stampa solo per controllo funzionamento
-	        
-	        //CONTROLLO
-	        System.out.println("Proposta soddisfatta tramite ciclo di " + (catena.size() + 1) + " proposte.\n");
-	        
-	        //stampa proposte soddisfatte
-	        System.out.println("Le altre proposte soddisfatte sono: ");
-	        for(int i = 0; i< catena.size(); i++) {
-	        	System.out.println(catena.get(i).toString());
-	        	System.out.println("Fruitore: " + catena.get(i).getAssociato().getUsername());
-	        }
-	        //FINE CONTROLLO 
-	        
-	        
-	        
-	        System.out.println("Proposta soddisfatta automaticamente con una proposta esistente.");
-	        
-	    } else {
-	        System.out.println("Nessuna proposta compatibile trovata. La proposta resta in attesa.");
-	    }
-	  
-	    System.out.println("");
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	//PROVA
-	private boolean cercaCicloCompatibile(PropostaScambio nuova, ArrayList<PropostaScambio> catena, Proposta propostaCorrente, ArrayList<PropostaScambio> visitate) {
-		for (PropostaScambio p : logica.getScambi()) {
-			if (p.getStato() != StatoProposta.APERTA || visitate.contains(p) || p.getAssociato().getUsername().equalsIgnoreCase(nuova.getAssociato().getUsername())) continue;
-
-			boolean compatibile = propostaCorrente.getPrestazione().getNome().equalsIgnoreCase(p.getRichiesta().getPrestazione().getNome());
-
-			if (compatibile && Math.abs(propostaCorrente.getQuantitaOre() - p.getOfferta().getQuantitaOre()) < 0.001) {
-				visitate.add(p);
-				catena.add(p);
-
-				boolean chiusura =
-						p.getOfferta().getPrestazione().getNome().equalsIgnoreCase(nuova.getRichiesta().getPrestazione().getNome())
-						&& Math.abs(p.getOfferta().getQuantitaOre() - nuova.getRichiesta().getQuantitaOre()) < 0.001;
-
-				if (chiusura) return true;
-
-				if (cercaCicloCompatibile(nuova, catena, p.getOfferta(), visitate)) return true;
-
-				//backtrack
-				catena.remove(catena.size() - 1);
-				visitate.remove(p);
-			}
-		}
-		return false;
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	/**
 	 * Metodo che recupera le foglie disponibili nel comprensorio geografico del fruitore,
@@ -390,7 +279,7 @@ public class MenuFruitore extends Menu{
 	 */
 	private void stampaPrestazioni(ArrayList<CategoriaFoglia> foglie) {
 		StringBuffer sb = new StringBuffer();
-		int i = 0; //contatore per legenda
+		int i = 1; //contatore per legenda
 		sb.append("Prestazioni a disposizione >>\n");		
 		for(CategoriaFoglia f : foglie) {
 			sb.append(i++);
@@ -403,104 +292,176 @@ public class MenuFruitore extends Menu{
 	
 	
 	
-	
-	
-	
-	
-	//opzione visualizza proposte divise in base allo stato
-	public void visualizzaProposte() {
+	//PROVA VERIFICA SCAMBIO
+	public void verificaSoddisfacimento(PropostaScambio nuova) {
 		
-		ArrayList<PropostaScambio> aperte = new ArrayList<>();
-		ArrayList<PropostaScambio> chiuse = new ArrayList<>();
-		ArrayList<PropostaScambio> ritirate = new ArrayList<>();
-		
-		 System.out.println("\nLe tue proposte salvate nel sistema:\n");
+		ArrayList<PropostaScambio> aperte = logica.getProposteAperte();
+		ArrayList<PropostaScambio> chiuse = logica.getProposteChiuse();
 
-		 for (PropostaScambio scambio : logica.getScambi()) {
-		     if (scambio.getAssociato().getUsername().equalsIgnoreCase(fruit.getUsername())) {
-		    	 
-		    	 switch (scambio.getStato()) {
-		    	    case APERTA -> aperte.add(scambio);
-		    	    case CHIUSA -> chiuse.add(scambio);
-		    	    case RITIRATA -> ritirate.add(scambio);
-		    	}
-		     }
-		 }
-		 
-		 //caso non ci sono proposte
-		 if (aperte.isEmpty() && chiuse.isEmpty() && ritirate.isEmpty()) {
-		     System.out.println("Non hai proposte registrate.");
-		     return;
-		     
-		 } else {
-			 
-			// Stampa per ogni stato
-			 stampaSezione("PROPOSTE APERTE", aperte);
-			 stampaSezione("PROPOSTE CHIUSE", chiuse);
-			 stampaSezione("PROPOSTE RITIRATE", ritirate);
-			 
-		 }
-	}
-	
-	
-	private void stampaSezione(String titolo, ArrayList<PropostaScambio> proposte) {
-	    System.out.println("--- " + titolo + " ---");
-	    if (proposte == null || proposte.isEmpty()) {
-	        System.out.println("\nNessuna proposta in questa sezione.\n");
-	    } else {
-	        for (PropostaScambio p : proposte) {
-	            System.out.println(p);
+		//SCAMBIO ESCLUSIVO TRA DUE PROPOSTE
+	    for (PropostaScambio esistente : aperte) {
+	        if (esistente.getStato() != StatoProposta.APERTA || esistente.getNomeAssociato().equalsIgnoreCase(nuova.getNomeAssociato())) continue;
+
+	        boolean categorieCompatibili =
+	        	esistente.getNomeOfferta().equalsIgnoreCase(nuova.getNomeRichiesta()) &&
+	       		esistente.getNomeRichiesta().equalsIgnoreCase(nuova.getNomeOfferta());
+
+	        if (categorieCompatibili) {
+	        	double qRichiestaNuova = nuova.getOreRichiesta();
+	        	double qOffertaEsistente = esistente.getOreOfferta();
+	            
+	        	if (Math.abs(qRichiestaNuova - qOffertaEsistente) < 0.001) {
+	        		
+	        		nuova.setStato(StatoProposta.CHIUSA);
+	        		esistente.setStato(StatoProposta.CHIUSA);
+	        		
+	        		aggiornaESalva(aperte, chiuse, esistente, nuova);
+	        		System.out.println("Proposta soddisfatta automaticamente con una proposta esistente.");
+	        		return;
+	                
+	        	}
 	        }
-	        System.out.println();
+	        
 	    }
+	    
+	    //SCAMBIO TRA PIU PROPOSTE
+	    ArrayList<PropostaScambio> catena = recuperaCatena(nuova, nuova.getOfferta(), aperte, chiuse);
+	    GestorePersistenza.salvaInsiemeChiuso(catena);
+	        //******************FARE PROVE INSIEME CHIUSO.json ********************
+	        //in seguito stampa solo per controllo funzionamento
+	        
+	    if(!catena.isEmpty()) {
+	        //CONTROLLO
+	        System.out.println("Proposta soddisfatta tramite ciclo di " + (catena.size() + 1) + " proposte.\n");
+	        
+	        //stampa proposte soddisfatte
+	        System.out.println("Le altre proposte soddisfatte sono: ");
+	        for(int i = 0; i< catena.size(); i++) {
+	        	System.out.println(catena.get(i).toString());
+	        	System.out.println("Fruitore: " + catena.get(i).getNomeAssociato());
+	        }
+	        //FINE CONTROLLO 
+	        
+	        System.out.println("Proposta soddisfatta automaticamente con una proposta esistente.");
+	        
+	    } else {
+	        System.out.println("Nessuna proposta compatibile trovata. La proposta resta in attesa.");
+	    }
+	  
+	    System.out.println("");
+	}
+
+	
+	//PROVA
+	public boolean cercaCicloCompatibile(PropostaScambio nuova, ArrayList<PropostaScambio> catena, Proposta propostaCorrente, ArrayList<PropostaScambio> visitate) {
+		for (PropostaScambio p : logica.getProposteAperte()) {
+			if (p.getStato() != StatoProposta.APERTA || visitate.contains(p) || p.getNomeAssociato().equalsIgnoreCase(nuova.getNomeAssociato())) continue;
+
+			boolean compatibile = propostaCorrente.getPrestazione().getNome().equalsIgnoreCase(p.getNomeRichiesta());
+
+			if (compatibile && Math.abs(propostaCorrente.getQuantitaOre() - p.getOfferta().getQuantitaOre()) < 0.001) {
+				visitate.add(p);
+				catena.add(p);
+
+				boolean chiusura =
+						p.getNomeOfferta().equalsIgnoreCase(nuova.getNomeRichiesta())
+						&& Math.abs(p.getOreOfferta() - nuova.getOreRichiesta()) < 0.001;
+
+				if (chiusura) return true;
+
+				if (cercaCicloCompatibile(nuova, catena, p.getOfferta(), visitate)) return true;
+
+				//backtrack
+				catena.remove(catena.size() - 1);
+				visitate.remove(p);
+			}
+		}
+		return false;
 	}
 	
-	
-	
-	
+	public ArrayList<PropostaScambio> recuperaCatena(PropostaScambio nuova, Proposta propostaCorrente, ArrayList<PropostaScambio> aperte,ArrayList<PropostaScambio> chiuse) {
+		
+		ArrayList<PropostaScambio> catena = new ArrayList<>();
+	    ArrayList<PropostaScambio> visitate = new ArrayList<>();
+		
+	    if (cercaCicloCompatibile(nuova, catena, nuova.getOfferta(), visitate)) {
+		        nuova.setStato(StatoProposta.CHIUSA);
+		        catena.add(nuova);
+		        for (PropostaScambio p : catena) {
+		            p.setStato(StatoProposta.CHIUSA);
+		            catena.add(p);
+		            aggiornaESalva(aperte, chiuse, p, nuova);
+		        }
+		}    
+		return catena;
+	}
+
+	private void aggiornaESalva(ArrayList<PropostaScambio> aperte, ArrayList<PropostaScambio> chiuse, PropostaScambio esistente, PropostaScambio nuova) {
+		aperte.remove(esistente);
+		aperte.remove(nuova);
+		
+		chiuse.add(esistente);
+		chiuse.add(nuova);
+		
+		GestorePersistenza.salvaAperteEChiuse(aperte, chiuse);	
+	}
+
 	
 	
 	//PROVA RIRITA PROPOSTE
 	public void ritiraProposte() {
 		
-		ArrayList<PropostaScambio> aperte = new ArrayList<>();
+		ArrayList<PropostaScambio> associate = new ArrayList<>();
+		ArrayList<PropostaScambio> ritirate = logica.getProposteRitirate();
+		ArrayList<PropostaScambio> aperte = logica.getProposteAperte();
 
-	    for (PropostaScambio p : logica.getScambi()) {
-	        if (p.getAssociato().getUsername().equalsIgnoreCase(fruit.getUsername()) && p.getStato() == StatoProposta.APERTA) {
-	            aperte.add(p);
+	    for (PropostaScambio p : aperte) {
+	        if (p.getNomeAssociato().equalsIgnoreCase(fruit.getUsername()) && p.getStato() == StatoProposta.APERTA) {
+	            associate.add(p);
 	        }
 	    }
 
-	    if (aperte.isEmpty()) {
-	        System.out.println("Non hai proposte aperte da ritirare.");
-	        return;
-	    }
-
-	    System.out.println("\nProposte aperte disponibili per il ritiro:\n");
-	    
-	    for (int i = 0; i < aperte.size(); i++) {
-	        System.out.println((i + 1) + ". " + aperte.get(i));
-	    }
+	    visualizzaProposte(associate, "\nProposte aperte disponibili per il ritiro:\n");
 	    
 	    System.out.println("\n0. Torna al menu.\n");
 
-	    int scelta = InputDati.leggiInteroConMINeMAX("Seleziona la proposta da ritirare > ", 0, aperte.size());
+	    int scelta = InputDati.leggiInteroConMINeMAX("Seleziona la proposta da ritirare > ", 0, associate.size());
 	    if (scelta == 0) {
 	        System.out.println("Ritiro annullato.");
 	        return;
 	    }
 	    
-	    PropostaScambio selezionata = aperte.get(scelta - 1);
+	    PropostaScambio selezionata = associate.get(scelta - 1);
 
-	    boolean conferma = InputDati.yesOrNo("\nVuoi davvero ritirare questa proposta ");
+	    boolean conferma = InputDati.yesOrNo("\nVuoi davvero ritirare questa proposta ?");
 	    if (conferma) {
-	        selezionata.setStato(StatoProposta.RITIRATA);
-	        GestorePersistenza.salvaScambi(logica.getScambi());
+	    	
+	        selezionata.setStato(StatoProposta.RITIRATA);      
+	        aperte.remove(selezionata);
+		    ritirate.add(selezionata);
+		    
+	        GestorePersistenza.salvaAperteERitirate(aperte, ritirate);
+	        
 	        System.out.println("Proposta ritirata con successo.");
+	        
 	    } else {
 	        System.out.println("Ritiro annullato.");
 	    }
 		
+	}
+	
+	public void visualizzaProposte(ArrayList<PropostaScambio> s, String txt) {
+		 System.out.println(txt);
+		 
+		    if(s.isEmpty()) {
+		    	System.out.println("Non ci sono proposte disponibili.");
+		    	return;
+		    }
+		    
+		    for (int i = 1; i <= s.size(); i++) {
+		        System.out.println( i + ". " + s.get(i - 1));
+		    }
+	  
 	}
 	
 }

@@ -28,29 +28,14 @@ public class PropostaScambio {
 		this.offerta = offerta;
 		this.stato = StatoProposta.APERTA;
 	}
-	
-	
-	
-	
-	//prova
 
 	public Proposta getRichiesta() {
 		return richiesta;
 	}
 
-
-
-
-	//prova
-
 	public Proposta getOfferta() {
 		return offerta;
 	}
-
-
-
-
-
 
 	public StatoProposta getStato() {
 		return stato;
@@ -62,6 +47,25 @@ public class PropostaScambio {
 
 	public Fruitore getAssociato() {
 		return associato;
+	}
+	public String getNomeOfferta() {
+		//controlli su offerta?
+		return offerta.getPrestazione().getNome();
+	}
+	public String getNomeRichiesta() {
+		return richiesta.getPrestazione().getNome();
+	}
+	public String getNomeAssociato() {
+		if(associato != null)
+			return associato.getUsername();
+		else 
+			return "errore"; //whatever else
+	}
+	public double getOreRichiesta() {
+		return richiesta.getQuantitaOre();
+	}
+	public double getOreOfferta() {
+		return offerta.getQuantitaOre();
 	}
 	
 	/**

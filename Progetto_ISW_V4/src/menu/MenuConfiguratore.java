@@ -412,73 +412,10 @@ public class MenuConfiguratore extends Menu {
 		logica.aggiungiFDC(nuova);
 	}
 	
-	
-	
-	
-	
-	//prova
-	public void visualizzaProposte() {
-		
-		ArrayList<CategoriaFoglia> foglie = logica.getCategorieFoglia();
-
-	    if (foglie.isEmpty()) {
-	        System.out.println("Nessuna categoria foglia disponibile.");
-	        return;
-	    }
-
-	    System.out.println("\nSeleziona una categoria foglia:\n");
-	    for (int i = 0; i < foglie.size(); i++) {
-	        System.out.println((i + 1) + ". " + foglie.get(i).getNome());
-	    }
-
-	    int scelta = InputDati.leggiInteroConMINeMAX("Scegli una categoria > ", 1, foglie.size()) - 1;
-	    CategoriaFoglia selezionata = foglie.get(scelta);
-
-	    ArrayList<PropostaScambio> aperte = new ArrayList<>();
-	    ArrayList<PropostaScambio> chiuse = new ArrayList<>();
-	    ArrayList<PropostaScambio> ritirate = new ArrayList<>();
-
-	    for (PropostaScambio p : logica.getScambi()) {
-	        boolean coinvolgeCategoria = p.getRichiesta().getPrestazione().getNome().equalsIgnoreCase(selezionata.getNome()) ||
-	                                     p.getOfferta().getPrestazione().getNome().equalsIgnoreCase(selezionata.getNome());
-
-	        if (coinvolgeCategoria) {
-	            switch (p.getStato()) {
-	                case APERTA -> aperte.add(p);
-	                case CHIUSA -> chiuse.add(p);
-	                case RITIRATA -> ritirate.add(p);
-	            }
-	        }
-	    }
-	    
-	    //caso non ci sono proposte
-		 if (aperte.isEmpty() && chiuse.isEmpty() && ritirate.isEmpty()) {
-		     System.out.println("Non hai proposte registrate.");
-		     return;
-		     
-		 } else {
-
-			// Stampa per ogni stato
-			 stampaSezione("PROPOSTE APERTE", aperte);
-			 stampaSezione("PROPOSTE CHIUSE", chiuse);
-			 stampaSezione("PROPOSTE RITIRATE", ritirate);
-			 
-		 }
-	
+	public void inviaMessaggio(ArrayList<PropostaScambio> chiuse) {
+		for(PropostaScambio p: chiuse) {
+			//p.getNomeOfferta()
+		}
 	}
-	
-	
-	
-	
-	private void stampaSezione(String titolo, ArrayList<PropostaScambio> proposte) {
-	    System.out.println("\n--- " + titolo + " ---");
-	    if (proposte.isEmpty()) {
-	        System.out.println("\nNessuna proposta in questa sezione.");
-	    } else {
-	        for (PropostaScambio p : proposte) {
-	            System.out.println(p);
-	            System.out.println("Fruitore: " + p.getAssociato().getUsername());
-	        }
-	    }
-	}
+
 }

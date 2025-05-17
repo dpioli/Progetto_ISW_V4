@@ -23,7 +23,13 @@ public class LogicaPersistenza {
 	private ArrayList<CategoriaFoglia> categorieFoglia = new ArrayList<CategoriaFoglia>();
 	private FatConversione fatConversione;
 	private ArrayList<Fruitore> fruitori = new ArrayList<Fruitore>();
-	private ArrayList<PropostaScambio> scambi = new ArrayList<PropostaScambio>();
+	private ArrayList<PropostaScambio> proposte = new ArrayList<PropostaScambio>();
+	private ArrayList<PropostaScambio> proposteAperte = new ArrayList<PropostaScambio>();
+	private ArrayList<PropostaScambio> proposteChiuse = new ArrayList<PropostaScambio>();
+	private ArrayList<PropostaScambio> proposteRitirate = new ArrayList<PropostaScambio>();
+	
+	
+	private ArrayList<PropostaScambio> insiemechiuso = new ArrayList<PropostaScambio>();
 	
 	public LogicaPersistenza() {
 		this.gerarchie = GestorePersistenza.caricaGerarchie();
@@ -32,7 +38,11 @@ public class LogicaPersistenza {
 		this.fatConversione = GestorePersistenza.caricaFatConversione();
 		this.categorieFoglia = GestorePersistenza.caricaCategorieFoglia();
 		this.fruitori = GestorePersistenza.caricaFruitori();
-		this.scambi = GestorePersistenza.caricaScambi();
+		this.proposte = GestorePersistenza.caricaProposte();
+		this.proposteAperte = GestorePersistenza.caricaProposteAperte();
+		this.proposteChiuse = GestorePersistenza.caricaProposteChiuse();
+		this.proposteRitirate = GestorePersistenza.caricaProposteRitirate();
+		this.insiemechiuso = GestorePersistenza.caricaInsiemeChiuso();
 	}
 	
 	/*
@@ -139,19 +149,40 @@ public class LogicaPersistenza {
 		this.fruitori = fruitori;
 	}
 	/**
+	 * Metodo per ottenere l'insieme di TUTTE le proposte registrate e dei loro aggiornamenti 
+	 * @return scambi
+	 */
+	public ArrayList<PropostaScambio> getProposte() {
+		return proposte;
+	}
+	/**
 	 * Metodo per ottenere l'insieme delle proposte aperte (scambi tra fruitore e server)
 	 * @return scambi
 	 */
-	public ArrayList<PropostaScambio> getScambi() {
-		return scambi;
+	public ArrayList<PropostaScambio> getProposteAperte() {
+		return proposteAperte;
+	}
+	/**
+	 * Metodo per ottenere l'insieme delle proposte chiuse (scambi di prestazioni tra due o più fruitori)
+	 * @return scambi
+	 */
+	public ArrayList<PropostaScambio> getProposteChiuse() {
+		return proposteChiuse;
+	}
+	/**
+	 * Metodo per ottenere l'insieme delle proposte ritirate 
+	 * @return scambi
+	 */
+	public ArrayList<PropostaScambio> getProposteRitirate() {
+		return proposteRitirate;
 	}
 	
 	/**
 	 * Medoto per modificare l'insieme delle proposte aperte (scambi tra fruitore e server)
 	 * @param scambi
 	 */
-	public void setScambi(ArrayList<PropostaScambio> scambi) {
-		this.scambi = scambi;
+	public void setProposteAperte(ArrayList<PropostaScambio> scambi) {
+		this.proposteAperte = scambi;
 	}
 
 	/*
@@ -170,6 +201,11 @@ public class LogicaPersistenza {
 	public void addConfiguratore(Configuratore configuratore) {
 		configuratori.add(configuratore);
 	}
+	
+	public void addFruitore(Fruitore fruitore) {
+		fruitori.add(fruitore);
+	}
+	
 
 	public void addComprensorio(Comprensorio comprensorio) {
 		comprensori.add(comprensorio);
@@ -178,13 +214,6 @@ public class LogicaPersistenza {
 	public void addGerarchia(Gerarchia gerarchia) {
 		gerarchie.add(gerarchia);
 	}
-	
-	public void addFruitore(Fruitore fruitore) {
-		fruitori.add(fruitore);
-	}
-	public void addScambio(PropostaScambio scambio) {
-		scambi.add(scambio);
-	}
 
 	public void addCategoriaFoglia(CategoriaFoglia nuovaCategFoglia) {
 		categorieFoglia.add(nuovaCategFoglia);
@@ -192,6 +221,23 @@ public class LogicaPersistenza {
 	
 	public void aggiungiFDC(Integer nuova) {
 		fatConversione.aggancia(nuova);	
+	}
+
+	
+	public void addProposta(PropostaScambio scambio) {
+		addScambio(scambio, proposte);
+	}
+	public void addPropostaAperta(PropostaScambio scambio) {
+		addScambio(scambio, proposteAperte);
+	}
+	public void addPropostaChiusa(PropostaScambio scambio) {
+		addScambio(scambio, proposteChiuse);
+	}
+	public void addPropostaRitirata(PropostaScambio scambio) {
+		addScambio(scambio, proposteRitirate);
+	}
+	private void addScambio(PropostaScambio scambio, ArrayList<PropostaScambio> s) {
+		s.add(scambio);
 	}
 	
 	/**
@@ -206,6 +252,12 @@ public class LogicaPersistenza {
 		CategoriaFoglia f = categorieFoglia.get(ultimo);
 		return f.getId();
 	}
-	
+	////////////////////////PROVA INSIEME CHIUSO
+	public void addInsiemeChiuso(PropostaScambio scambio) {
+		addScambio(scambio, insiemechiuso);
+	}
+	public ArrayList<PropostaScambio> getProposteInsiemeChiuso() {
+		return insiemechiuso;
+	}
 
 }
