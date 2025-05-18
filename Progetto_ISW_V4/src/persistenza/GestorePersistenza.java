@@ -173,40 +173,44 @@ public class GestorePersistenza {
 	 * Metodo per salvare le proposte di scambio che sono state accettate
 	 * @param scambi
 	 */
-	public static void salvaProposteAperte(ArrayList<PropostaScambio> scambi) {
-		salva(scambi, FILE_PROPOSTE_APERTE);
+	public static void salvaProposteAperte(ArrayList<PropostaScambio> scambi, ArrayList<PropostaScambio> aggiornamenti) {
+		aggiorna(FILE_PROPOSTE_APERTE, scambi, aggiornamenti);
 	}
 	
 	/**
 	 * Metodo per salvare le proposte di scambio che sono state chiuse
 	 * @param scambi
 	 */
-	public static void salvaProposteChiuse(ArrayList<PropostaScambio> scambi) {
-		salva(scambi, FILE_PROPOSTE_CHIUSE);
+	public static void salvaProposteChiuse(ArrayList<PropostaScambio> scambi, ArrayList<PropostaScambio> aggiornamenti) {
+		aggiorna(FILE_PROPOSTE_CHIUSE, scambi, aggiornamenti);
 	}
 	
 	/**
 	 * Metodo per salvare le proposte di scambio che sono state ritirate
 	 * @param scambi
 	 */
-	public static void salvaProposteRitirate(ArrayList<PropostaScambio> scambi) {
-		salva(scambi, FILE_PROPOSTE_RITIRATE);
+	public static void salvaProposteRitirate(ArrayList<PropostaScambio> scambi, ArrayList<PropostaScambio> aggiornamenti) {
+		aggiorna(FILE_PROPOSTE_RITIRATE, scambi, aggiornamenti);
 	}
 	/**
 	 * Metodo per aggiornare le proposte aperte e le proposte chiusa a seguito della conferma degli scambi
 	 * @param lista proposte aperte e lista proposte chiuse
 	 */
-	public static void salvaAperteEChiuse(ArrayList<PropostaScambio> aperte, ArrayList<PropostaScambio> chiuse) {
-		salvaProposteAperte(aperte);
-		salvaProposteChiuse(chiuse);
+	public static void salvaAperteEChiuse(ArrayList<PropostaScambio> aperte, ArrayList<PropostaScambio> chiuse, ArrayList<PropostaScambio> aggiornamenti) {
+		salvaProposteAperte(aperte, aggiornamenti);
+		salvaProposteChiuse(chiuse, aggiornamenti);
 	}
 	/**
 	 * Metodo per aggiornare le proposte aperte e le proposte ritirate a seguito di modifica degli scambi
 	 * @param lista proposte aperte e lista proposte ritirate
 	 */
-	public static void salvaAperteERitirate(ArrayList<PropostaScambio> aperte, ArrayList<PropostaScambio> ritirate) {
-		salvaProposteAperte(aperte);
-		salvaProposteRitirate(ritirate);
+	public static void salvaAperteERitirate(ArrayList<PropostaScambio> aperte, ArrayList<PropostaScambio> ritirate, ArrayList<PropostaScambio> aggiornamenti) {
+		salvaProposteAperte(aperte, aggiornamenti);
+		salvaProposteRitirate(ritirate, aggiornamenti);
+	}
+	public static void aggiorna(String fp, ArrayList<PropostaScambio> scambi, ArrayList<PropostaScambio> aggiornamenti) {
+		salva(scambi, fp);
+		salvaProposte(aggiornamenti);
 	}
 	
 	/*

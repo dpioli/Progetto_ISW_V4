@@ -2,11 +2,9 @@ package menu;
 
 import java.util.ArrayList;
 
+import applicazione.Categoria;
 import applicazione.CategoriaFoglia;
-import applicazione.Proposta;
 import applicazione.PropostaScambio;
-import applicazione.StatoProposta;
-import persistenza.GestorePersistenza;
 import persistenza.LogicaPersistenza;
 import utenti.Configuratore;
 import utenti.Fruitore;
@@ -220,67 +218,93 @@ public class MenuPrincipale{
 		
 	}
 
+	/**
+	 * Metodo di visualizzazione delle proposte salvate nel sistema.
+	 * 1. L'utente vusualizza le foglie (prestazioni proposte dal sistema) elencate tra cui scegliere.
+	 * 2. Il sistema recupera le proposte associate a quella prestazione.
+	 */
 	public void visualizzaProposte() {
 			
-			ArrayList<CategoriaFoglia> foglie = logica.getCategorieFoglia();
+		ArrayList<CategoriaFoglia> foglie = logica.getCategorieFoglia();
 	
-		    if (foglie.isEmpty()) {
-		        System.out.println("Nessuna categoria foglia disponibile.");
-		        return;
-		    }
+	    if (foglie.isEmpty()) {
+	        System.out.println("Nessuna categoria foglia disponibile.");
+	        return;
+	    }
+
+	    System.out.println("\nSeleziona una categoria foglia:\n");
+	    for (int i = 0; i < foglie.size(); i++) {
+	        System.out.println((i + 1) + ". " + foglie.get(i).getNome());
+	    }
+
+	    int scelta = InputDati.leggiInteroConMINeMAX("Scegli una categoria > ", 1, foglie.size()) - 1;
+	    CategoriaFoglia selezionata = foglie.get(scelta);
+
+	    ArrayList<PropostaScambio> tutteProposte = new ArrayList<>();
+	    tutteProposte.addAll(logica.getProposteAperte());
+	    tutteProposte.addAll(logica.getProposteChiuse());
+	    tutteProposte.addAll(logica.getProposteRitirate());
+	    
+	    ArrayList<PropostaScambio> aperte = new ArrayList<>();
+	    ArrayList<PropostaScambio> chiuse = new ArrayList<>();
+	    ArrayList<PropostaScambio> ritirate = new ArrayList<>();
+
+	    for (PropostaScambio p : tutteProposte) {
+	       
+	        if (coinvolgeCategoria(p, selezionata)) {
+	        	
+	            switch (p.getStato()) {
+	                case APERTA -> aperte.add(p);
+	                case CHIUSA -> chiuse.add(p);
+	                case RITIRATA -> ritirate.add(p);
+	            }
+	        }
+	    }
+	    
+	    //caso non ci sono proposte
+		 if (aperte.isEmpty() && chiuse.isEmpty() && ritirate.isEmpty()) {
+		     System.out.println("Non hai proposte registrate.");
+		     return;
+		     
+		 } else {
+
+			// Stampa per ogni stato
+			 stampaSezione("PROPOSTE APERTE", aperte);
+			 stampaSezione("PROPOSTE CHIUSE", chiuse);
+			 stampaSezione("PROPOSTE RITIRATE", ritirate);
+			 
+		 }
 	
-		    System.out.println("\nSeleziona una categoria foglia:\n");
-		    for (int i = 0; i < foglie.size(); i++) {
-		        System.out.println((i + 1) + ". " + foglie.get(i).getNome());
-		    }
+	}
 	
-		    int scelta = InputDati.leggiInteroConMINeMAX("Scegli una categoria > ", 1, foglie.size()) - 1;
-		    CategoriaFoglia selezionata = foglie.get(scelta);
+	/**
+	 * Metodo che controlla se una proposta di scambio coinvolge una categoria
+	 * @param PropostaScambio
+	 * @param categoria selezionata (scelta dal fruitore)
+	 * @return vero se o la richiesta o l'offerta coincidono con la richiesta
+	 */
+	private boolean coinvolgeCategoria(PropostaScambio p, Categoria selezionata) {
+	    return p.getNomeRichiesta().equalsIgnoreCase(selezionata.getNome()) ||
+	           p.getNomeOfferta().equalsIgnoreCase(selezionata.getNome());
+	}
 	
-		    ArrayList<PropostaScambio> aperte = new ArrayList<>();
-		    ArrayList<PropostaScambio> chiuse = new ArrayList<>();
-		    ArrayList<PropostaScambio> ritirate = new ArrayList<>();
-	
-		    for (PropostaScambio p : logica.getProposteChiuse()) {/////////////////////////***prende solo un file
-		        boolean coinvolgeCategoria = p.getNomeRichiesta().equalsIgnoreCase(selezionata.getNome()) ||
-		                                     p.getNomeOfferta().equalsIgnoreCase(selezionata.getNome());
-///////////////////////////////////////********DA FARE TRE CICLI?? 
-		        if (coinvolgeCategoria) {
-		            switch (p.getStato()) {
-		                case APERTA -> aperte.add(p);
-		                case CHIUSA -> chiuse.add(p);
-		                case RITIRATA -> ritirate.add(p);
-		            }
-		        }
-		    }
-		    
-		    //caso non ci sono proposte
-			 if (aperte.isEmpty() && chiuse.isEmpty() && ritirate.isEmpty()) {
-			     System.out.println("Non hai proposte registrate.");
-			     return;
-			     
-			 } else {
-	
-				// Stampa per ogni stato
-				 stampaSezione("PROPOSTE APERTE", aperte);
-				 stampaSezione("PROPOSTE CHIUSE", chiuse);
-				 stampaSezione("PROPOSTE RITIRATE", ritirate);
-				 
-			 }
-		
-		}
-		
-		private void stampaSezione(String titolo, ArrayList<PropostaScambio> proposte) {
-		    System.out.println("\n--- " + titolo + " ---");
-		    if (proposte.isEmpty()) {
-		        System.out.println("\nNessuna proposta in questa sezione.");
-		    } else {
-		        for (PropostaScambio p : proposte) {
-		            System.out.println(p);
-		            System.out.println("Fruitore: " + p.getAssociato().getUsername());
-		        }
-		    }
-		}
-		
+	/**
+	 * Metodo che stampa sezione di proposte di scambio con fruitori associati
+	 * @param titolo
+	 * @param proposte
+	 */
+	private void stampaSezione(String titolo, ArrayList<PropostaScambio> proposte) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("\n--- " + titolo + " ---");
+	    if (proposte.isEmpty()) {
+	        System.out.println("\nNessuna proposta in questa sezione.");
+	    } else {
+	        for (PropostaScambio p : proposte) {
+	            sb.append(p);
+	            sb.append("Fruitore: " + p.getAssociato().getUsername());
+	        }
+	        System.out.println(sb.toString());
+	    }
+	}	
 		
 }

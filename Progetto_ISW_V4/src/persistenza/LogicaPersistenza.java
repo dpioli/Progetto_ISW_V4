@@ -17,13 +17,15 @@ import utenti.Fruitore;
  */
 public class LogicaPersistenza {
 	
-	private ArrayList<Gerarchia> gerarchie = new ArrayList<Gerarchia>();
 	private ArrayList<Comprensorio> comprensori = new ArrayList<Comprensorio>();
-	private ArrayList<Configuratore> configuratori = new ArrayList<Configuratore>();
+	private ArrayList<Gerarchia> gerarchie = new ArrayList<Gerarchia>();
 	private ArrayList<CategoriaFoglia> categorieFoglia = new ArrayList<CategoriaFoglia>();
 	private FatConversione fatConversione;
+	
+	private ArrayList<Configuratore> configuratori = new ArrayList<Configuratore>();
 	private ArrayList<Fruitore> fruitori = new ArrayList<Fruitore>();
-	private ArrayList<PropostaScambio> proposte = new ArrayList<PropostaScambio>();
+	
+	private ArrayList<PropostaScambio> proposte = new ArrayList<PropostaScambio>(); //aggiornamenti
 	private ArrayList<PropostaScambio> proposteAperte = new ArrayList<PropostaScambio>();
 	private ArrayList<PropostaScambio> proposteChiuse = new ArrayList<PropostaScambio>();
 	private ArrayList<PropostaScambio> proposteRitirate = new ArrayList<PropostaScambio>();
@@ -223,21 +225,41 @@ public class LogicaPersistenza {
 		fatConversione.aggancia(nuova);	
 	}
 
-	
-	public void addProposta(PropostaScambio scambio) {
+	/**
+	 * Metodi per l'aggiunta di una proposta di scambio alla relativa lista.
+	 * Ogni volta che una delle lista acquisisce un oggetto esso viene ripostato anche nella lista proposte
+	 * che tiene traccia di tutti gli aggiornamenti.
+	 * L'aggiunta di una proposta chiusa o una proposta ritirata implica implicitamente la rimozione di una proposta aperta.
+	 * @param scambio
+	 */
+/*	public void addProposta(PropostaScambio scambio) {
 		addScambio(scambio, proposte);
-	}
+	}*/
 	public void addPropostaAperta(PropostaScambio scambio) {
 		addScambio(scambio, proposteAperte);
 	}
 	public void addPropostaChiusa(PropostaScambio scambio) {
 		addScambio(scambio, proposteChiuse);
+		rimuoviPropostaAperta(scambio);
 	}
 	public void addPropostaRitirata(PropostaScambio scambio) {
 		addScambio(scambio, proposteRitirate);
+		rimuoviPropostaAperta(scambio);
 	}
 	private void addScambio(PropostaScambio scambio, ArrayList<PropostaScambio> s) {
 		s.add(scambio);
+		proposte.add(scambio);
+	}
+	
+	/**
+	 * Metodi per la rimozione di proposte di scambio dalle liste
+	 * @param scambio da rimuovere
+	 */
+	public void rimuoviPropostaAperta(PropostaScambio scambio) {
+		rimuoviProposta(scambio, proposteAperte);
+	}
+	private void rimuoviProposta(PropostaScambio scambio, ArrayList<PropostaScambio> s) {
+		s.remove(scambio);
 	}
 	
 	/**

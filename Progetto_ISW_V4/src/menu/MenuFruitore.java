@@ -187,14 +187,14 @@ public class MenuFruitore extends Menu{
 		stampaPrestazioni(foglie); 
 		
 		//RICHIESTA
-		int scelta = InputDati.leggiInteroConMINeMAX(MSG_SEL_PRESTAZIONE, 1, foglie.size());
+		int scelta = InputDati.leggiInteroConMINeMAX(MSG_SEL_PRESTAZIONE, 1, foglie.size()) - 1;
 		double ore = InputDati.leggiDoubleConMinimo(MSG_INS_ORE, 0);
 		Proposta richiesta = new Proposta(foglie.get(scelta), TipoProposta.RICHIESTA, ore);
 
 		//OFFERTA
 		int incambio;
 		do {
-			incambio = InputDati.leggiInteroConMINeMAX(MSG_SEL_OFFERTA, 1, foglie.size());
+			incambio = InputDati.leggiInteroConMINeMAX(MSG_SEL_OFFERTA, 1, foglie.size()) - 1;
 			if(incambio == scelta) {
 				System.out.println(MSG_PRESTAZIONE_UGUALE);
 			}
@@ -211,7 +211,7 @@ public class MenuFruitore extends Menu{
 			scambio.setFruitoreAssociato(fruit);
 			logica.addPropostaAperta(scambio);
 			verificaSoddisfacimento(scambio); //controllo che lo scambio possa essere completato
-			GestorePersistenza.salvaProposteAperte(logica.getProposteAperte());
+			GestorePersistenza.salvaProposteAperte(logica.getProposteAperte(), logica.getProposte());
 		} else {
 			System.out.println(MSG_ANNULLATO_SCAMBIO +  MSG_MENU_PRINCIPALE );
 			return;
@@ -296,7 +296,6 @@ public class MenuFruitore extends Menu{
 	public void verificaSoddisfacimento(PropostaScambio nuova) {
 		
 		ArrayList<PropostaScambio> aperte = logica.getProposteAperte();
-		ArrayList<PropostaScambio> chiuse = logica.getProposteChiuse();
 
 		//SCAMBIO ESCLUSIVO TRA DUE PROPOSTE
 	    for (PropostaScambio esistente : aperte) {
@@ -315,7 +314,7 @@ public class MenuFruitore extends Menu{
 	        		nuova.setStato(StatoProposta.CHIUSA);
 	        		esistente.setStato(StatoProposta.CHIUSA);
 	        		
-	        		aggiornaESalva(aperte, chiuse, esistente, nuova);
+	        		aggiornaESalva(esistente, nuova);
 	        		System.out.println("Proposta soddisfatta automaticamente con una proposta esistente.");
 	        		return;
 	                
@@ -325,7 +324,7 @@ public class MenuFruitore extends Menu{
 	    }
 	    
 	    //SCAMBIO TRA PIU PROPOSTE
-	    ArrayList<PropostaScambio> catena = recuperaCatena(nuova, nuova.getOfferta(), aperte, chiuse);
+	    ArrayList<PropostaScambio> catena = recuperaCatena(nuova, nuova.getOfferta());
 	    GestorePersistenza.salvaInsiemeChiuso(catena);
 	        //******************FARE PROVE INSIEME CHIUSO.json ********************
 	        //in seguito stampa solo per controllo funzionamento
@@ -379,7 +378,7 @@ public class MenuFruitore extends Menu{
 		return false;
 	}
 	
-	public ArrayList<PropostaScambio> recuperaCatena(PropostaScambio nuova, Proposta propostaCorrente, ArrayList<PropostaScambio> aperte,ArrayList<PropostaScambio> chiuse) {
+	public ArrayList<PropostaScambio> recuperaCatena(PropostaScambio nuova, Proposta propostaCorrente) {
 		
 		ArrayList<PropostaScambio> catena = new ArrayList<>();
 	    ArrayList<PropostaScambio> visitate = new ArrayList<>();
@@ -390,20 +389,18 @@ public class MenuFruitore extends Menu{
 		        for (PropostaScambio p : catena) {
 		            p.setStato(StatoProposta.CHIUSA);
 		            catena.add(p);
-		            aggiornaESalva(aperte, chiuse, p, nuova);
+		            aggiornaESalva(p, nuova);
 		        }
 		}    
 		return catena;
 	}
 
-	private void aggiornaESalva(ArrayList<PropostaScambio> aperte, ArrayList<PropostaScambio> chiuse, PropostaScambio esistente, PropostaScambio nuova) {
-		aperte.remove(esistente);
-		aperte.remove(nuova);
+	private void aggiornaESalva( PropostaScambio esistente, PropostaScambio nuova) {
 		
-		chiuse.add(esistente);
-		chiuse.add(nuova);
+		logica.addPropostaChiusa(nuova); //metodo che implicitamente toglie da aperte
+		logica.addPropostaChiusa(esistente);
 		
-		GestorePersistenza.salvaAperteEChiuse(aperte, chiuse);	
+	    aggiornaPersistenzaProposte(logica.getProposteChiuse());
 	}
 
 	
@@ -412,7 +409,6 @@ public class MenuFruitore extends Menu{
 	public void ritiraProposte() {
 		
 		ArrayList<PropostaScambio> associate = new ArrayList<>();
-		ArrayList<PropostaScambio> ritirate = logica.getProposteRitirate();
 		ArrayList<PropostaScambio> aperte = logica.getProposteAperte();
 
 	    for (PropostaScambio p : aperte) {
@@ -436,11 +432,11 @@ public class MenuFruitore extends Menu{
 	    boolean conferma = InputDati.yesOrNo("\nVuoi davvero ritirare questa proposta ?");
 	    if (conferma) {
 	    	
-	        selezionata.setStato(StatoProposta.RITIRATA);      
-	        aperte.remove(selezionata);
-		    ritirate.add(selezionata);
+	        selezionata.setStato(StatoProposta.RITIRATA); 
+	        
+		    logica.addPropostaRitirata(selezionata); 
 		    
-	        GestorePersistenza.salvaAperteERitirate(aperte, ritirate);
+		    aggiornaPersistenzaProposte(logica.getProposteRitirate());
 	        
 	        System.out.println("Proposta ritirata con successo.");
 	        
@@ -449,9 +445,31 @@ public class MenuFruitore extends Menu{
 	    }
 		
 	}
+	/**
+	 * Metodo che aggiorna le liste nel caso i cui venga chiusa o ritirata una proposta. (bisogna aggiornare anche la lista di quelle chiuse)
+	 * @param aggiunta
+	 */
+	private void aggiornaPersistenzaProposte(ArrayList<PropostaScambio> aggiunta) {
+		if(!aggiunta.isEmpty())
+			
+			switch (aggiunta.get(0).getStato()) {
+	            case CHIUSA -> 	GestorePersistenza.salvaAperteEChiuse(logica.getProposteAperte(), aggiunta, logica.getProposte());
 	
+	            case RITIRATA -> GestorePersistenza.salvaAperteERitirate(logica.getProposteAperte(), aggiunta, logica.getProposte());
+	
+	            default -> System.out.println("Errore");
+	        }
+				
+	}
+	/**
+	 * Metodo per la visualizzazione delle proposte disponibili.
+	 * @param s lista delle proposte  da formattare
+	 * @param txt titolo
+	 */
 	public void visualizzaProposte(ArrayList<PropostaScambio> s, String txt) {
-		 System.out.println(txt);
+		StringBuffer sb = new StringBuffer();
+		 sb.append(txt);
+		 sb.append("\n");
 		 
 		    if(s.isEmpty()) {
 		    	System.out.println("Non ci sono proposte disponibili.");
@@ -459,8 +477,10 @@ public class MenuFruitore extends Menu{
 		    }
 		    
 		    for (int i = 1; i <= s.size(); i++) {
-		        System.out.println( i + ". " + s.get(i - 1));
+		    	sb.append( i + ". " + s.get(i - 1));
+				 sb.append("\n");
 		    }
+		    System.out.println(sb.toString());
 	  
 	}
 	
