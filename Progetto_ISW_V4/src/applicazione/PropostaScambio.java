@@ -61,6 +61,12 @@ public class PropostaScambio {
 		else 
 			return "errore"; //whatever else
 	}
+	public String getMailAssociato() {
+		if(associato != null)
+			return associato.getMail();
+		else 
+			return "errore"; //whatever else
+	}
 	public double getOreRichiesta() {
 		return richiesta.getQuantitaOre();
 	}

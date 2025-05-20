@@ -146,5 +146,782 @@
         ]
       }
     }
+  },
+  {
+    "richiesta": {
+      "prestazione": {
+        "id": 1,
+        "nome": "foglia1",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "RICHIESTA",
+      "quantitaOre": 3.0
+    },
+    "offerta": {
+      "prestazione": {
+        "id": 7,
+        "nome": "fogliola1",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "OFFERTA",
+      "quantitaOre": 12.0
+    },
+    "stato": "APERTA",
+    "associato": {
+      "username": "era",
+      "password": "letmein",
+      "mail": "era@gmail.com",
+      "comprensorio": {
+        "nome": "Brescia Sud",
+        "comuni": [
+          "Castel Mella",
+          "Flero",
+          "Bagnolo Mella",
+          "Capriano Del Colle"
+        ]
+      }
+    }
+  },
+  {
+    "richiesta": {
+      "prestazione": {
+        "id": 2,
+        "nome": "foglia2",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "RICHIESTA",
+      "quantitaOre": 33.0
+    },
+    "offerta": {
+      "prestazione": {
+        "id": 7,
+        "nome": "fogliola1",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "OFFERTA",
+      "quantitaOre": 33.0
+    },
+    "stato": "APERTA",
+    "associato": {
+      "username": "diego",
+      "password": "pioli",
+      "mail": "diegopioli@gmail.com",
+      "comprensorio": {
+        "nome": "Brescia Sud",
+        "comuni": [
+          "Castel Mella",
+          "Flero",
+          "Bagnolo Mella",
+          "Capriano Del Colle"
+        ]
+      }
+    }
+  },
+  {
+    "richiesta": {
+      "prestazione": {
+        "id": 8,
+        "nome": "fogliola2",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "RICHIESTA",
+      "quantitaOre": 8.0
+    },
+    "offerta": {
+      "prestazione": {
+        "id": 7,
+        "nome": "fogliola1",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "OFFERTA",
+      "quantitaOre": 8.0
+    },
+    "stato": "APERTA",
+    "associato": {
+      "username": "fruit1",
+      "password": "1",
+      "mail": "1@gmail",
+      "comprensorio": {
+        "nome": "Brescia Sud",
+        "comuni": [
+          "Castel Mella",
+          "Flero",
+          "Bagnolo Mella",
+          "Capriano Del Colle"
+        ]
+      }
+    }
+  },
+  {
+    "richiesta": {
+      "prestazione": {
+        "id": 7,
+        "nome": "fogliola1",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "RICHIESTA",
+      "quantitaOre": 53.0
+    },
+    "offerta": {
+      "prestazione": {
+        "id": 3,
+        "nome": "foglia3",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "OFFERTA",
+      "quantitaOre": 53.0
+    },
+    "stato": "APERTA",
+    "associato": {
+      "username": "fruit2",
+      "password": "2",
+      "mail": "2@gmail",
+      "comprensorio": {
+        "nome": "Brescia Sud",
+        "comuni": [
+          "Castel Mella",
+          "Flero",
+          "Bagnolo Mella",
+          "Capriano Del Colle"
+        ]
+      }
+    }
+  },
+  {
+    "richiesta": {
+      "prestazione": {
+        "id": 7,
+        "nome": "fogliola1",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "RICHIESTA",
+      "quantitaOre": 8.0
+    },
+    "offerta": {
+      "prestazione": {
+        "id": 8,
+        "nome": "fogliola2",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "OFFERTA",
+      "quantitaOre": 8.0
+    },
+    "stato": "CHIUSA",
+    "associato": {
+      "username": "era",
+      "password": "letmein",
+      "mail": "era@gmail.com",
+      "comprensorio": {
+        "nome": "Brescia Sud",
+        "comuni": [
+          "Castel Mella",
+          "Flero",
+          "Bagnolo Mella",
+          "Capriano Del Colle"
+        ]
+      }
+    }
+  },
+  {
+    "richiesta": {
+      "prestazione": {
+        "id": 8,
+        "nome": "fogliola2",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "RICHIESTA",
+      "quantitaOre": 8.0
+    },
+    "offerta": {
+      "prestazione": {
+        "id": 7,
+        "nome": "fogliola1",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "OFFERTA",
+      "quantitaOre": 8.0
+    },
+    "stato": "CHIUSA",
+    "associato": {
+      "username": "fruit1",
+      "password": "1",
+      "mail": "1@gmail",
+      "comprensorio": {
+        "nome": "Brescia Sud",
+        "comuni": [
+          "Castel Mella",
+          "Flero",
+          "Bagnolo Mella",
+          "Capriano Del Colle"
+        ]
+      }
+    }
+  },
+  {
+    "richiesta": {
+      "prestazione": {
+        "id": 7,
+        "nome": "fogliola1",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "RICHIESTA",
+      "quantitaOre": 8.0
+    },
+    "offerta": {
+      "prestazione": {
+        "id": 8,
+        "nome": "fogliola2",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "OFFERTA",
+      "quantitaOre": 8.0
+    },
+    "stato": "CHIUSA",
+    "associato": {
+      "username": "era",
+      "password": "letmein",
+      "mail": "era@gmail.com",
+      "comprensorio": {
+        "nome": "Brescia Sud",
+        "comuni": [
+          "Castel Mella",
+          "Flero",
+          "Bagnolo Mella",
+          "Capriano Del Colle"
+        ]
+      }
+    }
+  },
+  {
+    "richiesta": {
+      "prestazione": {
+        "id": 7,
+        "nome": "fogliola1",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "RICHIESTA",
+      "quantitaOre": 88.0
+    },
+    "offerta": {
+      "prestazione": {
+        "id": 2,
+        "nome": "foglia2",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "OFFERTA",
+      "quantitaOre": 88.0
+    },
+    "stato": "APERTA",
+    "associato": {
+      "username": "era",
+      "password": "letmein",
+      "mail": "era@gmail.com",
+      "comprensorio": {
+        "nome": "Brescia Sud",
+        "comuni": [
+          "Castel Mella",
+          "Flero",
+          "Bagnolo Mella",
+          "Capriano Del Colle"
+        ]
+      }
+    }
+  },
+  {
+    "richiesta": {
+      "prestazione": {
+        "id": 8,
+        "nome": "fogliola2",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "RICHIESTA",
+      "quantitaOre": 77.0
+    },
+    "offerta": {
+      "prestazione": {
+        "id": 7,
+        "nome": "fogliola1",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "OFFERTA",
+      "quantitaOre": 77.0
+    },
+    "stato": "APERTA",
+    "associato": {
+      "username": "era",
+      "password": "letmein",
+      "mail": "era@gmail.com",
+      "comprensorio": {
+        "nome": "Brescia Sud",
+        "comuni": [
+          "Castel Mella",
+          "Flero",
+          "Bagnolo Mella",
+          "Capriano Del Colle"
+        ]
+      }
+    }
+  },
+  {
+    "richiesta": {
+      "prestazione": {
+        "id": 7,
+        "nome": "fogliola1",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "RICHIESTA",
+      "quantitaOre": 90.0
+    },
+    "offerta": {
+      "prestazione": {
+        "id": 3,
+        "nome": "foglia3",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "OFFERTA",
+      "quantitaOre": 90.0
+    },
+    "stato": "APERTA",
+    "associato": {
+      "username": "fruit2",
+      "password": "2",
+      "mail": "2@gmail",
+      "comprensorio": {
+        "nome": "Brescia Sud",
+        "comuni": [
+          "Castel Mella",
+          "Flero",
+          "Bagnolo Mella",
+          "Capriano Del Colle"
+        ]
+      }
+    }
+  },
+  {
+    "richiesta": {
+      "prestazione": {
+        "id": 1,
+        "nome": "foglia1",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "RICHIESTA",
+      "quantitaOre": 10.0
+    },
+    "offerta": {
+      "prestazione": {
+        "id": 7,
+        "nome": "fogliola1",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "OFFERTA",
+      "quantitaOre": 40.0
+    },
+    "stato": "APERTA",
+    "associato": {
+      "username": "era",
+      "password": "letmein",
+      "mail": "era@gmail.com",
+      "comprensorio": {
+        "nome": "Brescia Sud",
+        "comuni": [
+          "Castel Mella",
+          "Flero",
+          "Bagnolo Mella",
+          "Capriano Del Colle"
+        ]
+      }
+    }
+  },
+  {
+    "richiesta": {
+      "prestazione": {
+        "id": 8,
+        "nome": "fogliola2",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "RICHIESTA",
+      "quantitaOre": 10.0
+    },
+    "offerta": {
+      "prestazione": {
+        "id": 7,
+        "nome": "fogliola1",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "OFFERTA",
+      "quantitaOre": 10.0
+    },
+    "stato": "APERTA",
+    "associato": {
+      "username": "diego",
+      "password": "pioli",
+      "mail": "diegopioli@gmail.com",
+      "comprensorio": {
+        "nome": "Brescia Sud",
+        "comuni": [
+          "Castel Mella",
+          "Flero",
+          "Bagnolo Mella",
+          "Capriano Del Colle"
+        ]
+      }
+    }
+  },
+  {
+    "richiesta": {
+      "prestazione": {
+        "id": 3,
+        "nome": "foglia3",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "RICHIESTA",
+      "quantitaOre": 10.0
+    },
+    "offerta": {
+      "prestazione": {
+        "id": 7,
+        "nome": "fogliola1",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "OFFERTA",
+      "quantitaOre": 10.0
+    },
+    "stato": "APERTA",
+    "associato": {
+      "username": "fruit1",
+      "password": "1",
+      "mail": "1@gmail",
+      "comprensorio": {
+        "nome": "Brescia Sud",
+        "comuni": [
+          "Castel Mella",
+          "Flero",
+          "Bagnolo Mella",
+          "Capriano Del Colle"
+        ]
+      }
+    }
+  },
+  {
+    "richiesta": {
+      "prestazione": {
+        "id": 7,
+        "nome": "fogliola1",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "RICHIESTA",
+      "quantitaOre": 60.0
+    },
+    "offerta": {
+      "prestazione": {
+        "id": 3,
+        "nome": "foglia3",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "OFFERTA",
+      "quantitaOre": 60.0
+    },
+    "stato": "APERTA",
+    "associato": {
+      "username": "fruit2",
+      "password": "2",
+      "mail": "2@gmail",
+      "comprensorio": {
+        "nome": "Brescia Sud",
+        "comuni": [
+          "Castel Mella",
+          "Flero",
+          "Bagnolo Mella",
+          "Capriano Del Colle"
+        ]
+      }
+    }
+  },
+  {
+    "richiesta": {
+      "prestazione": {
+        "id": 7,
+        "nome": "fogliola1",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "RICHIESTA",
+      "quantitaOre": 100.0
+    },
+    "offerta": {
+      "prestazione": {
+        "id": 1,
+        "nome": "foglia1",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "OFFERTA",
+      "quantitaOre": 400.0
+    },
+    "stato": "RITIRATA",
+    "associato": {
+      "username": "fruit2",
+      "password": "2",
+      "mail": "2@gmail",
+      "comprensorio": {
+        "nome": "Brescia Sud",
+        "comuni": [
+          "Castel Mella",
+          "Flero",
+          "Bagnolo Mella",
+          "Capriano Del Colle"
+        ]
+      }
+    }
+  },
+  {
+    "richiesta": {
+      "prestazione": {
+        "id": 7,
+        "nome": "fogliola1",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "RICHIESTA",
+      "quantitaOre": 100.0
+    },
+    "offerta": {
+      "prestazione": {
+        "id": 1,
+        "nome": "foglia1",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "OFFERTA",
+      "quantitaOre": 400.0
+    },
+    "stato": "RITIRATA",
+    "associato": {
+      "username": "fruit2",
+      "password": "2",
+      "mail": "2@gmail",
+      "comprensorio": {
+        "nome": "Brescia Sud",
+        "comuni": [
+          "Castel Mella",
+          "Flero",
+          "Bagnolo Mella",
+          "Capriano Del Colle"
+        ]
+      }
+    }
+  },
+  {
+    "richiesta": {
+      "prestazione": {
+        "id": 7,
+        "nome": "fogliola1",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "RICHIESTA",
+      "quantitaOre": 90.0
+    },
+    "offerta": {
+      "prestazione": {
+        "id": 8,
+        "nome": "fogliola2",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "OFFERTA",
+      "quantitaOre": 90.0
+    },
+    "stato": "RITIRATA",
+    "associato": {
+      "username": "fruit2",
+      "password": "2",
+      "mail": "2@gmail",
+      "comprensorio": {
+        "nome": "Brescia Sud",
+        "comuni": [
+          "Castel Mella",
+          "Flero",
+          "Bagnolo Mella",
+          "Capriano Del Colle"
+        ]
+      }
+    }
+  },
+  {
+    "richiesta": {
+      "prestazione": {
+        "id": 7,
+        "nome": "fogliola1",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "RICHIESTA",
+      "quantitaOre": 90.0
+    },
+    "offerta": {
+      "prestazione": {
+        "id": 8,
+        "nome": "fogliola2",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "OFFERTA",
+      "quantitaOre": 90.0
+    },
+    "stato": "RITIRATA",
+    "associato": {
+      "username": "fruit2",
+      "password": "2",
+      "mail": "2@gmail",
+      "comprensorio": {
+        "nome": "Brescia Sud",
+        "comuni": [
+          "Castel Mella",
+          "Flero",
+          "Bagnolo Mella",
+          "Capriano Del Colle"
+        ]
+      }
+    }
+  },
+  {
+    "richiesta": {
+      "prestazione": {
+        "id": 4,
+        "nome": "foglia4",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "RICHIESTA",
+      "quantitaOre": 10.0
+    },
+    "offerta": {
+      "prestazione": {
+        "id": 3,
+        "nome": "foglia3",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "OFFERTA",
+      "quantitaOre": 10.0
+    },
+    "stato": "APERTA",
+    "associato": {
+      "username": "era",
+      "password": "letmein",
+      "mail": "era@gmail.com",
+      "comprensorio": {
+        "nome": "Brescia Sud",
+        "comuni": [
+          "Castel Mella",
+          "Flero",
+          "Bagnolo Mella",
+          "Capriano Del Colle"
+        ]
+      }
+    }
+  },
+  {
+    "richiesta": {
+      "prestazione": {
+        "id": 7,
+        "nome": "fogliola1",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "RICHIESTA",
+      "quantitaOre": 90.0
+    },
+    "offerta": {
+      "prestazione": {
+        "id": 3,
+        "nome": "foglia3",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "OFFERTA",
+      "quantitaOre": 90.0
+    },
+    "stato": "CHIUSA",
+    "associato": {
+      "username": "fruit2",
+      "password": "2",
+      "mail": "2@gmail",
+      "comprensorio": {
+        "nome": "Brescia Sud",
+        "comuni": [
+          "Castel Mella",
+          "Flero",
+          "Bagnolo Mella",
+          "Capriano Del Colle"
+        ]
+      }
+    }
+  },
+  {
+    "richiesta": {
+      "prestazione": {
+        "id": 7,
+        "nome": "fogliola1",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "RICHIESTA",
+      "quantitaOre": 90.0
+    },
+    "offerta": {
+      "prestazione": {
+        "id": 3,
+        "nome": "foglia3",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "OFFERTA",
+      "quantitaOre": 90.0
+    },
+    "stato": "CHIUSA",
+    "associato": {
+      "username": "fruit2",
+      "password": "2",
+      "mail": "2@gmail",
+      "comprensorio": {
+        "nome": "Brescia Sud",
+        "comuni": [
+          "Castel Mella",
+          "Flero",
+          "Bagnolo Mella",
+          "Capriano Del Colle"
+        ]
+      }
+    }
   }
 ]

@@ -1,11 +1,13 @@
 package persistenza;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import applicazione.CategoriaFoglia;
 import applicazione.Comprensorio;
 import applicazione.FatConversione;
 import applicazione.Gerarchia;
+import applicazione.InsiemeProposteChiuse;
 import applicazione.PropostaScambio;
 import utenti.Configuratore;
 import utenti.Fruitore;
@@ -27,11 +29,11 @@ public class LogicaPersistenza {
 	
 	private ArrayList<PropostaScambio> proposte = new ArrayList<PropostaScambio>(); //aggiornamenti
 	private ArrayList<PropostaScambio> proposteAperte = new ArrayList<PropostaScambio>();
-	private ArrayList<PropostaScambio> proposteChiuse = new ArrayList<PropostaScambio>();
+//	private ArrayList<PropostaScambio> proposteChiuse = new ArrayList<PropostaScambio>();
 	private ArrayList<PropostaScambio> proposteRitirate = new ArrayList<PropostaScambio>();
 	
 	
-	private ArrayList<PropostaScambio> insiemechiuso = new ArrayList<PropostaScambio>();
+	private InsiemeProposteChiuse insiemechiuso = new InsiemeProposteChiuse();
 	
 	public LogicaPersistenza() {
 		this.gerarchie = GestorePersistenza.caricaGerarchie();
@@ -42,9 +44,9 @@ public class LogicaPersistenza {
 		this.fruitori = GestorePersistenza.caricaFruitori();
 		this.proposte = GestorePersistenza.caricaProposte();
 		this.proposteAperte = GestorePersistenza.caricaProposteAperte();
-		this.proposteChiuse = GestorePersistenza.caricaProposteChiuse();
+		//this.proposteChiuse = GestorePersistenza.caricaProposteChiuse();
 		this.proposteRitirate = GestorePersistenza.caricaProposteRitirate();
-		this.insiemechiuso = GestorePersistenza.caricaInsiemeChiuso();
+		this.insiemechiuso = new InsiemeProposteChiuse(GestorePersistenza.caricaInsiemeChiuso());;
 	}
 	
 	/*
@@ -165,11 +167,18 @@ public class LogicaPersistenza {
 		return proposteAperte;
 	}
 	/**
-	 * Metodo per ottenere l'insieme delle proposte chiuse (scambi di prestazioni tra due o più fruitori)
+	 * Metodi per ottenere 
+	 * - la lista delle proposte chiuse (chiavi della mappa InsiemeProposteChiuse)
+	 * - la mappa delle proposte chiuse con offerenti associati
 	 * @return scambi
 	 */
 	public ArrayList<PropostaScambio> getProposteChiuse() {
-		return proposteChiuse;
+		//return proposteChiuse;
+		return insiemechiuso.getChiavi();
+	}
+	public InsiemeProposteChiuse getInsiemeProposteChiuse() {
+		//return proposteChiuse;
+		return insiemechiuso;
 	}
 	/**
 	 * Metodo per ottenere l'insieme delle proposte ritirate 
@@ -232,23 +241,34 @@ public class LogicaPersistenza {
 	 * L'aggiunta di una proposta chiusa o una proposta ritirata implica implicitamente la rimozione di una proposta aperta.
 	 * @param scambio
 	 */
-/*	public void addProposta(PropostaScambio scambio) {
-		addScambio(scambio, proposte);
-	}*/
+	public void addProposta(PropostaScambio scambio) {
+		proposte.add(scambio);
+	}
+	public void addProposte(ArrayList<PropostaScambio> scambi) {
+		proposte.addAll(scambi);
+	}
+	private void addScambio(PropostaScambio scambio, ArrayList<PropostaScambio> s) {
+		s.add(scambio);
+		proposte.add(scambio);
+	}
 	public void addPropostaAperta(PropostaScambio scambio) {
 		addScambio(scambio, proposteAperte);
-	}
-	public void addPropostaChiusa(PropostaScambio scambio) {
-		addScambio(scambio, proposteChiuse);
-		rimuoviPropostaAperta(scambio);
 	}
 	public void addPropostaRitirata(PropostaScambio scambio) {
 		addScambio(scambio, proposteRitirate);
 		rimuoviPropostaAperta(scambio);
 	}
-	private void addScambio(PropostaScambio scambio, ArrayList<PropostaScambio> s) {
-		s.add(scambio);
-		proposte.add(scambio);
+	public void addPropostaChiusa(PropostaScambio richiesta, ArrayList<PropostaScambio> offerte) {
+		//addScambio(scambio, proposteChiuse);
+		insiemechiuso.aggiungiAInsieme(richiesta, offerte);
+		proposte.add(richiesta);
+		rimuoviPropostaAperta(richiesta);
+	}
+	public void addPropostaChiusa(PropostaScambio p1, PropostaScambio p2) {
+		insiemechiuso.aggiungiProposta(p1, p2);
+		addProposte(new ArrayList<>(List.of(p1, p2)));
+		rimuoviPropostaAperta(p1);
+		rimuoviPropostaAperta(p2);
 	}
 	
 	/**
@@ -274,12 +294,4 @@ public class LogicaPersistenza {
 		CategoriaFoglia f = categorieFoglia.get(ultimo);
 		return f.getId();
 	}
-	////////////////////////PROVA INSIEME CHIUSO
-	public void addInsiemeChiuso(PropostaScambio scambio) {
-		addScambio(scambio, insiemechiuso);
-	}
-	public ArrayList<PropostaScambio> getProposteInsiemeChiuso() {
-		return insiemechiuso;
-	}
-
 }

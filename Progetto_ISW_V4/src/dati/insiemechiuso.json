@@ -1,1 +1,43 @@
-[]
+{
+  "mappa": {
+    "\nPropostaScambio \n\u003e Richiesta:  [prestazione richiesta: fogliola1, ore: 90.0]\n\u003e Offerta:  [prestazione offerta: foglia3, ore: 90.0]": [
+      {
+        "richiesta": {
+          "prestazione": {
+            "id": 3,
+            "nome": "foglia3",
+            "sottoCateg": [],
+            "foglia": true
+          },
+          "tipo": "RICHIESTA",
+          "quantitaOre": 10.0
+        },
+        "offerta": {
+          "prestazione": {
+            "id": 7,
+            "nome": "fogliola1",
+            "sottoCateg": [],
+            "foglia": true
+          },
+          "tipo": "OFFERTA",
+          "quantitaOre": 10.0
+        },
+        "stato": "CHIUSA",
+        "associato": {
+          "username": "fruit1",
+          "password": "1",
+          "mail": "1@gmail",
+          "comprensorio": {
+            "nome": "Brescia Sud",
+            "comuni": [
+              "Castel Mella",
+              "Flero",
+              "Bagnolo Mella",
+              "Capriano Del Colle"
+            ]
+          }
+        }
+      }
+    ]
+  }
+}

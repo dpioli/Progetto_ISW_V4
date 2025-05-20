@@ -11,6 +11,7 @@ import applicazione.CategoriaFoglia;
 import applicazione.Comprensorio;
 import applicazione.FatConversione;
 import applicazione.Gerarchia;
+import applicazione.InsiemeProposteChiuse;
 import applicazione.PropostaScambio;
 import utenti.Configuratore;
 import utenti.Fruitore;
@@ -31,7 +32,7 @@ public class GestorePersistenza {
 	private static final String FILE_FRUITORI = "../Progetto_ISW_V4/src/dati/fruitori.json";
 	private static final String FILE_PROPOSTE = "../Progetto_ISW_V4/src/dati/proposte.json";
 	private static final String FILE_PROPOSTE_APERTE = "../Progetto_ISW_V4/src/dati/proposteAperte.json";
-	private static final String FILE_PROPOSTE_CHIUSE = "../Progetto_ISW_V4/src/dati/proposteChiuse.json";
+//	private static final String FILE_PROPOSTE_CHIUSE = "../Progetto_ISW_V4/src/dati/proposteChiuse.json";
 	private static final String FILE_PROPOSTE_RITIRATE = "../Progetto_ISW_V4/src/dati/proposteRitirate.json";
 	
 	private static final String FILE_INSIEME_CHIUSO = "../Progetto_ISW_V4/src/dati/insiemechiuso.json";
@@ -52,6 +53,10 @@ public class GestorePersistenza {
 	 */
 	public GestorePersistenza() {
 		GestorePersistenza.gson = new GsonBuilder().setPrettyPrinting().create();
+		/* GestorePersistenza.gson = new GsonBuilder()
+	                .setPrettyPrinting()
+	                .registerTypeAdapter(PropostaScambio.class, new PropostaScambioAdapter(new Gson())) // Registra l'adapter
+	                .create();*/
 	}
 	
 	/**
@@ -170,45 +175,64 @@ public class GestorePersistenza {
 		salva(scambi, FILE_PROPOSTE);
 	}
 	/**
-	 * Metodo per salvare le proposte di scambio che sono state accettate
+	 * Metodo per salvare le proposte di scambio che sono state accettate.
+	 * Il primo metedo prende come parametro anche la lista degli aggiornamenti compiuti (usato nel caso in cui la proposta sia appena stata creata)
+	 * Quando modifico lo stato di uno scambio da APERTO a CHIUSO/RITIRATO non è necessario aggiornare il file di aggiornamenti proposte.json
 	 * @param scambi
 	 */
 	public static void salvaProposteAperte(ArrayList<PropostaScambio> scambi, ArrayList<PropostaScambio> aggiornamenti) {
 		aggiorna(FILE_PROPOSTE_APERTE, scambi, aggiornamenti);
+	}
+	public static void salvaProposteAperte(ArrayList<PropostaScambio> scambi) {
+		salva(scambi, FILE_PROPOSTE_APERTE);
 	}
 	
 	/**
 	 * Metodo per salvare le proposte di scambio che sono state chiuse
 	 * @param scambi
 	 */
-	public static void salvaProposteChiuse(ArrayList<PropostaScambio> scambi, ArrayList<PropostaScambio> aggiornamenti) {
+	/*public static void salvaProposteChiuse(ArrayList<PropostaScambio> scambi, ArrayList<PropostaScambio> aggiornamenti) {
 		aggiorna(FILE_PROPOSTE_CHIUSE, scambi, aggiornamenti);
-	}
-	
+	}*/
+	private static void salvaInsiemeChiuso(InsiemeProposteChiuse insieme, ArrayList<PropostaScambio> aggiornamenti) {
+		aggiorna(FILE_INSIEME_CHIUSO, insieme, aggiornamenti);
+	}	
+
 	/**
 	 * Metodo per salvare le proposte di scambio che sono state ritirate
 	 * @param scambi
 	 */
-	public static void salvaProposteRitirate(ArrayList<PropostaScambio> scambi, ArrayList<PropostaScambio> aggiornamenti) {
+	private static void salvaProposteRitirate(ArrayList<PropostaScambio> scambi, ArrayList<PropostaScambio> aggiornamenti) {
 		aggiorna(FILE_PROPOSTE_RITIRATE, scambi, aggiornamenti);
 	}
 	/**
 	 * Metodo per aggiornare le proposte aperte e le proposte chiusa a seguito della conferma degli scambi
 	 * @param lista proposte aperte e lista proposte chiuse
 	 */
-	public static void salvaAperteEChiuse(ArrayList<PropostaScambio> aperte, ArrayList<PropostaScambio> chiuse, ArrayList<PropostaScambio> aggiornamenti) {
-		salvaProposteAperte(aperte, aggiornamenti);
-		salvaProposteChiuse(chiuse, aggiornamenti);
+	public static void salvaAperteEChiuse(ArrayList<PropostaScambio> aperte, InsiemeProposteChiuse chiuse, ArrayList<PropostaScambio> aggiornamenti) {
+		salvaProposteAperte(aperte);
+		//salvaProposteChiuse(chiuse, aggiornamenti);
+		salvaInsiemeChiuso(chiuse,aggiornamenti);
 	}
 	/**
 	 * Metodo per aggiornare le proposte aperte e le proposte ritirate a seguito di modifica degli scambi
 	 * @param lista proposte aperte e lista proposte ritirate
 	 */
 	public static void salvaAperteERitirate(ArrayList<PropostaScambio> aperte, ArrayList<PropostaScambio> ritirate, ArrayList<PropostaScambio> aggiornamenti) {
-		salvaProposteAperte(aperte, aggiornamenti);
+		salvaProposteAperte(aperte);
 		salvaProposteRitirate(ritirate, aggiornamenti);
 	}
+	/**
+	 * Salvataggio delle proposte nel file associato e nel file contentente tutti gli aggiornamenti deli stati di proposte
+	 * @param fp
+	 * @param scambi
+	 * @param aggiornamenti
+	 */
 	public static void aggiorna(String fp, ArrayList<PropostaScambio> scambi, ArrayList<PropostaScambio> aggiornamenti) {
+		salva(scambi, fp);
+		salvaProposte(aggiornamenti);
+	}
+	public static void aggiorna(String fp, InsiemeProposteChiuse scambi, ArrayList<PropostaScambio> aggiornamenti) {
 		salva(scambi, fp);
 		salvaProposte(aggiornamenti);
 	}
@@ -333,8 +357,25 @@ public class GestorePersistenza {
 	 * Metodo per caricare le proposte di scambio che sono state chiuse
 	 * @return lista delle proposte chiuse
 	 */
-	public static ArrayList<PropostaScambio> caricaProposteChiuse() {
+	/*public static ArrayList<PropostaScambio> caricaProposteChiuse() {
 		return caricaScambi(FILE_PROPOSTE_CHIUSE);
+	}*/
+	public static HashMap<PropostaScambio, ArrayList<PropostaScambio>> caricaInsiemeChiuso() {
+		/*Type listType = new TypeToken<InsiemeScambiChiusi>() {}.getType();
+		InsiemeScambiChiusi insieme = carica(listType, FILE_INSIEME_CHIUSO);
+		if(insieme == null) {
+			//System.out.println("Non è stato trovato nessun dato trovato per i fattori di conversione.");
+			return new InsiemeScambiChiusi();
+		}
+		return insieme;*/
+		Type type = new TypeToken<HashMap<PropostaScambio, ArrayList<PropostaScambio>>>() {}.getType();
+		HashMap<PropostaScambio, ArrayList<PropostaScambio>> mappaCaricata = carica(type, FILE_INSIEME_CHIUSO);
+		
+		//InsiemeScambiChiusi insieme = new InsiemeScambiChiusi();
+		if (mappaCaricata != null) {
+			return mappaCaricata; // Supponendo che tu abbia un setter per la mappa in InsiemeScambiChiusi
+		}
+		return new HashMap<PropostaScambio, ArrayList<PropostaScambio>>();
 	}
 	/**
 	 * Metodo per caricare le proposte di scambio che sono state ritirate
@@ -343,16 +384,5 @@ public class GestorePersistenza {
 	public static ArrayList<PropostaScambio> caricaProposteRitirate() {
 		return caricaScambi(FILE_PROPOSTE_RITIRATE);
 	}
-	
-	///////////////////////////////PROVA INSIEME CHIUSO
-	public static ArrayList<PropostaScambio> caricaInsiemeChiuso() {
-		return caricaScambi(FILE_INSIEME_CHIUSO);
-	}
-	
-	
-	public static void salvaInsiemeChiuso(ArrayList<PropostaScambio> scambi) {
-		salva(scambi, FILE_INSIEME_CHIUSO);
-	}
-	
 	
 }

@@ -6,6 +6,7 @@ import applicazione.CampoCaratteristico;
 import applicazione.Categoria;
 import applicazione.CategoriaFoglia;
 import applicazione.Gerarchia;
+import applicazione.InsiemeProposteChiuse;
 import applicazione.Proposta;
 import applicazione.PropostaScambio;
 import applicazione.StatoProposta;
@@ -300,7 +301,7 @@ public class MenuFruitore extends Menu{
 		//SCAMBIO ESCLUSIVO TRA DUE PROPOSTE
 	    for (PropostaScambio esistente : aperte) {
 	        if (esistente.getStato() != StatoProposta.APERTA || esistente.getNomeAssociato().equalsIgnoreCase(nuova.getNomeAssociato())) continue;
-
+	        	//prima condizione potremmo toglierla
 	        boolean categorieCompatibili =
 	        	esistente.getNomeOfferta().equalsIgnoreCase(nuova.getNomeRichiesta()) &&
 	       		esistente.getNomeRichiesta().equalsIgnoreCase(nuova.getNomeOfferta());
@@ -314,7 +315,7 @@ public class MenuFruitore extends Menu{
 	        		nuova.setStato(StatoProposta.CHIUSA);
 	        		esistente.setStato(StatoProposta.CHIUSA);
 	        		
-	        		aggiornaESalva(esistente, nuova);
+	        		aggiornaPersistenzaProposte(esistente, nuova, StatoProposta.CHIUSA);
 	        		System.out.println("Proposta soddisfatta automaticamente con una proposta esistente.");
 	        		return;
 	                
@@ -322,14 +323,21 @@ public class MenuFruitore extends Menu{
 	        }
 	        
 	    }
+	    ///**************************** PROVA ERA
+	    costruiscoCatena(nuova);
 	    
+	    //************************TOGLIERE COMMENTI SOTTO PER CODICE IRENE
 	    //SCAMBIO TRA PIU PROPOSTE
-	    ArrayList<PropostaScambio> catena = recuperaCatena(nuova, nuova.getOfferta());
-	    GestorePersistenza.salvaInsiemeChiuso(catena);
-	        //******************FARE PROVE INSIEME CHIUSO.json ********************
-	        //in seguito stampa solo per controllo funzionamento
+	    ArrayList<PropostaScambio> catena = new ArrayList<>();
+	  //  catena.addAll(recuperaCatena(nuova, nuova.getOfferta()));
 	        
 	    if(!catena.isEmpty()) {
+	    	logica.addPropostaChiusa(nuova, catena);
+	    	InsiemeProposteChiuse insieme = logica.getInsiemeProposteChiuse();
+	    	
+	    	for (PropostaScambio chiave : insieme.getChiavi()) {
+	    		System.out.println("\n\n\n"+ insieme.formattaScambi(chiave) +"\n\n\n");
+	    	}
 	        //CONTROLLO
 	        System.out.println("Proposta soddisfatta tramite ciclo di " + (catena.size() + 1) + " proposte.\n");
 	        
@@ -382,29 +390,114 @@ public class MenuFruitore extends Menu{
 		
 		ArrayList<PropostaScambio> catena = new ArrayList<>();
 	    ArrayList<PropostaScambio> visitate = new ArrayList<>();
-		
+	    
 	    if (cercaCicloCompatibile(nuova, catena, nuova.getOfferta(), visitate)) {
-		        nuova.setStato(StatoProposta.CHIUSA);
-		        catena.add(nuova);
-		        for (PropostaScambio p : catena) {
-		            p.setStato(StatoProposta.CHIUSA);
-		            catena.add(p);
-		            aggiornaESalva(p, nuova);
-		        }
+	    	for (PropostaScambio p : logica.getProposteAperte()) {
+	    		if (p.getStato() != StatoProposta.APERTA || visitate.contains(p) || p.getNomeAssociato().equalsIgnoreCase(nuova.getNomeAssociato())) continue;
+	    		
+	    		boolean compatibile = propostaCorrente.getPrestazione().getNome().equalsIgnoreCase(p.getNomeRichiesta());
+	    		
+	    		if (compatibile && Math.abs(propostaCorrente.getQuantitaOre() - p.getOfferta().getQuantitaOre()) < 0.001) {
+	    			visitate.add(p);
+	    			catena.add(p);
+	    			
+	    			boolean chiusura =
+	    					p.getNomeOfferta().equalsIgnoreCase(nuova.getNomeRichiesta())
+	    					&& Math.abs(p.getOreOfferta() - nuova.getOreRichiesta()) < 0.001;
+	    			
+	    			if(chiusura) {
+	    				  catena.add(p);
+	    			}
+	    		}
+	    	}
+	    	nuova.setStato(StatoProposta.CHIUSA);
+	        for (PropostaScambio p : catena) {
+	            p.setStato(StatoProposta.CHIUSA);
+	            catena.add(p);
+	        }
 		}    
 		return catena;
 	}
+	//PROVA ERA *********************************************************************************
+	/**
+	 * voglio che le ore richieste dal nuovo scambio siano soddisfatte dalle proposte scambio aperte gia esistenti
+	 * => voglio che la sommatoria delle ore offerte sia <= delle ore della richiesta
+	 * double copertura = 0
+	 * devo scorrere il file di proposte aperte for(proposta
+	 *  se compatibile
+	 *  	se oreofferte < orerichieste
+	 *         copertura = oreofferte
+	 * finché copertura <= orerichieste
+	 * @param nuova
+	 * @return
+	 */
+	//PROVA
+	public void costruiscoCatena(PropostaScambio nuova) {
+		
+		double oreRichieste = nuova.getOreRichiesta();
+		double copertura = 0;
 
-	private void aggiornaESalva( PropostaScambio esistente, PropostaScambio nuova) {
+		ArrayList<PropostaScambio> catena = new ArrayList<>();
+
+		for (PropostaScambio p : logica.getProposteAperte()) {
+			
+			if (p.getNomeAssociato().equalsIgnoreCase(nuova.getNomeAssociato())) continue;
+			
+			if(eCompatibile(nuova, p)) System.out.println("nuova è compatibile rispetto a p");
+			
+			if (eCompatibile(nuova, p) && eChiuso(p)) { //eChiuso perché deve essere soddisfatta almeno un'altra => ma devo farlo?
+				System.out.println("è compatibile e chiuso");
+				copertura = copertura + p.getOreOfferta();
+				catena.add(p);
+				
+				if(eChiuso(p)) costruiscoCatena(p); //credo
+			}
+			if(copertura > oreRichieste) break;
+		}
+		//MODIFICO STATO E SALVO SOLO QUANDO ESCO DAL CICLO FOR (ho costruito la catena)
+		if(!catena.isEmpty()) {	
+			System.out.println("non è vuota");
+			if(copertura > oreRichieste)
+				catena.remove(catena.size() - 1); //rimosso eccesso
+			
+			nuova.setStato(StatoProposta.CHIUSA);
+			for (PropostaScambio p : catena) 
+				p.setStato(StatoProposta.CHIUSA);
+			
+			logica.addPropostaChiusa(nuova, catena);
+			InsiemeProposteChiuse insieme = logica.getInsiemeProposteChiuse();
+			GestorePersistenza.salvaAperteEChiuse(logica.getProposteAperte(), insieme, logica.getProposte());
+			
+			//per visualizzare
+			for (PropostaScambio chiave : insieme.getChiavi()) {
+				System.out.println("\n\n\n"+ insieme.formattaScambi(chiave) +"\n\n\n");
+			}
+		}else {
+			System.out.println("Non sono state trovate offerte che soddisfino la tua richiesta dello scambio :" + nuova.toString());
+		}
 		
-		logica.addPropostaChiusa(nuova); //metodo che implicitamente toglie da aperte
-		logica.addPropostaChiusa(esistente);
-		
-	    aggiornaPersistenzaProposte(logica.getProposteChiuse());
 	}
-
-	
-	
+	//chiuso se la PropostaScambio che prima soddisfava un'altra proposta ora viene soddisfatta
+	private boolean eChiuso(PropostaScambio inverso) {
+		for(PropostaScambio p: logica.getProposteAperte()) {
+			if(eCompatibile(inverso, p)) {
+				System.out.println("e chiuso");
+				return true;
+			}
+		}
+		return false;
+	}
+	//compatibile se la prestazione offerta coincide con quella richiesta e se le ore offerte non sono maggiori di quelle richieste
+	private boolean eCompatibile(PropostaScambio richiesta, PropostaScambio offerta) {
+		boolean compatibile = richiesta.getNomeRichiesta().equalsIgnoreCase(offerta.getNomeOfferta());
+		//System.out.println("nome richiesta == nome offerta      >> " + compatibile);
+		if (compatibile && richiesta.getOreRichiesta() >= offerta.getOreOfferta()) {
+		//	System.out.println("ore richiesta >= ore offerta");
+			return true;
+		}
+		return false;
+	}
+	//*********************************************************************************************************************
 	//PROVA RIRITA PROPOSTE
 	public void ritiraProposte() {
 		
@@ -433,10 +526,8 @@ public class MenuFruitore extends Menu{
 	    if (conferma) {
 	    	
 	        selezionata.setStato(StatoProposta.RITIRATA); 
-	        
-		    logica.addPropostaRitirata(selezionata); 
-		    
-		    aggiornaPersistenzaProposte(logica.getProposteRitirate());
+	        		    
+		    aggiornaPersistenzaProposte(selezionata, null, StatoProposta.RITIRATA);
 	        
 	        System.out.println("Proposta ritirata con successo.");
 	        
@@ -445,17 +536,25 @@ public class MenuFruitore extends Menu{
 	    }
 		
 	}
+
 	/**
 	 * Metodo che aggiorna le liste nel caso i cui venga chiusa o ritirata una proposta. (bisogna aggiornare anche la lista di quelle chiuse)
 	 * @param aggiunta
 	 */
-	private void aggiornaPersistenzaProposte(ArrayList<PropostaScambio> aggiunta) {
-		if(!aggiunta.isEmpty())
+	private void aggiornaPersistenzaProposte(PropostaScambio esistente, PropostaScambio nuova, StatoProposta a) {
 			
-			switch (aggiunta.get(0).getStato()) {
-	            case CHIUSA -> 	GestorePersistenza.salvaAperteEChiuse(logica.getProposteAperte(), aggiunta, logica.getProposte());
+			switch (a) {
+	            case CHIUSA -> 	{
+	            	logica.addPropostaChiusa(esistente, nuova); //implicitamente elimina da aperte
+	            					
+	            	GestorePersistenza.salvaAperteEChiuse(logica.getProposteAperte(), logica.getInsiemeProposteChiuse(), logica.getProposte());
+	            }
 	
-	            case RITIRATA -> GestorePersistenza.salvaAperteERitirate(logica.getProposteAperte(), aggiunta, logica.getProposte());
+	            case RITIRATA -> {
+	    		    logica.addPropostaRitirata(esistente); 
+
+	            	GestorePersistenza.salvaAperteERitirate(logica.getProposteAperte(), logica.getProposteRitirate(), logica.getProposte());
+	            }
 	
 	            default -> System.out.println("Errore");
 	        }
