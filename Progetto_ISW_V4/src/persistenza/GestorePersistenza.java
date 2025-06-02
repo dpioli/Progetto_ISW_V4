@@ -233,7 +233,8 @@ public class GestorePersistenza {
 		salvaProposte(aggiornamenti);
 	}
 	public static void aggiorna(String fp, InsiemeProposteChiuse scambi, ArrayList<PropostaScambio> aggiornamenti) {
-		salva(scambi, fp);
+		HashMap<PropostaScambio, ArrayList<PropostaScambio>> m = scambi.getMappa();
+		salva(m, fp);
 		salvaProposte(aggiornamenti);
 	}
 	

@@ -200,9 +200,9 @@ public class MenuFruitore extends Menu{
 				System.out.println(MSG_PRESTAZIONE_UGUALE);
 			}
 		}while(incambio == scelta);
-		ArrayList<Double> fattori = logica.getFatConversione().prendiRiga(scelta); 
+		ArrayList<Double> fattori = logica.getFatConversione().prendiRiga(scelta + 2); 
 		//prendendo tutti i fdc dalla tabella uscenti da id della prestazione richiesta
-	    int valore = (int) (fattori.get(incambio) * ore);
+	    int valore = (int) (fattori.get(incambio + 2) * ore);
 		Proposta offerta = new Proposta(foglie.get(incambio), TipoProposta.OFFERTA, valore);
 		
 		//SCAMBIO
@@ -327,7 +327,7 @@ public class MenuFruitore extends Menu{
 	    costruiscoCatena(nuova);
 	    
 	    //************************TOGLIERE COMMENTI SOTTO PER CODICE IRENE
-	    //SCAMBIO TRA PIU PROPOSTE
+/*	    //SCAMBIO TRA PIU PROPOSTE
 	    ArrayList<PropostaScambio> catena = new ArrayList<>();
 	  //  catena.addAll(recuperaCatena(nuova, nuova.getOfferta()));
 	        
@@ -356,11 +356,12 @@ public class MenuFruitore extends Menu{
 	    }
 	  
 	    System.out.println("");
+*/
 	}
 
 	
-	//PROVA
-	public boolean cercaCicloCompatibile(PropostaScambio nuova, ArrayList<PropostaScambio> catena, Proposta propostaCorrente, ArrayList<PropostaScambio> visitate) {
+	//PROVA IRE *******************************
+	/*public boolean cercaCicloCompatibile(PropostaScambio nuova, ArrayList<PropostaScambio> catena, Proposta propostaCorrente, ArrayList<PropostaScambio> visitate) {
 		for (PropostaScambio p : logica.getProposteAperte()) {
 			if (p.getStato() != StatoProposta.APERTA || visitate.contains(p) || p.getNomeAssociato().equalsIgnoreCase(nuova.getNomeAssociato())) continue;
 
@@ -417,7 +418,8 @@ public class MenuFruitore extends Menu{
 	        }
 		}    
 		return catena;
-	}
+	}*
+	*/
 	//PROVA ERA *********************************************************************************
 	/**
 	 * voglio che le ore richieste dal nuovo scambio siano soddisfatte dalle proposte scambio aperte gia esistenti
@@ -439,12 +441,12 @@ public class MenuFruitore extends Menu{
 
 		ArrayList<PropostaScambio> catena = new ArrayList<>();
 
-		for (PropostaScambio p : logica.getProposteAperte()) {
+	/*	for (PropostaScambio p : logica.getProposteAperte()) {
 			
 			if (p.getNomeAssociato().equalsIgnoreCase(nuova.getNomeAssociato())) continue;
 			
 			if(eCompatibile(nuova, p)) System.out.println("nuova è compatibile rispetto a p");
-			
+						
 			if (eCompatibile(nuova, p) && eChiuso(p)) { //eChiuso perché deve essere soddisfatta almeno un'altra => ma devo farlo?
 				System.out.println("è compatibile e chiuso");
 				copertura = copertura + p.getOreOfferta();
@@ -453,9 +455,10 @@ public class MenuFruitore extends Menu{
 				if(eChiuso(p)) costruiscoCatena(p); //credo
 			}
 			if(copertura > oreRichieste) break;
-		}
-		//MODIFICO STATO E SALVO SOLO QUANDO ESCO DAL CICLO FOR (ho costruito la catena)
-		if(!catena.isEmpty()) {	
+		}*/
+		
+		//MODIFICO STATO E SALVO SOLO QUANDO ESCO DAL CICLO FOR (ho costruito la catena) ***************************CATENA METODO 1
+	/*	if(!catena.isEmpty()) {	
 			System.out.println("non è vuota");
 			if(copertura > oreRichieste)
 				catena.remove(catena.size() - 1); //rimosso eccesso
@@ -475,9 +478,32 @@ public class MenuFruitore extends Menu{
 		}else {
 			System.out.println("Non sono state trovate offerte che soddisfino la tua richiesta dello scambio :" + nuova.toString());
 		}
+		*/
+		
+		//OPPURE  **************************************  CATENA METODO 2
+		List<PropostaScambio> catena2 = cercaCicloDiScambio(nuova, logica.getProposteAperte(), logica.getProposteAperte(), logica.getProposteAperte().get(0));
+		if(catena2 != null) {	
+			nuova.setStato(StatoProposta.CHIUSA);
+			for (PropostaScambio p : catena2) 
+				p.setStato(StatoProposta.CHIUSA);
+			
+			System.out.println("non è vuota");
+			logica.addPropostaChiusa(nuova, (ArrayList<PropostaScambio>) catena2);
+			InsiemeProposteChiuse insieme = logica.getInsiemeProposteChiuse();
+			GestorePersistenza.salvaAperteEChiuse(logica.getProposteAperte(), insieme, logica.getProposte());
+			
+			//per visualizzare
+			for (PropostaScambio chiave : insieme.getChiavi()) {
+				System.out.println("\n\n\n"+ insieme.formattaScambi(chiave) +"\n\n\n");
+			}
+		}else {
+			System.out.println("Non sono state trovate offerte che soddisfino la tua richiesta dello scambio :" + nuova.toString());
+		}
 		
 	}
 	//chiuso se la PropostaScambio che prima soddisfava un'altra proposta ora viene soddisfatta
+	//NELL'ELABORATO "Quando il sistema appura che una proposta aperta può essere soddisfatta, soddisfacendo 
+	//nel contempo almeno una seconda proposta aperta"
 	private boolean eChiuso(PropostaScambio inverso) {
 		for(PropostaScambio p: logica.getProposteAperte()) {
 			if(eCompatibile(inverso, p)) {
@@ -496,6 +522,39 @@ public class MenuFruitore extends Menu{
 			return true;
 		}
 		return false;
+	}
+	// CHAT GPT TAKE SU CICLO CHIUSO              --Funzione ricorsiva per cercare un ciclo di scambio
+	private List<PropostaScambio> cercaCicloDiScambio(PropostaScambio corrente, List<PropostaScambio> poolProposte, List<PropostaScambio> percorsoAttuale, PropostaScambio propostaIniziale) {
+	    percorsoAttuale.add(corrente);
+
+	    // Condizione di base: Se l'ultima proposta nel percorso può soddisfare la proposta iniziale, abbiamo un ciclo.
+	    // E anche le ore devono essere compatibili lungo il ciclo.
+	    if (eCompatibile(corrente, propostaIniziale) && percorsoAttuale.size() > 1) { // percorsoAttuale.size() > 1 per evitare cicli banali
+	        return percorsoAttuale;
+	    }
+
+	    for (PropostaScambio successiva : poolProposte) {
+	        // Evita di includere la stessa proposta più volte nello stesso percorso, a meno che non sia l'inizio del ciclo.
+	        if (percorsoAttuale.contains(successiva) && !successiva.equals(propostaIniziale)) {
+	            continue;
+	        }
+
+	        // Se la proposta corrente può soddisfare la successiva
+	        if (eCompatibile(corrente, successiva)) {
+	            // Verifica anche che le ore siano compatibili per la chiusura del ciclo
+	            // Questo è un punto critico: l'algoritmo deve bilanciare le ore attraverso tutto il ciclo
+	            
+	            // Creiamo una copia per la ricorsione
+	            List<PropostaScambio> nuoveProposteDaCercare = new ArrayList<>(poolProposte);
+	            nuoveProposteDaCercare.remove(successiva); // Rimuovi la proposta successiva per evitare ricorsione infinita su se stessa nel caso di cicli banali
+
+	            List<PropostaScambio> risultato = cercaCicloDiScambio(successiva, nuoveProposteDaCercare, new ArrayList<>(percorsoAttuale), propostaIniziale);
+	            if (risultato != null) {
+	                return risultato;
+	            }
+	        }
+	    }
+	    return null; // Nessun ciclo trovato da questo percorso
 	}
 	//*********************************************************************************************************************
 	//PROVA RIRITA PROPOSTE
