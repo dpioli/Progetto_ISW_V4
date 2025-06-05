@@ -211,8 +211,8 @@ public class MenuFruitore extends Menu{
 		if(sn) { //aggiunto alle proposte aperte
 			scambio.setFruitoreAssociato(fruit);
 			logica.addPropostaAperta(scambio);
-			verificaSoddisfacimento(scambio); //controllo che lo scambio possa essere completato
 			GestorePersistenza.salvaProposteAperte(logica.getProposteAperte(), logica.getProposte());
+			verificaSoddisfacimento(scambio); //controllo che lo scambio possa essere completato
 		} else {
 			System.out.println(MSG_ANNULLATO_SCAMBIO +  MSG_MENU_PRINCIPALE );
 			return;
@@ -291,91 +291,88 @@ public class MenuFruitore extends Menu{
 		System.out.println(sb.toString());
 	}
 	
-	
-	
-	//PROVA VERIFICA SCAMBIO
+	/**
+	 * Metodo che verifica se una nuova proposta scambio può essere soddisfatta.
+	 * 1. verifica se esiste una proposta aperta che permetta uno SCAMBIO ESCLUSIVO,
+	 * 2. altrimenti verifica se è possivile costruire un INSIEME CHIUSO => cerca se esiste un ciclo compatibile
+	 *    RICORSIVITA' finché viene soddisfatta la condizione di chiusura [In teoria l'insieme dovrebbe sempre chiudersi perché verificata dalla condizione del blocco if]
+	 *    
+	 * @param nuova
+	 */
 	public void verificaSoddisfacimento(PropostaScambio nuova) {
 		
-		ArrayList<PropostaScambio> aperte = logica.getProposteAperte();
-
 		//SCAMBIO ESCLUSIVO TRA DUE PROPOSTE
-	    for (PropostaScambio esistente : aperte) {
+	    for (PropostaScambio esistente : logica.getProposteAperte()) {
 	        if (esistente.getStato() != StatoProposta.APERTA || esistente.getNomeAssociato().equalsIgnoreCase(nuova.getNomeAssociato())) continue;
-	        	//prima condizione potremmo toglierla
-	        boolean categorieCompatibili =
-	        	esistente.getNomeOfferta().equalsIgnoreCase(nuova.getNomeRichiesta()) &&
-	       		esistente.getNomeRichiesta().equalsIgnoreCase(nuova.getNomeOfferta());
 
-	        if (categorieCompatibili) {
-	        	double qRichiestaNuova = nuova.getOreRichiesta();
-	        	double qOffertaEsistente = esistente.getOreOfferta();
-	            
-	        	if (Math.abs(qRichiestaNuova - qOffertaEsistente) < 0.001) {
+	        if (eCompatibileTotal(esistente, nuova)) {
+	     
+	        	if (eSoddisfatto(esistente, nuova)) {
 	        		
 	        		nuova.setStato(StatoProposta.CHIUSA);
 	        		esistente.setStato(StatoProposta.CHIUSA);
 	        		
+	        		System.out.println("Proposta soddisfatta automaticamente con una proposta esistente!");
 	        		aggiornaPersistenzaProposte(esistente, nuova, StatoProposta.CHIUSA);
-	        		System.out.println("Proposta soddisfatta automaticamente con una proposta esistente.");
-	        		return;
-	                
+	        		return;  
 	        	}
 	        }
-	        
 	    }
-	    ///**************************** PROVA ERA
-	    costruiscoCatena(nuova);
 	    
-	    //************************TOGLIERE COMMENTI SOTTO PER CODICE IRENE
-/*	    //SCAMBIO TRA PIU PROPOSTE
+	    //SCAMBIO TRA PIU PROPOSTE
 	    ArrayList<PropostaScambio> catena = new ArrayList<>();
-	  //  catena.addAll(recuperaCatena(nuova, nuova.getOfferta()));
-	        
-	    if(!catena.isEmpty()) {
-	    	logica.addPropostaChiusa(nuova, catena);
-	    	InsiemeProposteChiuse insieme = logica.getInsiemeProposteChiuse();
-	    	
-	    	for (PropostaScambio chiave : insieme.getChiavi()) {
-	    		System.out.println("\n\n\n"+ insieme.formattaScambi(chiave) +"\n\n\n");
-	    	}
-	        //CONTROLLO
+	    ArrayList<PropostaScambio> visitate = new ArrayList<>();
+
+	    if (cercaCicloCompatibile(nuova, catena, nuova.getOfferta(), visitate)) {
+	        nuova.setStato(StatoProposta.CHIUSA);
+	        for (PropostaScambio p : catena) {
+	            p.setStato(StatoProposta.CHIUSA);
+	        }
 	        System.out.println("Proposta soddisfatta tramite ciclo di " + (catena.size() + 1) + " proposte.\n");
-	        
+	     
+	        logica.addPropostaChiusa(nuova, catena);
+	    	InsiemeProposteChiuse insieme = logica.getInsiemeProposteChiuse();
+	    	GestorePersistenza.salvaAperteEChiuse(logica.getProposteAperte(), insieme, logica.getProposte());
+
 	        //stampa proposte soddisfatte
 	        System.out.println("Le altre proposte soddisfatte sono: ");
 	        for(int i = 0; i< catena.size(); i++) {
 	        	System.out.println(catena.get(i).toString());
 	        	System.out.println("Fruitore: " + catena.get(i).getNomeAssociato());
 	        }
-	        //FINE CONTROLLO 
-	        
-	        System.out.println("Proposta soddisfatta automaticamente con una proposta esistente.");
 	        
 	    } else {
 	        System.out.println("Nessuna proposta compatibile trovata. La proposta resta in attesa.");
 	    }
 	  
 	    System.out.println("");
-*/
 	}
 
-	
-	//PROVA IRE *******************************
-	/*public boolean cercaCicloCompatibile(PropostaScambio nuova, ArrayList<PropostaScambio> catena, Proposta propostaCorrente, ArrayList<PropostaScambio> visitate) {
+	/**
+	 * Metodo che cerca se è possibile costruire un insieme chiuso a partire da una nuova richiesta.
+	 * Controlla se tra le proposte disponibili ce n'è una che viene soddisfatta dalla nuova proposta (che copre il ruolo di offerente).
+	 * Il metodo prosegue poi ricorsivamente.
+	 * Se alla fine viene soddisfatta la CONDIZIONE DI CHIUSURA ritorna true, altrimenti false.
+	 * 
+	 * CONDIZIONE DI CHIUSURA = la proposta p soddisfa la richiesta dell'offerente iniziale (testa)
+	 * 
+	 * @param nuova
+	 * @param catena
+	 * @param propostaCorrente
+	 * @param visitate
+	 * @return se esiste
+	 */
+	private boolean cercaCicloCompatibile(PropostaScambio nuova, ArrayList<PropostaScambio> catena, Proposta propostaCorrente, ArrayList<PropostaScambio> visitate) {
 		for (PropostaScambio p : logica.getProposteAperte()) {
 			if (p.getStato() != StatoProposta.APERTA || visitate.contains(p) || p.getNomeAssociato().equalsIgnoreCase(nuova.getNomeAssociato())) continue;
 
 			boolean compatibile = propostaCorrente.getPrestazione().getNome().equalsIgnoreCase(p.getNomeRichiesta());
 
-			if (compatibile && Math.abs(propostaCorrente.getQuantitaOre() - p.getOfferta().getQuantitaOre()) < 0.001) {
+			if (compatibile && eSoddisfatto(p, nuova)) {
 				visitate.add(p);
 				catena.add(p);
 
-				boolean chiusura =
-						p.getNomeOfferta().equalsIgnoreCase(nuova.getNomeRichiesta())
-						&& Math.abs(p.getOreOfferta() - nuova.getOreRichiesta()) < 0.001;
-
-				if (chiusura) return true;
+				if (eCompatibile(p, nuova) && eSoddisfatto(p, nuova)) return true;
 
 				if (cercaCicloCompatibile(nuova, catena, p.getOfferta(), visitate)) return true;
 
@@ -386,176 +383,34 @@ public class MenuFruitore extends Menu{
 		}
 		return false;
 	}
-	
-	public ArrayList<PropostaScambio> recuperaCatena(PropostaScambio nuova, Proposta propostaCorrente) {
-		
-		ArrayList<PropostaScambio> catena = new ArrayList<>();
-	    ArrayList<PropostaScambio> visitate = new ArrayList<>();
-	    
-	    if (cercaCicloCompatibile(nuova, catena, nuova.getOfferta(), visitate)) {
-	    	for (PropostaScambio p : logica.getProposteAperte()) {
-	    		if (p.getStato() != StatoProposta.APERTA || visitate.contains(p) || p.getNomeAssociato().equalsIgnoreCase(nuova.getNomeAssociato())) continue;
-	    		
-	    		boolean compatibile = propostaCorrente.getPrestazione().getNome().equalsIgnoreCase(p.getNomeRichiesta());
-	    		
-	    		if (compatibile && Math.abs(propostaCorrente.getQuantitaOre() - p.getOfferta().getQuantitaOre()) < 0.001) {
-	    			visitate.add(p);
-	    			catena.add(p);
-	    			
-	    			boolean chiusura =
-	    					p.getNomeOfferta().equalsIgnoreCase(nuova.getNomeRichiesta())
-	    					&& Math.abs(p.getOreOfferta() - nuova.getOreRichiesta()) < 0.001;
-	    			
-	    			if(chiusura) {
-	    				  catena.add(p);
-	    			}
-	    		}
-	    	}
-	    	nuova.setStato(StatoProposta.CHIUSA);
-	        for (PropostaScambio p : catena) {
-	            p.setStato(StatoProposta.CHIUSA);
-	            catena.add(p);
-	        }
-		}    
-		return catena;
-	}*
-	*/
-	//PROVA ERA *********************************************************************************
 	/**
-	 * voglio che le ore richieste dal nuovo scambio siano soddisfatte dalle proposte scambio aperte gia esistenti
-	 * => voglio che la sommatoria delle ore offerte sia <= delle ore della richiesta
-	 * double copertura = 0
-	 * devo scorrere il file di proposte aperte for(proposta
-	 *  se compatibile
-	 *  	se oreofferte < orerichieste
-	 *         copertura = oreofferte
-	 * finché copertura <= orerichieste
-	 * @param nuova
-	 * @return
+	 * Metodo che verifica la prestazione richiesta da una proposta di scambio è la stessa della prestazione proposta da un'altra
+	 * @param offerta di una proposta p1
+	 * @param richiesta di una proposta p2
+	 * @return vero se la prestazione è la stessa
 	 */
-	//PROVA
-	public void costruiscoCatena(PropostaScambio nuova) {
-		
-		double oreRichieste = nuova.getOreRichiesta();
-		double copertura = 0;
-
-		ArrayList<PropostaScambio> catena = new ArrayList<>();
-
-	/*	for (PropostaScambio p : logica.getProposteAperte()) {
-			
-			if (p.getNomeAssociato().equalsIgnoreCase(nuova.getNomeAssociato())) continue;
-			
-			if(eCompatibile(nuova, p)) System.out.println("nuova è compatibile rispetto a p");
-						
-			if (eCompatibile(nuova, p) && eChiuso(p)) { //eChiuso perché deve essere soddisfatta almeno un'altra => ma devo farlo?
-				System.out.println("è compatibile e chiuso");
-				copertura = copertura + p.getOreOfferta();
-				catena.add(p);
-				
-				if(eChiuso(p)) costruiscoCatena(p); //credo
-			}
-			if(copertura > oreRichieste) break;
-		}*/
-		
-		//MODIFICO STATO E SALVO SOLO QUANDO ESCO DAL CICLO FOR (ho costruito la catena) ***************************CATENA METODO 1
-	/*	if(!catena.isEmpty()) {	
-			System.out.println("non è vuota");
-			if(copertura > oreRichieste)
-				catena.remove(catena.size() - 1); //rimosso eccesso
-			
-			nuova.setStato(StatoProposta.CHIUSA);
-			for (PropostaScambio p : catena) 
-				p.setStato(StatoProposta.CHIUSA);
-			
-			logica.addPropostaChiusa(nuova, catena);
-			InsiemeProposteChiuse insieme = logica.getInsiemeProposteChiuse();
-			GestorePersistenza.salvaAperteEChiuse(logica.getProposteAperte(), insieme, logica.getProposte());
-			
-			//per visualizzare
-			for (PropostaScambio chiave : insieme.getChiavi()) {
-				System.out.println("\n\n\n"+ insieme.formattaScambi(chiave) +"\n\n\n");
-			}
-		}else {
-			System.out.println("Non sono state trovate offerte che soddisfino la tua richiesta dello scambio :" + nuova.toString());
-		}
-		*/
-		
-		//OPPURE  **************************************  CATENA METODO 2
-		List<PropostaScambio> catena2 = cercaCicloDiScambio(nuova, logica.getProposteAperte(), logica.getProposteAperte(), logica.getProposteAperte().get(0));
-		if(catena2 != null) {	
-			nuova.setStato(StatoProposta.CHIUSA);
-			for (PropostaScambio p : catena2) 
-				p.setStato(StatoProposta.CHIUSA);
-			
-			System.out.println("non è vuota");
-			logica.addPropostaChiusa(nuova, (ArrayList<PropostaScambio>) catena2);
-			InsiemeProposteChiuse insieme = logica.getInsiemeProposteChiuse();
-			GestorePersistenza.salvaAperteEChiuse(logica.getProposteAperte(), insieme, logica.getProposte());
-			
-			//per visualizzare
-			for (PropostaScambio chiave : insieme.getChiavi()) {
-				System.out.println("\n\n\n"+ insieme.formattaScambi(chiave) +"\n\n\n");
-			}
-		}else {
-			System.out.println("Non sono state trovate offerte che soddisfino la tua richiesta dello scambio :" + nuova.toString());
-		}
-		
+	private boolean eCompatibile(PropostaScambio offerta, PropostaScambio richiesta) {
+		if (offerta != null && richiesta != null)
+			return richiesta.getNomeRichiesta().equalsIgnoreCase(offerta.getNomeOfferta());
+		return false;
 	}
-	//chiuso se la PropostaScambio che prima soddisfava un'altra proposta ora viene soddisfatta
-	//NELL'ELABORATO "Quando il sistema appura che una proposta aperta può essere soddisfatta, soddisfacendo 
-	//nel contempo almeno una seconda proposta aperta"
-	private boolean eChiuso(PropostaScambio inverso) {
-		for(PropostaScambio p: logica.getProposteAperte()) {
-			if(eCompatibile(inverso, p)) {
-				System.out.println("e chiuso");
-				return true;
-			}
+	private boolean eCompatibileTotal(PropostaScambio p1, PropostaScambio p2) {
+		return eCompatibile(p1, p2) && eCompatibile(p2,p1);	
+	}
+	
+	/**
+	 * Metodo che verifica se le ore richieste da una proposta coincidono con quelle offerte da una seconda proposta.
+	 * @param offerta candidato compatibile con richiesta
+	 * @param richiesta da soddisfare
+	 * @return vero se la differenza è 0
+	 */
+	private boolean eSoddisfatto(PropostaScambio offerta, PropostaScambio richiesta) {
+		if (richiesta != null && offerta != null) {
+	    	return (Math.abs(richiesta.getOreRichiesta() -  offerta.getOreOfferta()) < 0.001 ? true : false);
 		}
 		return false;
 	}
-	//compatibile se la prestazione offerta coincide con quella richiesta e se le ore offerte non sono maggiori di quelle richieste
-	private boolean eCompatibile(PropostaScambio richiesta, PropostaScambio offerta) {
-		boolean compatibile = richiesta.getNomeRichiesta().equalsIgnoreCase(offerta.getNomeOfferta());
-		//System.out.println("nome richiesta == nome offerta      >> " + compatibile);
-		if (compatibile && richiesta.getOreRichiesta() >= offerta.getOreOfferta()) {
-		//	System.out.println("ore richiesta >= ore offerta");
-			return true;
-		}
-		return false;
-	}
-	// CHAT GPT TAKE SU CICLO CHIUSO              --Funzione ricorsiva per cercare un ciclo di scambio
-	private List<PropostaScambio> cercaCicloDiScambio(PropostaScambio corrente, List<PropostaScambio> poolProposte, List<PropostaScambio> percorsoAttuale, PropostaScambio propostaIniziale) {
-	    percorsoAttuale.add(corrente);
 
-	    // Condizione di base: Se l'ultima proposta nel percorso può soddisfare la proposta iniziale, abbiamo un ciclo.
-	    // E anche le ore devono essere compatibili lungo il ciclo.
-	    if (eCompatibile(corrente, propostaIniziale) && percorsoAttuale.size() > 1) { // percorsoAttuale.size() > 1 per evitare cicli banali
-	        return percorsoAttuale;
-	    }
-
-	    for (PropostaScambio successiva : poolProposte) {
-	        // Evita di includere la stessa proposta più volte nello stesso percorso, a meno che non sia l'inizio del ciclo.
-	        if (percorsoAttuale.contains(successiva) && !successiva.equals(propostaIniziale)) {
-	            continue;
-	        }
-
-	        // Se la proposta corrente può soddisfare la successiva
-	        if (eCompatibile(corrente, successiva)) {
-	            // Verifica anche che le ore siano compatibili per la chiusura del ciclo
-	            // Questo è un punto critico: l'algoritmo deve bilanciare le ore attraverso tutto il ciclo
-	            
-	            // Creiamo una copia per la ricorsione
-	            List<PropostaScambio> nuoveProposteDaCercare = new ArrayList<>(poolProposte);
-	            nuoveProposteDaCercare.remove(successiva); // Rimuovi la proposta successiva per evitare ricorsione infinita su se stessa nel caso di cicli banali
-
-	            List<PropostaScambio> risultato = cercaCicloDiScambio(successiva, nuoveProposteDaCercare, new ArrayList<>(percorsoAttuale), propostaIniziale);
-	            if (risultato != null) {
-	                return risultato;
-	            }
-	        }
-	    }
-	    return null; // Nessun ciclo trovato da questo percorso
-	}
 	//*********************************************************************************************************************
 	//PROVA RIRITA PROPOSTE
 	public void ritiraProposte() {

@@ -1,5 +1,5 @@
 {
-  "\nPropostaScambio \n\u003e Richiesta:  [prestazione richiesta: fogliola2, ore: 2.0]\n\u003e Offerta:  [prestazione offerta: foglia2, ore: 2.0]": [
+  "\nPropostaScambio \n\u003e Richiesta:  [prestazione richiesta: foglia4, ore: 10.0]\n\u003e Offerta:  [prestazione offerta: foglia1, ore: 10.0]": [
     {
       "richiesta": {
         "prestazione": {
@@ -9,17 +9,17 @@
           "foglia": true
         },
         "tipo": "RICHIESTA",
-        "quantitaOre": 1.0
+        "quantitaOre": 10.0
       },
       "offerta": {
         "prestazione": {
-          "id": 8,
-          "nome": "fogliola2",
+          "id": 2,
+          "nome": "foglia2",
           "sottoCateg": [],
           "foglia": true
         },
         "tipo": "OFFERTA",
-        "quantitaOre": 1.0
+        "quantitaOre": 10.0
       },
       "stato": "CHIUSA",
       "associato": {
@@ -46,54 +46,17 @@
           "foglia": true
         },
         "tipo": "RICHIESTA",
-        "quantitaOre": 1.0
+        "quantitaOre": 10.0
       },
       "offerta": {
         "prestazione": {
-          "id": 8,
-          "nome": "fogliola2",
+          "id": 3,
+          "nome": "foglia3",
           "sottoCateg": [],
           "foglia": true
         },
         "tipo": "OFFERTA",
-        "quantitaOre": 1.0
-      },
-      "stato": "CHIUSA",
-      "associato": {
-        "username": "fruit1",
-        "password": "1",
-        "mail": "1@gmail",
-        "comprensorio": {
-          "nome": "Brescia Sud",
-          "comuni": [
-            "Castel Mella",
-            "Flero",
-            "Bagnolo Mella",
-            "Capriano Del Colle"
-          ]
-        }
-      }
-    },
-    {
-      "richiesta": {
-        "prestazione": {
-          "id": 2,
-          "nome": "foglia2",
-          "sottoCateg": [],
-          "foglia": true
-        },
-        "tipo": "RICHIESTA",
-        "quantitaOre": 1.0
-      },
-      "offerta": {
-        "prestazione": {
-          "id": 8,
-          "nome": "fogliola2",
-          "sottoCateg": [],
-          "foglia": true
-        },
-        "tipo": "OFFERTA",
-        "quantitaOre": 1.0
+        "quantitaOre": 10.0
       },
       "stato": "CHIUSA",
       "associato": {
@@ -120,175 +83,23 @@
           "foglia": true
         },
         "tipo": "RICHIESTA",
-        "quantitaOre": 1.0
+        "quantitaOre": 10.0
       },
       "offerta": {
         "prestazione": {
-          "id": 8,
-          "nome": "fogliola2",
+          "id": 4,
+          "nome": "foglia4",
           "sottoCateg": [],
           "foglia": true
         },
         "tipo": "OFFERTA",
-        "quantitaOre": 1.0
-      },
-      "stato": "CHIUSA",
-      "associato": {
-        "username": "fruit2",
-        "password": "2",
-        "mail": "2@gmail",
-        "comprensorio": {
-          "nome": "Brescia Sud",
-          "comuni": [
-            "Castel Mella",
-            "Flero",
-            "Bagnolo Mella",
-            "Capriano Del Colle"
-          ]
-        }
-      }
-    },
-    {
-      "richiesta": {
-        "prestazione": {
-          "id": 3,
-          "nome": "foglia3",
-          "sottoCateg": [],
-          "foglia": true
-        },
-        "tipo": "RICHIESTA",
-        "quantitaOre": 1.0
-      },
-      "offerta": {
-        "prestazione": {
-          "id": 8,
-          "nome": "fogliola2",
-          "sottoCateg": [],
-          "foglia": true
-        },
-        "tipo": "OFFERTA",
-        "quantitaOre": 1.0
-      },
-      "stato": "CHIUSA",
-      "associato": {
-        "username": "fruit2",
-        "password": "2",
-        "mail": "2@gmail",
-        "comprensorio": {
-          "nome": "Brescia Sud",
-          "comuni": [
-            "Castel Mella",
-            "Flero",
-            "Bagnolo Mella",
-            "Capriano Del Colle"
-          ]
-        }
-      }
-    },
-    {
-      "richiesta": {
-        "prestazione": {
-          "id": 8,
-          "nome": "fogliola2",
-          "sottoCateg": [],
-          "foglia": true
-        },
-        "tipo": "RICHIESTA",
-        "quantitaOre": 2.0
-      },
-      "offerta": {
-        "prestazione": {
-          "id": 2,
-          "nome": "foglia2",
-          "sottoCateg": [],
-          "foglia": true
-        },
-        "tipo": "OFFERTA",
-        "quantitaOre": 2.0
+        "quantitaOre": 10.0
       },
       "stato": "CHIUSA",
       "associato": {
         "username": "diego",
         "password": "pioli",
         "mail": "diegopioli@gmail.com",
-        "comprensorio": {
-          "nome": "Brescia Sud",
-          "comuni": [
-            "Castel Mella",
-            "Flero",
-            "Bagnolo Mella",
-            "Capriano Del Colle"
-          ]
-        }
-      }
-    }
-  ],
-  "\nPropostaScambio \n\u003e Richiesta:  [prestazione richiesta: foglia1, ore: 1.0]\n\u003e Offerta:  [prestazione offerta: fogliola2, ore: 1.0]": [
-    {
-      "richiesta": {
-        "prestazione": {
-          "id": 8,
-          "nome": "fogliola2",
-          "sottoCateg": [],
-          "foglia": true
-        },
-        "tipo": "RICHIESTA",
-        "quantitaOre": 1.0
-      },
-      "offerta": {
-        "prestazione": {
-          "id": 1,
-          "nome": "foglia1",
-          "sottoCateg": [],
-          "foglia": true
-        },
-        "tipo": "OFFERTA",
-        "quantitaOre": 1.0
-      },
-      "stato": "CHIUSA",
-      "associato": {
-        "username": "diego",
-        "password": "pioli",
-        "mail": "diegopioli@gmail.com",
-        "comprensorio": {
-          "nome": "Brescia Sud",
-          "comuni": [
-            "Castel Mella",
-            "Flero",
-            "Bagnolo Mella",
-            "Capriano Del Colle"
-          ]
-        }
-      }
-    }
-  ],
-  "\nPropostaScambio \n\u003e Richiesta:  [prestazione richiesta: fogliola2, ore: 1.0]\n\u003e Offerta:  [prestazione offerta: foglia1, ore: 1.0]": [
-    {
-      "richiesta": {
-        "prestazione": {
-          "id": 1,
-          "nome": "foglia1",
-          "sottoCateg": [],
-          "foglia": true
-        },
-        "tipo": "RICHIESTA",
-        "quantitaOre": 1.0
-      },
-      "offerta": {
-        "prestazione": {
-          "id": 8,
-          "nome": "fogliola2",
-          "sottoCateg": [],
-          "foglia": true
-        },
-        "tipo": "OFFERTA",
-        "quantitaOre": 1.0
-      },
-      "stato": "CHIUSA",
-      "associato": {
-        "username": "era",
-        "password": "letmein",
-        "mail": "era@gmail.com",
         "comprensorio": {
           "nome": "Brescia Sud",
           "comuni": [

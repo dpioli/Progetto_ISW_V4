@@ -9,6 +9,7 @@ import applicazione.FatConversione;
 import applicazione.Gerarchia;
 import applicazione.InsiemeProposteChiuse;
 import applicazione.PropostaScambio;
+import applicazione.StatoProposta;
 import utenti.Configuratore;
 import utenti.Fruitore;
 
@@ -279,8 +280,12 @@ public class LogicaPersistenza {
 		rimuoviProposta(scambio, proposteAperte);
 	}
 	private void rimuoviProposta(PropostaScambio scambio, ArrayList<PropostaScambio> s) {
-		s.remove(scambio);
+		s.removeIf(p -> p.getStato().equals(StatoProposta.CHIUSA));
 	}
+/*	private boolean sonoUgualiTranneStato(PropostaScambio a, PropostaScambio b) {
+	      return a.getOfferta().equals(b.getOfferta()) &&
+	    		a.getRichiesta().equals(b.getRichiesta());
+	}*/
 	
 	/**
 	 * Metodo che recupera l'identificativo dell'ultima foglia salvata,
