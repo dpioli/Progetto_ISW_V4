@@ -284,6 +284,18 @@ public class MenuFruitore extends Menu{
 	}
 	
 	public void ritiraProposte() {
+		ArrayList<PropostaScambio> proposte = logica.getScambi();
+		ArrayList<PropostaScambio> proposteFruit = new ArrayList<>();
+		
+		for(PropostaScambio p: proposte) {
+			boolean corrisponde = this.fruit.getUsername().equals(p.getAssociato().getUsername());
+			if(corrisponde) {
+				proposteFruit.add(p);
+			}
+		}
+		
+		StringBuffer sb = new StringBuffer();
+		
 		
 	}
 	/**
