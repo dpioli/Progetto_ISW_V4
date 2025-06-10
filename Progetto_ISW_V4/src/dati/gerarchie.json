@@ -1,0 +1,216 @@
+[
+  {
+    "catRadice": {
+      "nome": "gerarchiaesempio",
+      "campCaratt": {
+        "nomeCampo": "primo",
+        "valoriCampo": {
+          "v1": "v2",
+          "v3": "fine",
+          "v5": "lol"
+        }
+      },
+      "sottoCateg": [
+        {
+          "nome": "intermedia",
+          "campCaratt": {
+            "nomeCampo": "secondo",
+            "valoriCampo": {
+              "vi2": "",
+              "vi1": ""
+            }
+          },
+          "sottoCateg": [
+            {
+              "nome": "foglia1",
+              "sottoCateg": [],
+              "foglia": true
+            },
+            {
+              "nome": "foglia2",
+              "sottoCateg": [],
+              "foglia": true
+            }
+          ],
+          "dominio": 2,
+          "foglia": false
+        },
+        {
+          "nome": "intermedia2",
+          "campCaratt": {
+            "nomeCampo": "terzo",
+            "valoriCampo": {
+              "vii1": ""
+            }
+          },
+          "sottoCateg": [
+            {
+              "nome": "foglia3",
+              "sottoCateg": [],
+              "foglia": true
+            }
+          ],
+          "dominio": 1,
+          "foglia": false
+        },
+        {
+          "nome": "intermedia3",
+          "campCaratt": {
+            "nomeCampo": "quarto",
+            "valoriCampo": {
+              "viii1": "",
+              "viii2": ""
+            }
+          },
+          "sottoCateg": [
+            {
+              "nome": "foglia4",
+              "sottoCateg": [],
+              "foglia": true
+            },
+            {
+              "nome": "foglia5",
+              "sottoCateg": [],
+              "foglia": true
+            }
+          ],
+          "dominio": 2,
+          "foglia": false
+        }
+      ],
+      "dominio": 3,
+      "foglia": false
+    },
+    "proprietario": {
+      "username": "d",
+      "password": "p"
+    },
+    "comprensorio": {
+      "nome": "Brescia Sud",
+      "comuni": [
+        "Castel Mella",
+        "Flero",
+        "Bagnolo Mella",
+        "Capriano Del Colle"
+      ]
+    }
+  },
+  {
+    "catRadice": {
+      "nome": "nuovagerarchia",
+      "campCaratt": {
+        "nomeCampo": "primo",
+        "valoriCampo": {
+          "v1": "",
+          "v2": ""
+        }
+      },
+      "sottoCateg": [
+        {
+          "nome": "intermedianuova",
+          "campCaratt": {
+            "nomeCampo": "secondo",
+            "valoriCampo": {
+              "v1": ""
+            }
+          },
+          "sottoCateg": [
+            {
+              "nome": "foglietta1",
+              "sottoCateg": [],
+              "foglia": true
+            }
+          ],
+          "dominio": 1,
+          "foglia": false
+        },
+        {
+          "nome": "foglietta2",
+          "sottoCateg": [],
+          "foglia": true
+        }
+      ],
+      "dominio": 2,
+      "foglia": false
+    },
+    "proprietario": {
+      "username": "IreneR",
+      "password": "ProgettoISW"
+    },
+    "comprensorio": {
+      "nome": "Brescia Sud",
+      "comuni": [
+        "Castel Mella",
+        "Flero",
+        "Bagnolo Mella",
+        "Capriano Del Colle"
+      ]
+    }
+  },
+  {
+    "catRadice": {
+      "nome": "gerarchiadiversa",
+      "campCaratt": {
+        "nomeCampo": "campowhateva",
+        "valoriCampo": {
+          "ramouno": "",
+          "ramo2": "",
+          "ramo3": ""
+        }
+      },
+      "sottoCateg": [
+        {
+          "nome": "intermediaprima",
+          "campCaratt": {
+            "nomeCampo": "cc2",
+            "valoriCampo": {
+              "fogliaovest2": "",
+              "fogliaovest1": ""
+            }
+          },
+          "sottoCateg": [
+            {
+              "id": 8,
+              "nome": "fogliaovestramo2",
+              "sottoCateg": [],
+              "foglia": true
+            },
+            {
+              "id": 9,
+              "nome": "fogliaovestramo3",
+              "sottoCateg": [],
+              "foglia": true
+            }
+          ],
+          "dominio": 2,
+          "foglia": false
+        },
+        {
+          "id": 10,
+          "nome": "nonsoquantealtrefogliehomesso",
+          "sottoCateg": [],
+          "foglia": true
+        },
+        {
+          "id": 11,
+          "nome": "fidekdinuovo",
+          "sottoCateg": [],
+          "foglia": true
+        }
+      ],
+      "dominio": 3,
+      "foglia": false
+    },
+    "proprietario": {
+      "username": "ErjonaM",
+      "password": "ProgettoISW"
+    },
+    "comprensorio": {
+      "nome": "Brescia Ovest",
+      "comuni": [
+        "Rodengo",
+        "Coccaglio"
+      ]
+    }
+  }
+]

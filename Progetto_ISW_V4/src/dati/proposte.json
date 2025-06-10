@@ -1,0 +1,112 @@
+[
+  {
+    "richiesta": {
+      "prestazione": {
+        "id": 3,
+        "nome": "foglia3",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "RICHIESTA",
+      "quantitaOre": 6.0
+    },
+    "offerta": {
+      "prestazione": {
+        "id": 2,
+        "nome": "foglia2",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "OFFERTA",
+      "quantitaOre": 9.0
+    },
+    "statoIniziale": "APERTA",
+    "statoFinale": null,
+    "associato": {
+      "username": "ren",
+      "password": "p",
+      "mail": "ire@gmail.com",
+      "comprensorio": {
+        "nome": "Brescia Ovest",
+        "comuni": [
+          "Rodengo",
+          "Coccaglio"
+        ]
+      }
+    }
+  },
+  {
+    "richiesta": {
+      "prestazione": {
+        "id": 2,
+        "nome": "foglia2",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "RICHIESTA",
+      "quantitaOre": 32.0
+    },
+    "offerta": {
+      "prestazione": {
+        "id": 7,
+        "nome": "foglietta2",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "OFFERTA",
+      "quantitaOre": 26.0
+    },
+    "statoIniziale": "APERTA",
+    "statoFinale": null,
+    "associato": {
+      "username": "era",
+      "password": "letmein",
+      "mail": "era@gmail.com",
+      "comprensorio": {
+        "nome": "Brescia Sud",
+        "comuni": [
+          "Castel Mella",
+          "Flero",
+          "Bagnolo Mella",
+          "Capriano Del Colle"
+        ]
+      }
+    }
+  },
+  {
+    "richiesta": {
+      "prestazione": {
+        "id": 11,
+        "nome": "fidekdinuovo",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "RICHIESTA",
+      "quantitaOre": 55.0
+    },
+    "offerta": {
+      "prestazione": {
+        "id": 10,
+        "nome": "nonsoquantealtrefogliehomesso",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "OFFERTA",
+      "quantitaOre": 31.0
+    },
+    "statoIniziale": "APERTA",
+    "statoFinale": null,
+    "associato": {
+      "username": "ren",
+      "password": "p",
+      "mail": "ire@gmail.com",
+      "comprensorio": {
+        "nome": "Brescia Ovest",
+        "comuni": [
+          "Rodengo",
+          "Coccaglio"
+        ]
+      }
+    }
+  }
+]

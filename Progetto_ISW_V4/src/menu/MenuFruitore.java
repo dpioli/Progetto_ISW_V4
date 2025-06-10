@@ -30,6 +30,8 @@ public class MenuFruitore extends Menu{
 	
 	private static final String NAVIGA = "Naviga tra le gerarchie";
 	private static final String RICHIEDI_PRESTAZIONI = "Richiedi prestazioni al sistema";
+	private static final String RITIRA_PROPOSTE = "Ritira proposte dal sistema";
+	private static final String VISUALIZZA_PROPOSTE = "Visualizza le tue proposte";
 	private final static String MSG_P_PRECEDENTE = "Ritorna alla pagina di autenticazione";
 	private static final String X = "\n******************************************";
 	private static final String MSG_INIZIALE = "Gerarchie presenti nel tuo comprensorio:";
@@ -54,7 +56,7 @@ public class MenuFruitore extends Menu{
 	private static final String MSG_CHECK_COMPRENSORIO = "\nNon ci sono Gerarchie appartenenti al tuo comprensorio geografico.\n";
 	private static final String MSG_ANNULLATO_SCAMBIO = "Hai annullato la proposta di scambio...";
 	
-	private static String[] vociFruit = {NAVIGA, RICHIEDI_PRESTAZIONI, MSG_P_PRECEDENTE};
+	private static String[] vociFruit = {NAVIGA, RICHIEDI_PRESTAZIONI, RITIRA_PROPOSTE, VISUALIZZA_PROPOSTE, MSG_P_PRECEDENTE};
 	
 	/**
 	 * Construttore di MenuFruitore
@@ -171,7 +173,7 @@ public class MenuFruitore extends Menu{
 	 * 5. seleziona quale prestazione offre in cambio
 	 * 6. formulo l'offerta
 	 * 7. chiedo conferma degli oggetti
-	 * 8. se confermato salvo lo scambio (in attesa), salvando anche il fruitore
+	 * 8. se confermato salvo lo scambio (aperta), salvando anche il fruitore
 	 */
 	public void richiediPrestazioni() {
 		
@@ -279,6 +281,24 @@ public class MenuFruitore extends Menu{
 			sb.append("\n");
 		}
 		System.out.println(sb.toString());
+	}
+	
+	public void ritiraProposte() {
+		
+	}
+	/**
+	 * Metodo per la visualizzazione delle proposte da parte del fruitore
+	 * sia che siano aperte, chiuse, ritirate.
+	 * Effettuato solo il controllo per vedere quelle di cui il fruitore è autore
+	 */
+	public void visualizzaProposte() {
+		ArrayList<PropostaScambio> proposte = logica.getScambi();
+		for(PropostaScambio p: proposte) {
+			boolean corrisponde = this.fruit.getUsername().equals(p.getAssociato().getUsername());
+			if(corrisponde) {
+				System.out.println(p.toString());
+			}
+		}
 	}
 
 }

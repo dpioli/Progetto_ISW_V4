@@ -35,6 +35,7 @@ public class MenuConfiguratore extends Menu {
 	private static final String MSG_VISUALIZZA_COMPRENSORI = "Visualizza tutti i comprensori presenti";
 	private static final String MSG_VISUALIZZA_GERARCHIE = "Visualizza tutte le gerarchie";
 	private static final String MSG_VISUALIZZA_FAT_CONV = "Visualizza tutti i fattori di conversione";
+	private static final String MSG_VISUALIZZA_PROPOSTE = "Visualizza le proposte relative ad una categoria";
 	private static final String MSG_SALVA = "Salva tutte le modifiche effettuate";
 	private final static String MSG_P_PRECEDENTE = "Ritorna alla pagina di autenticazione";
 	
@@ -90,6 +91,7 @@ public class MenuConfiguratore extends Menu {
 			MSG_VISUALIZZA_COMPRENSORI,
 			MSG_VISUALIZZA_GERARCHIE,
 			MSG_VISUALIZZA_FAT_CONV,
+			MSG_VISUALIZZA_PROPOSTE,
 			MSG_SALVA,
 			MSG_P_PRECEDENTE
 	};
@@ -160,6 +162,13 @@ public class MenuConfiguratore extends Menu {
 			sb.append(String.format("F%d : %s\n", f.getId(), f.getNome()));
 		}
 		System.out.println(sb.toString());
+	}
+	
+	/**
+	 * Metodo per visualizzare le proposte relative ad una specifica categoria foglia
+	 */
+	public void visualizzaProposte() {
+		
 	}
 	
 	/*

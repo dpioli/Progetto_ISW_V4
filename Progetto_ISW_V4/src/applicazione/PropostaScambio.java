@@ -14,7 +14,8 @@ public class PropostaScambio {
 	
 	private Proposta richiesta;
 	private Proposta offerta; 
-	private StatoProposta stato;
+	private StatoProposta statoIniziale;
+	private StatoProposta statoFinale;
 	private Fruitore associato = null; //impostato solo quando la proposta viene confermata per essere salvata
 	
 	/**
@@ -26,15 +27,24 @@ public class PropostaScambio {
 	public PropostaScambio(Proposta richiesta, Proposta offerta) {
 		this.richiesta = richiesta;
 		this.offerta = offerta;
-		this.stato = StatoProposta.IN_ATTESA;
+		this.statoIniziale = StatoProposta.APERTA;
+		this.statoFinale = null;
 	}
 
-	public StatoProposta getStato() {
-		return stato;
+	public StatoProposta getStatoIniziale() {
+		return statoIniziale;
 	}
 
-	public void setStato(StatoProposta stato) {
-		this.stato = stato;
+	public void setStatoIniziale(StatoProposta stato) {
+		this.statoIniziale = stato;
+	}
+	
+	public StatoProposta getStatoFinale() {
+		return statoFinale;
+	}
+	
+	public void setStatoFinale(StatoProposta stato) {
+		this.statoFinale = stato;
 	}
 
 	public Fruitore getAssociato() {
