@@ -6,6 +6,7 @@ import applicazione.CampoCaratteristico;
 import applicazione.Categoria;
 import applicazione.CategoriaFoglia;
 import applicazione.Gerarchia;
+import applicazione.InsiemeChiuso;
 import applicazione.Proposta;
 import applicazione.PropostaScambio;
 import applicazione.StatoProposta;
@@ -208,6 +209,7 @@ public class MenuFruitore extends Menu{
 			scambio.setFruitoreAssociato(fruit);
 			logica.addScambio(scambio);
 			GestorePersistenza.salvaScambi(logica.getScambi());
+			verificaSoddisfacimento(scambio);// verifica che lo scambio venga soddisfatto da delle proposte preesistenti
 		} else {
 			System.out.println(MSG_ANNULLATO_SCAMBIO +  MSG_MENU_PRINCIPALE );
 			return;
@@ -286,6 +288,95 @@ public class MenuFruitore extends Menu{
 		System.out.println(sb.toString());
 	}
 	
+	private void verificaSoddisfacimento(PropostaScambio proposta) {
+		ArrayList<PropostaScambio> proposteValide = new ArrayList<PropostaScambio>();
+		
+		//selezioneProposteValide
+		for(PropostaScambio p: logica.getScambi()) {
+			if(verificaFruitore(proposta, p) && controlloStato(p) && verificaSoddisfacimentoNome(proposta, p) && verificaSoddisfacimentoOre(proposta, p)) {
+				aggiornaStatoAChiusa(proposta, logica.getScambi());
+				aggiornaStatoAChiusa(p, logica.getScambi());
+				
+				int id = logica.recuperaIdInsiemeChiuso();
+				InsiemeChiuso ins = new InsiemeChiuso(id);
+				
+				ins.aggiungiProposteAInsiemeChiuso(proposta);
+				ins.aggiungiProposteAInsiemeChiuso(p);
+				
+				logica.aggiungiInsieme(ins);
+				
+				GestorePersistenza.salvaInsiemiChiusi(logica.getInsiemi());
+				
+				System.out.println("\nLa tua proposta è stata accettata sarai contattato a breve!\n");
+			}
+		}
+	}
+	/**
+	 * Metodo per verificare che i due fruitori siano diversi
+	 * @param p1
+	 * @param p2
+	 * @return true se i fruitori sono diversi
+	 */
+	private boolean verificaFruitore(PropostaScambio p1, PropostaScambio p2) {
+		boolean f = p1.getAssociato().getUsername().equals(p2.getAssociato().getUsername());
+		if(f) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+	
+	/**
+	 * Metodo per verificare che la prestazione richiesta combacia con la prestazione offerta e viceversa
+	 * @param p1
+	 * @param p2
+	 * @return true veirfica soddisfatta / false verifica non soddisfatta
+	 */
+	private boolean verificaSoddisfacimentoNome(PropostaScambio p1, PropostaScambio p2) {
+		boolean ro = p1.getRichiesta().getPrestazione().getNome().equals(p2.getOfferta().getPrestazione().getNome());
+		boolean or = p1.getOfferta().getPrestazione().getNome().equals(p2.getRichiesta().getPrestazione().getNome());
+		
+		if(ro && or) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	/**
+	 * Metodo per verificare il soddisfacimento delle ore tra richiesta e offerta e viceversa
+	 * @param p1
+	 * @param p2
+	 * @return true veirfica soddisfatta / false verifica non soddisfatta
+	 */
+	private boolean verificaSoddisfacimentoOre(PropostaScambio p1, PropostaScambio p2) {
+		boolean ro = p1.getRichiesta().getQuantitaOre() == p2.getOfferta().getQuantitaOre();
+		boolean or = p1.getOfferta().getQuantitaOre() == p2.getRichiesta().getQuantitaOre();
+		
+		if(ro && or) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	/**
+	 * Metodo per verificare se lo stato di una proposta è APERTA
+	 * @param proposta
+	 * @return true se lo stato della proposta è aperto /false se lo stato della proposta è chiuso 
+	 */
+	private boolean controlloStato(PropostaScambio proposta) {
+		boolean n = proposta.getStatoFinale() != null;
+		boolean c = proposta.getStatoFinale() != StatoProposta.CHIUSA;
+		boolean r = proposta.getStatoFinale() != StatoProposta.RITIRATA;
+		
+		if(n && c && r) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	public void ritiraProposte() {
 		ArrayList<PropostaScambio> proposte = logica.getScambi();
 		ArrayList<PropostaScambio> proposteFruit = new ArrayList<>();
@@ -312,7 +403,7 @@ public class MenuFruitore extends Menu{
 		PropostaScambio p = proposteFruit.get(selezionata);
 		boolean conferma = InputDati.yesOrNo("\nSei sicuro di ritirare questa proposta ");
 		if(conferma) {
-			aggiornaStato(p, proposte);
+			aggiornaStatoARitirata(p, proposte);
 			GestorePersistenza.salvaScambi(proposte);
 			System.out.println("\nLa proposta è stata ritirata.\n");
 		} else {
@@ -325,11 +416,24 @@ public class MenuFruitore extends Menu{
 	 * @param proposta
 	 * @param proposte
 	 */
-	private void aggiornaStato(PropostaScambio proposta, ArrayList<PropostaScambio> proposte) {
+	private void aggiornaStatoARitirata(PropostaScambio proposta, ArrayList<PropostaScambio> proposte) {
 		for(PropostaScambio p : proposte) {
 			if(p.getId() == proposta.getId()) {
 				p.setStatoFinale(StatoProposta.RITIRATA);
 				System.out.println(p.toString());
+			}
+		}
+	}
+	
+	/**
+	 *Metodo per aggiornare lo stato di una proposta a chiusa dopo essere stata soddisfatta
+	 * @param proposta
+	 * @param proposte
+	 */
+	private void aggiornaStatoAChiusa(PropostaScambio proposta, ArrayList<PropostaScambio> proposte) {
+		for(PropostaScambio p: proposte) {
+			if(p.getId() == proposta.getId()) {
+				p.setStatoFinale(StatoProposta.CHIUSA);
 			}
 		}
 	}

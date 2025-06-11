@@ -6,6 +6,7 @@ import applicazione.CategoriaFoglia;
 import applicazione.Comprensorio;
 import applicazione.FatConversione;
 import applicazione.Gerarchia;
+import applicazione.InsiemeChiuso;
 import applicazione.PropostaScambio;
 import utenti.Configuratore;
 import utenti.Fruitore;
@@ -24,6 +25,7 @@ public class LogicaPersistenza {
 	private FatConversione fatConversione;
 	private ArrayList<Fruitore> fruitori = new ArrayList<Fruitore>();
 	private ArrayList<PropostaScambio> scambi = new ArrayList<PropostaScambio>();
+	private ArrayList<InsiemeChiuso> insiemi = new ArrayList<InsiemeChiuso>();
 	
 	public LogicaPersistenza() {
 		this.gerarchie = GestorePersistenza.caricaGerarchie();
@@ -33,6 +35,7 @@ public class LogicaPersistenza {
 		this.categorieFoglia = GestorePersistenza.caricaCategorieFoglia();
 		this.fruitori = GestorePersistenza.caricaFruitori();
 		this.scambi = GestorePersistenza.caricaScambi();
+		this.insiemi = GestorePersistenza.caricaInsiemi();
 	}
 	
 	/*
@@ -153,6 +156,22 @@ public class LogicaPersistenza {
 	public void setScambi(ArrayList<PropostaScambio> scambi) {
 		this.scambi = scambi;
 	}
+	
+	/**
+	 * Metodo per ottenere la lista degli insiemi chiusi
+	 * @return
+	 */
+	public ArrayList<InsiemeChiuso> getInsiemi() {
+		return insiemi;
+	}
+	
+	/**
+	 * Metodo per modificare la lista degli insiemi chiusi
+	 * @param insiemi
+	 */
+	public void setInsiemi(ArrayList<InsiemeChiuso> insiemi) {
+		this.insiemi = insiemi;
+	}
 
 	/*
 	 * 
@@ -182,6 +201,7 @@ public class LogicaPersistenza {
 	public void addFruitore(Fruitore fruitore) {
 		fruitori.add(fruitore);
 	}
+	
 	public void addScambio(PropostaScambio scambio) {
 		scambi.add(scambio);
 	}
@@ -194,10 +214,14 @@ public class LogicaPersistenza {
 		fatConversione.aggancia(nuova);	
 	}
 	
+	public void aggiungiInsieme(InsiemeChiuso insieme) {
+		insiemi.add(insieme);
+	}
+	
 	/**
-	 * Metodo che recupera l'identificativo dell'ultima foglia salvata,
+	 * Metodi che recupera l'identificativo,
 	 * permette di calcolare quello della successiva per mantenere la persistenza.
-	 * @return id ultima foglia salvata
+	 * @return id 
 	 */
 	public int recuperaUltimoID() {
 		if(categorieFoglia.isEmpty())
@@ -213,6 +237,14 @@ public class LogicaPersistenza {
 		int ultimo = scambi.size() - 1;
 		PropostaScambio p = scambi.get(ultimo);
 		return p.getId();
+	}
+	
+	public int recuperaIdInsiemeChiuso() {
+		if(insiemi.isEmpty())
+			return 0;
+		int ultimo = insiemi.size() - 1;
+		InsiemeChiuso ins = insiemi.get(ultimo);
+		return ins.getId();
 	}
 	
 

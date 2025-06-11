@@ -11,6 +11,7 @@ import applicazione.CategoriaFoglia;
 import applicazione.Comprensorio;
 import applicazione.FatConversione;
 import applicazione.Gerarchia;
+import applicazione.InsiemeChiuso;
 import applicazione.PropostaScambio;
 import utenti.Configuratore;
 import utenti.Fruitore;
@@ -30,6 +31,7 @@ public class GestorePersistenza {
 	private static final String FILE_CATEGORIEFOGLIA = "../Progetto_ISW_V4/src/dati/categorieFoglia.json";
 	private static final String FILE_FRUITORI = "../Progetto_ISW_V4/src/dati/fruitori.json";
 	private static final String FILE_PROPOSTE = "../Progetto_ISW_V4/src/dati/proposte.json";
+	private static final String FILE_INSIEMI_CHIUSI = "../Progetto_ISW_V4/src/dati/insiemiChiusi.json";
 	
 	
 	/* PER la JAR
@@ -165,6 +167,14 @@ public class GestorePersistenza {
 		salva(scambi, FILE_PROPOSTE);
 	}
 	
+	/**
+	 * Metodo per salvare l'insimei chiusi che sono stati completati
+	 * @param insiemi
+	 */
+	public static void salvaInsiemiChiusi(ArrayList<InsiemeChiuso> insiemi) {
+		salva(insiemi, FILE_INSIEMI_CHIUSI);
+	}
+	
 	/*
 	 * 
 	 * 
@@ -266,7 +276,14 @@ public class GestorePersistenza {
 		return scambi;
 	}
 	
-	
+	public static ArrayList<InsiemeChiuso> caricaInsiemi() {
+		Type listType = new TypeToken<ArrayList<InsiemeChiuso>>() {}.getType();
+		ArrayList<InsiemeChiuso> insiemi = carica(listType, FILE_INSIEMI_CHIUSI);
+		if(insiemi == null) {
+			return new ArrayList<InsiemeChiuso>();
+		}
+		return insiemi;
+	}
 	
 	
 }
