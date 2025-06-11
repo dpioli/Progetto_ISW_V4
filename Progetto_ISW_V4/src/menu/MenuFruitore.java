@@ -298,25 +298,25 @@ public class MenuFruitore extends Menu{
 		}
 		
 		if(proposteFruit.isEmpty()) {
-			System.out.println("Non hai proposte da ritirare.");
+			System.out.println("\nNon hai proposte da ritirare.\n");
 			return;
 		}
 		
 		int selezionata = selezionaPropostaRitirabile(proposteFruit);
 		
 		if(selezionata == proposteFruit.size()) {
-			System.out.println("Operazione annullata....");
+			System.out.println("\nOperazione annullata....\n");
 			return;
 		}
 		
 		PropostaScambio p = proposteFruit.get(selezionata);
-		boolean conferma = InputDati.yesOrNo("Sei sicuro di ritirare questa proposta ");
+		boolean conferma = InputDati.yesOrNo("\nSei sicuro di ritirare questa proposta ");
 		if(conferma) {
 			aggiornaStato(p, proposte);
 			GestorePersistenza.salvaScambi(proposte);
 			System.out.println("\nLa proposta è stata ritirata.\n");
 		} else {
-			System.out.println("Operazione annullata....");
+			System.out.println("\nOperazione annullata....\n");
 		}
 	}
 	
@@ -358,10 +358,16 @@ public class MenuFruitore extends Menu{
 	 */
 	public void visualizzaProposte() {
 		ArrayList<PropostaScambio> proposte = logica.getScambi();
+		
+		if(proposte.isEmpty()) {
+			System.out.println("\nNon ci sono proposte presenti.\n");
+			return;
+		}
+			
 		for(PropostaScambio p: proposte) {
 			boolean corrisponde = this.fruit.getUsername().equals(p.getAssociato().getUsername());
 			if(corrisponde) {
-				System.out.println("> " + p.toString());
+				System.out.println("\n> " + p.toString());
 			}
 		}
 	}

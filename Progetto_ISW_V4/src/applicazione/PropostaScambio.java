@@ -40,6 +40,14 @@ public class PropostaScambio {
 	public void setId(int id) {
 		this.id = id;
 	}
+	
+	public Proposta getRichiesta() {
+		return richiesta;
+	}
+	
+	public Proposta getOfferta() {
+		return offerta;
+	}
 
 	public StatoProposta getStatoIniziale() {
 		return statoIniziale;

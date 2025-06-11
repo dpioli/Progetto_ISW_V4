@@ -13,6 +13,7 @@ import applicazione.CategoriaNonFoglia;
 import applicazione.Comprensorio;
 import applicazione.FatConversione;
 import applicazione.Gerarchia;
+import applicazione.PropostaScambio;
 import utenti.Configuratore;
 import util.InputDati;
 import util.Menu;
@@ -167,9 +168,46 @@ public class MenuConfiguratore extends Menu {
 	/**
 	 * Metodo per visualizzare le proposte relative ad una specifica categoria foglia
 	 */
+	
 	public void visualizzaProposte() {
 		
+		ArrayList<CategoriaFoglia> categorieFoglia = logica.getCategorieFoglia();
+		ArrayList<PropostaScambio> proposte = logica.getScambi();
+		
+		int selezionata = selezionaCategoria(categorieFoglia);
+		
+		if(selezionata == categorieFoglia.size()) {
+			System.out.println("\nOperazione annullata....\n");
+			return;
+		}
+			
+		CategoriaFoglia f = categorieFoglia.get(selezionata);
+		StringBuffer sb = new StringBuffer();
+		boolean presenteProposta = false;
+		
+		for(PropostaScambio p : proposte) {
+			boolean presenteRichiesta = p.getRichiesta().getPrestazione().getNome().equals(f.getNome());
+			boolean presenteOfferta = p.getOfferta().getPrestazione().getNome().equals(f.getNome());
+			if(presenteRichiesta || presenteOfferta) {
+				if(!presenteProposta) {
+					sb.append("\nElenco proposte in cui è presente -> ")
+						.append(f.getNome().toUpperCase())
+						.append(":\n");
+					presenteProposta = true;
+				}
+				sb.append("> ").append(p.toString()).append("\n");
+			}
+		}
+		
+		if(presenteProposta) {
+			System.out.println(sb.toString());
+		} else {
+			System.out.println("\nNon è presente nessuna proposta per questa prestazione.\n");
+			return;
+		}
+		
 	}
+	
 	
 	/*
 	 * FUNZIONI SALVATAGGIO DATI
@@ -412,4 +450,18 @@ public class MenuConfiguratore extends Menu {
 	private void aggiungiFDC(Integer nuova) {
 		logica.aggiungiFDC(nuova);
 	}
+	
+	
+	private int selezionaCategoria(ArrayList<CategoriaFoglia> categorieFoglia) {
+		System.out.println("Prestazioni disponibili: ");
+		for(int i = 0; i < categorieFoglia.size(); i++) {
+			System.out.println(i + ": " + categorieFoglia.get(i).getNome());
+		}
+		System.out.println(categorieFoglia.size() + ": Annulla");
+		
+		int fogliaSelezionata = InputDati.leggiInteroConMINeMAX("\nSeleziona la prestazione per cui vuoi ottenere le proposte (annulla altrimenti) > ", 0, categorieFoglia.size());
+		
+		return fogliaSelezionata;
+	}
+	
 }
