@@ -12,6 +12,7 @@ import utenti.Fruitore;
  */
 public class PropostaScambio {
 	
+	private int id;
 	private Proposta richiesta;
 	private Proposta offerta; 
 	private StatoProposta statoIniziale;
@@ -24,11 +25,20 @@ public class PropostaScambio {
 	 * @param richiesta
 	 * @param offerta
 	 */
-	public PropostaScambio(Proposta richiesta, Proposta offerta) {
+	public PropostaScambio(Proposta richiesta, Proposta offerta, int id) {
+		this.id = ++id;
 		this.richiesta = richiesta;
 		this.offerta = offerta;
 		this.statoIniziale = StatoProposta.APERTA;
 		this.statoFinale = null;
+	}
+	
+	public int getId() {
+		return id;
+	}
+	
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public StatoProposta getStatoIniziale() {
@@ -59,9 +69,19 @@ public class PropostaScambio {
 		this.associato = associato;	
 	}
 	
-	@Override
+	private StatoProposta checkStato() {
+		return (statoFinale == null) ? statoIniziale : statoFinale;
+	}
+	
+	/*
 	public String toString() {
 		return "\nPropostaScambio \n> Richiesta: " + richiesta.toString() + "\n> Offerta: " + offerta.toString();
+	}
+	*/
+	
+	@Override
+	public String toString() {
+		return String.format("Richiesta: " + richiesta.toString() + " -> " + " Offerta: " + offerta.toString() + " | " + " Sato: " + checkStato());
 	}
 
 }

@@ -1,5 +1,6 @@
 [
   {
+    "id": 1,
     "richiesta": {
       "prestazione": {
         "id": 3,
@@ -21,7 +22,7 @@
       "quantitaOre": 9.0
     },
     "statoIniziale": "APERTA",
-    "statoFinale": null,
+    "statoFinale": "RITIRATA",
     "associato": {
       "username": "ren",
       "password": "p",
@@ -36,6 +37,7 @@
     }
   },
   {
+    "id": 2,
     "richiesta": {
       "prestazione": {
         "id": 2,
@@ -57,7 +59,6 @@
       "quantitaOre": 26.0
     },
     "statoIniziale": "APERTA",
-    "statoFinale": null,
     "associato": {
       "username": "era",
       "password": "letmein",
@@ -74,6 +75,7 @@
     }
   },
   {
+    "id": 3,
     "richiesta": {
       "prestazione": {
         "id": 11,
@@ -95,7 +97,43 @@
       "quantitaOre": 31.0
     },
     "statoIniziale": "APERTA",
-    "statoFinale": null,
+    "associato": {
+      "username": "ren",
+      "password": "p",
+      "mail": "ire@gmail.com",
+      "comprensorio": {
+        "nome": "Brescia Ovest",
+        "comuni": [
+          "Rodengo",
+          "Coccaglio"
+        ]
+      }
+    }
+  },
+  {
+    "id": 4,
+    "richiesta": {
+      "prestazione": {
+        "id": 8,
+        "nome": "fogliaovestramo2",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "RICHIESTA",
+      "quantitaOre": 10.0
+    },
+    "offerta": {
+      "prestazione": {
+        "id": 9,
+        "nome": "fogliaovestramo3",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "OFFERTA",
+      "quantitaOre": 10.0
+    },
+    "statoIniziale": "APERTA",
+    "statoFinale": "RITIRATA",
     "associato": {
       "username": "ren",
       "password": "p",

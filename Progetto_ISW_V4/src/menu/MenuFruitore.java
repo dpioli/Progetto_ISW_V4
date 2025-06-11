@@ -8,6 +8,7 @@ import applicazione.CategoriaFoglia;
 import applicazione.Gerarchia;
 import applicazione.Proposta;
 import applicazione.PropostaScambio;
+import applicazione.StatoProposta;
 import applicazione.TipoProposta;
 import persistenza.GestorePersistenza;
 import persistenza.LogicaPersistenza;
@@ -198,8 +199,10 @@ public class MenuFruitore extends Menu{
 	    int valore = (int) (fattori.get(incambio) * ore);
 		Proposta offerta = new Proposta(foglie.get(incambio), TipoProposta.OFFERTA, valore);
 		
+		int id = logica.recuperaId();
+		
 		//SCAMBIO
-		PropostaScambio scambio = new PropostaScambio(richiesta, offerta);
+		PropostaScambio scambio = new PropostaScambio(richiesta, offerta, id);
 		boolean sn = InputDati.yesOrNo(MSG_CONFERMA + scambio.toString() + MSG_Y_N);
 		if(sn) { //aggiunto alle proposte aperte
 			scambio.setFruitoreAssociato(fruit);
@@ -289,15 +292,65 @@ public class MenuFruitore extends Menu{
 		
 		for(PropostaScambio p: proposte) {
 			boolean corrisponde = this.fruit.getUsername().equals(p.getAssociato().getUsername());
-			if(corrisponde) {
+			if(corrisponde && (p.getStatoFinale() == null)) {
 				proposteFruit.add(p);
 			}
 		}
 		
-		StringBuffer sb = new StringBuffer();
+		if(proposteFruit.isEmpty()) {
+			System.out.println("Non hai proposte da ritirare.");
+			return;
+		}
 		
+		int selezionata = selezionaPropostaRitirabile(proposteFruit);
 		
+		if(selezionata == proposteFruit.size()) {
+			System.out.println("Operazione annullata....");
+			return;
+		}
+		
+		PropostaScambio p = proposteFruit.get(selezionata);
+		boolean conferma = InputDati.yesOrNo("Sei sicuro di ritirare questa proposta ");
+		if(conferma) {
+			aggiornaStato(p, proposte);
+			GestorePersistenza.salvaScambi(proposte);
+			System.out.println("\nLa proposta è stata ritirata.\n");
+		} else {
+			System.out.println("Operazione annullata....");
+		}
 	}
+	
+	/**
+	 * Metodo per aggiornare lo stato di una proposta che vuole essere ritirata
+	 * @param proposta
+	 * @param proposte
+	 */
+	private void aggiornaStato(PropostaScambio proposta, ArrayList<PropostaScambio> proposte) {
+		for(PropostaScambio p : proposte) {
+			if(p.getId() == proposta.getId()) {
+				p.setStatoFinale(StatoProposta.RITIRATA);
+				System.out.println(p.toString());
+			}
+		}
+	}
+	
+	/**
+	 * Metodo per selezionare la proposta da ritirare tra quelle disponibili
+	 * @param proposte
+	 * @return
+	 */
+	private int selezionaPropostaRitirabile(ArrayList<PropostaScambio> proposte) {
+		System.out.println("Proposte ritirabili: ");
+		for(int i = 0; i < proposte.size(); i++) {
+			System.out.println(i + ": " + proposte.get(i).toString());
+		}
+		System.out.println(proposte.size() + ": Annulla selezione");
+		
+		int propostaSelezionata = InputDati.leggiInteroConMINeMAX("Seleziona la proposta che vuoi ritirare (annulla altrimenti) > ", 0, proposte.size());
+		
+		return propostaSelezionata;
+	}
+	
 	/**
 	 * Metodo per la visualizzazione delle proposte da parte del fruitore
 	 * sia che siano aperte, chiuse, ritirate.
@@ -308,7 +361,7 @@ public class MenuFruitore extends Menu{
 		for(PropostaScambio p: proposte) {
 			boolean corrisponde = this.fruit.getUsername().equals(p.getAssociato().getUsername());
 			if(corrisponde) {
-				System.out.println(p.toString());
+				System.out.println("> " + p.toString());
 			}
 		}
 	}

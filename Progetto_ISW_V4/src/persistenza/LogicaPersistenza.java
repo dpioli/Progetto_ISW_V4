@@ -207,5 +207,13 @@ public class LogicaPersistenza {
 		return f.getId();
 	}
 	
+	public int recuperaId() {
+		if(scambi.isEmpty())
+			return 0;
+		int ultimo = scambi.size() - 1;
+		PropostaScambio p = scambi.get(ultimo);
+		return p.getId();
+	}
+	
 
 }
