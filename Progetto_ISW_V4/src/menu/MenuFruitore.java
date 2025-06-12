@@ -195,9 +195,9 @@ public class MenuFruitore extends Menu{
 
 		//OFFERTA
 		int incambio = InputDati.leggiInteroConMINeMAX(MSG_SEL_OFFERTA, 0, foglie.size()- 1);
-		ArrayList<Double> fattori = logica.getFatConversione().prendiRiga(scelta); 
+		ArrayList<Double> fattori = logica.getFatConversione().prendiRiga(scelta + 1); 
 		//prendendo tutti i fdc dalla tabella uscenti da id della prestazione richiesta
-	    int valore = (int) (fattori.get(incambio) * ore);
+	    int valore = (int) (fattori.get(incambio + 1) * ore);
 		Proposta offerta = new Proposta(foglie.get(incambio), TipoProposta.OFFERTA, valore);
 		
 		int id = logica.recuperaId();
