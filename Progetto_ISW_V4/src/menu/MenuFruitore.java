@@ -291,13 +291,15 @@ public class MenuFruitore extends Menu{
 	
 	/**
 	 * Metodo per verificare se una porposta inserita può essere soddisfatta da una singola proposta o da una catena
-	 * 1. Vado a cercare le proposte che possono soddisfare la mia proposta (sono di un fruitore del mio stesso comprensorio ma non sono io)
-	 * 2. Inizializzo la catena (perché anche se ho due proposte formo un insieme chiuso che è una lista di proposte)
-	 * 3. Aggiungo la mia proposta alla catena (primo elemento della catena)
-	 * 4. inizio il ciclo sulle propostValide
-	 * 5. Primo controllo se richiesta dell'ultima proposta nella catena è = all'offerta della mia proposta attuale e se le ore combaciano => match
-	 * 6. aggiungo questa proposta alla catena
-	 * 7. secondo controllo se 
+	 * 1. Recupero le proposte valide (proposte presenti nel mio stesso comprensorio e non formulate dalla persona stessa)
+	 * 2. Verifico se questa lista è vuota => non ci sono proposte compatibili quindi rimarra' pendente.
+	 * 3. Controllo verticale per la ricerca di un accoppiamento perfetto con un'altra proposta -> coppiaPerfetta(PropostaScambio p1, PropostaScambio p2)
+	 * 4. In caso non ci sia una coppia perfetta si va alla ricerca di una catena
+	 * 5. Creo l'array della catena in cui inserisco la proposta appena generata dal fruitore
+	 * 6. inizio la ricerca con cercaCatena(ArrayList<PropostaScambio> catena, ArrayList<PropostaScambio> proposteValide)
+	 * 7. In entrambi i casi quando si verifica un acatena o un accoppiamento  perfetto si crea un nuovo InsiemeChiuso
+	 * 		viene aggiornato lo stato di ogni proposta presente in CHIUSA e aggiunta all'insieme. Infine vado a salvare 
+	 * 		sia l'insieme che le proposte in modo persistente.
 	 * @param proposta
 	 */
 	private void verificaSoddisfacimento(PropostaScambio proposta) {
@@ -305,7 +307,7 @@ public class MenuFruitore extends Menu{
 		ArrayList<PropostaScambio> proposteValide = selezionaProposteValide(logica.getScambi(), proposta);
 		if(proposteValide.isEmpty()) {
 			System.out.println("\nAl momemnto non ci sono proposte che soddisfano la tua proposta.\n"
-					+ "Sarai contattato appena verra soddisfatta !!");
+					+ "Sarai contattato appena verra' soddisfatta !!");
 			return;
 		}
 		
@@ -340,7 +342,7 @@ public class MenuFruitore extends Menu{
 			return;
 		} else {
 			System.out.println("\nAl momemnto non ci sono proposte che soddisfano la tua proposta.\n"
-					+ "Sarai contattato appena verra soddisfatta !!");
+					+ "Sarai contattato appena verraà soddisfatta !!");
 			return;
 		}
 		
@@ -523,11 +525,10 @@ public class MenuFruitore extends Menu{
 	 * @return true se lo stato della proposta è aperto /false se lo stato della proposta è chiuso 
 	 */
 	private boolean controlloStato(PropostaScambio proposta) {
-		boolean n = proposta.getStatoFinale() != null;
 		boolean c = proposta.getStatoFinale() != StatoProposta.CHIUSA;
 		boolean r = proposta.getStatoFinale() != StatoProposta.RITIRATA;
 		
-		if(n && c && r) {
+		if(c && r) {
 			return true;
 		} else {
 			return false;

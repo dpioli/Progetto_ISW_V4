@@ -13,6 +13,7 @@ import applicazione.CategoriaNonFoglia;
 import applicazione.Comprensorio;
 import applicazione.FatConversione;
 import applicazione.Gerarchia;
+import applicazione.InsiemeChiuso;
 import applicazione.PropostaScambio;
 import utenti.Configuratore;
 import util.InputDati;
@@ -37,6 +38,7 @@ public class MenuConfiguratore extends Menu {
 	private static final String MSG_VISUALIZZA_GERARCHIE = "Visualizza tutte le gerarchie";
 	private static final String MSG_VISUALIZZA_FAT_CONV = "Visualizza tutti i fattori di conversione";
 	private static final String MSG_VISUALIZZA_PROPOSTE = "Visualizza le proposte relative ad una categoria";
+	private static final String MSG_VISUALIZZA_INSIEMI_CHIUSI = "Visualizza gli insiemi chiusi";
 	private static final String MSG_SALVA = "Salva tutte le modifiche effettuate";
 	private final static String MSG_P_PRECEDENTE = "Ritorna alla pagina di autenticazione";
 	
@@ -93,6 +95,7 @@ public class MenuConfiguratore extends Menu {
 			MSG_VISUALIZZA_GERARCHIE,
 			MSG_VISUALIZZA_FAT_CONV,
 			MSG_VISUALIZZA_PROPOSTE,
+			MSG_VISUALIZZA_INSIEMI_CHIUSI,
 			MSG_SALVA,
 			MSG_P_PRECEDENTE
 	};
@@ -168,7 +171,6 @@ public class MenuConfiguratore extends Menu {
 	/**
 	 * Metodo per visualizzare le proposte relative ad una specifica categoria foglia
 	 */
-	
 	public void visualizzaProposte() {
 		
 		ArrayList<CategoriaFoglia> categorieFoglia = logica.getCategorieFoglia();
@@ -195,7 +197,8 @@ public class MenuConfiguratore extends Menu {
 						.append(":\n");
 					presenteProposta = true;
 				}
-				sb.append("> ").append(p.toString()).append("\n");
+				sb.append("> ").append(p.toString()).append("\n").append("\t").append("Fruitore associato: " + p.getAssociato().getMail() + "\n");
+				
 			}
 		}
 		
@@ -205,6 +208,20 @@ public class MenuConfiguratore extends Menu {
 			System.out.println("\nNon è presente nessuna proposta per questa prestazione.\n");
 			return;
 		}
+		
+	}
+	
+	/**
+	 * Metodo per andare a visualizzare l'insiemi chiusi in modo da poter poi contatare i fruitori associati
+	 */
+	public void visualizzaInsiemiChiusi() {
+		ArrayList<InsiemeChiuso> insiemi = logica.getInsiemi();
+		StringBuffer sb = new StringBuffer();
+		sb.append("Lista degli insiemi chiusi: \n");
+		for(InsiemeChiuso ic: insiemi) {
+			sb.append(ic.toString());
+		}
+		System.out.println(sb.toString());
 		
 	}
 	

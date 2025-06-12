@@ -47,9 +47,10 @@ public class MenuPrincipale{
 	private static final int CASE_V_COMPRENSORI = 3;
 	private static final int CASE_V_GERARCHIE = 4;
 	private static final int CASE_V_FAT_CONV = 5;
-	private static final int CASE_V_PROPOSTE = 6;	
-	private static final int CASE_SALVA = 7;
-	private static final int CASE_P_AUTENTICAZIONE = 8;
+	private static final int CASE_V_PROPOSTE = 6;
+	private static final int CASE_V_INSIEMI_CHIUSI = 7;
+	private static final int CASE_SALVA = 8;
+	private static final int CASE_P_AUTENTICAZIONE = 9;
 	private static final int CASE_USCITA = 0;
 	
 	/**
@@ -173,6 +174,9 @@ public class MenuPrincipale{
 				break;
 			case CASE_V_PROPOSTE:
 				menuConfig.visualizzaProposte();
+				break;
+			case CASE_V_INSIEMI_CHIUSI:
+				menuConfig.visualizzaInsiemiChiusi();
 				break;
 			case CASE_SALVA:
 				menuConfig.salva();

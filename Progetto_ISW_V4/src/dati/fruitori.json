@@ -38,5 +38,19 @@
         "Coccaglio"
       ]
     }
+  },
+  {
+    "username": "irene",
+    "password": "romano",
+    "mail": "irene.romano@gmail.com",
+    "comprensorio": {
+      "nome": "Brescia Sud",
+      "comuni": [
+        "Castel Mella",
+        "Flero",
+        "Bagnolo Mella",
+        "Capriano Del Colle"
+      ]
+    }
   }
 ]
