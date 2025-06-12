@@ -288,10 +288,95 @@ public class MenuFruitore extends Menu{
 		System.out.println(sb.toString());
 	}
 	
+	
+	/**
+	 * Metodo per verificare se una porposta inserita può essere soddisfatta da una singola proposta o da una catena
+	 * 1. Vado a cercare le proposte che possono soddisfare la mia proposta (sono di un fruitore del mio stesso comprensorio ma non sono io)
+	 * 2. Inizializzo la catena (perché anche se ho due proposte formo un insieme chiuso che è una lista di proposte)
+	 * 3. Aggiungo la mia proposta alla catena (primo elemento della catena)
+	 * 4. inizio il ciclo sulle propostValide
+	 * 5. Primo controllo se richiesta dell'ultima proposta nella catena è = all'offerta della mia proposta attuale e se le ore combaciano => match
+	 * 6. aggiungo questa proposta alla catena
+	 * 7. secondo controllo se 
+	 * @param proposta
+	 */
 	private void verificaSoddisfacimento(PropostaScambio proposta) {
-		ArrayList<PropostaScambio> proposteValide = new ArrayList<PropostaScambio>();
 		
-		//selezioneProposteValide
+		ArrayList<PropostaScambio> proposteValide = selezionaProposteValide(logica.getScambi(), proposta);
+		if(proposteValide.isEmpty()) {
+			System.out.println("\nAl momemnto non ci sono proposte che soddisfano la tua proposta.\n"
+					+ "Sarai contattato appena verra soddisfatta !!");
+			return;
+		}
+		
+		for(PropostaScambio p: proposteValide) {
+			if(coppiaPerfetta(proposta, p)) {
+				InsiemeChiuso ins = new InsiemeChiuso(logica.recuperaIdInsiemeChiuso());
+				aggiornaStatoAChiusa(proposta, logica.getScambi());
+				aggiornaStatoAChiusa(p, logica.getScambi());
+				ins.aggiungiProposteAInsiemeChiuso(proposta);
+				ins.aggiungiProposteAInsiemeChiuso(p);
+				logica.aggiungiInsieme(ins);
+				GestorePersistenza.salvaInsiemiChiusi(logica.getInsiemi());
+				GestorePersistenza.salvaScambi(logica.getScambi());
+				System.out.println("\nLa tua proposta è stata soddisfatta verrai contatato a breve con tutte le informazioni!!\n");
+				return;
+			}
+		}
+		
+		ArrayList<PropostaScambio> catena = new ArrayList<PropostaScambio>();
+		catena.add(proposta);
+		
+		if(cercaCatena(catena, proposteValide)) {
+			InsiemeChiuso insC = new InsiemeChiuso(logica.recuperaIdInsiemeChiuso());
+			for(PropostaScambio p: catena) {
+				aggiornaStatoAChiusa(p, logica.getScambi());
+				insC.aggiungiProposteAInsiemeChiuso(p);
+			}
+			logica.aggiungiInsieme(insC);
+			GestorePersistenza.salvaInsiemiChiusi(logica.getInsiemi());
+			GestorePersistenza.salvaScambi(logica.getScambi());
+			System.out.println("\nLa tua proposta è stata soddisfatta verrai contatato a breve con tutte le informazioni!!\n");
+			return;
+		} else {
+			System.out.println("\nAl momemnto non ci sono proposte che soddisfano la tua proposta.\n"
+					+ "Sarai contattato appena verra soddisfatta !!");
+			return;
+		}
+		
+		/* TENTATIVO 2
+		ArrayList<PropostaScambio> proposteValide = selezionaProposteValide(logica.getScambi(), proposta);
+		boolean trovatoCatena = false;
+		
+		ArrayList<PropostaScambio> catena = new ArrayList<PropostaScambio>();
+		catena.add(proposta);
+		
+		for(PropostaScambio p: proposteValide) {
+			if(catena.get(catena.size() - 1).getRichiesta().getPrestazione().getNome().equals(p.getOfferta().getPrestazione().getNome()) &&
+					catena.get(catena.size() - 1).getRichiesta().getQuantitaOre() == p.getOfferta().getQuantitaOre()) {
+				catena.add(p);
+				if(catena.get(0).getOfferta().getPrestazione().getNome().equals(p.getRichiesta().getPrestazione().getNome()) && 
+						catena.get(0).getOfferta().getQuantitaOre() == p.getRichiesta().getQuantitaOre()) {
+					int id = logica.recuperaIdInsiemeChiuso();
+					InsiemeChiuso insiemeC = new InsiemeChiuso(id);
+					for(PropostaScambio pC: catena) {
+						insiemeC.aggiungiProposteAInsiemeChiuso(pC);
+						aggiornaStatoAChiusa(pC, logica.getScambi());
+					}
+					GestorePersistenza.salvaInsiemiChiusi(logica.getInsiemi());
+					return true;
+				} else {
+					continue;
+				}
+			} else {
+				continue;
+			}
+		}
+		
+		return trovatoCatena;
+		*/
+		
+		/*TENTATIVO 1
 		for(PropostaScambio p: logica.getScambi()) {
 			if(verificaFruitore(proposta, p) && controlloStato(p) && verificaSoddisfacimentoNome(proposta, p) && verificaSoddisfacimentoOre(proposta, p)) {
 				aggiornaStatoAChiusa(proposta, logica.getScambi());
@@ -310,19 +395,69 @@ public class MenuFruitore extends Menu{
 				System.out.println("\nLa tua proposta è stata accettata sarai contattato a breve!\n");
 			}
 		}
+		*/
 	}
+	
+	private boolean cercaCatena(ArrayList<PropostaScambio> catena, ArrayList<PropostaScambio> proposteValide) {
+		ArrayList<PropostaScambio> propostePendenti = proposteValide;
+		for(PropostaScambio p: propostePendenti) {
+			if(verificaRichiestaOfferta(catena.get(catena.size() - 1), p)) {
+				if(verificaOffertaRichiesta(catena.get(0), p)) {
+					return true;
+				}
+				catena.add(p);
+				propostePendenti.remove(p);
+				cercaCatena(catena, propostePendenti);
+			}
+			continue;
+		}
+		return false;
+	}
+	
+	/**
+	 * Metodo che permette di controllare se una coppia di proposte si soddisfa avvicevolmente
+	 * @param p1
+	 * @param p2
+	 * @return true se due proposte si soddisfano avvicevolmente, false altrimenti
+	 */
+	private boolean coppiaPerfetta(PropostaScambio p1, PropostaScambio p2) {
+		if(verificaSoddisfacimentoNome(p1, p2) && verificaSoddisfacimentoOre(p1, p2))
+			return true;
+		return false;
+	}
+	
+	/**
+	 * Metodo per selezionare le possibili proposte valide per soddisfare al proposta appena creata
+	 * @param proposte
+	 * @param proposta
+	 * @return ArrayList<PropostaScambio> proposte che possono soddisfare una proposta inserita
+	 */
+	private ArrayList<PropostaScambio> selezionaProposteValide(ArrayList<PropostaScambio> proposte, PropostaScambio proposta){
+		ArrayList<PropostaScambio> proposteV = new ArrayList<PropostaScambio>();
+		
+		for(PropostaScambio p: proposte) {
+			if(controlloStato(p) && verificaFruitore(proposta, p)) {
+				proposteV.add(p);
+			}
+		}
+		return proposteV;
+	}
+	
 	/**
 	 * Metodo per verificare che i due fruitori siano diversi
 	 * @param p1
 	 * @param p2
-	 * @return true se i fruitori sono diversi
+	 * @return true se i fruitori sono diversi e se il cmprensorio è lo stesso, false altrimenti
 	 */
 	private boolean verificaFruitore(PropostaScambio p1, PropostaScambio p2) {
 		boolean f = p1.getAssociato().getUsername().equals(p2.getAssociato().getUsername());
+		boolean c = p1.getAssociato().getNomeComprensorio().equals(p2.getAssociato().getNomeComprensorio());
 		if(f) {
 			return false;
-		} else {
+		} else if (c) {
 			return true;
+		} else {
+			return false;
 		}
 	}
 	
@@ -337,6 +472,28 @@ public class MenuFruitore extends Menu{
 		boolean or = p1.getOfferta().getPrestazione().getNome().equals(p2.getRichiesta().getPrestazione().getNome());
 		
 		if(ro && or) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	private boolean verificaRichiestaOfferta(PropostaScambio p1, PropostaScambio p2) {
+		boolean nomeRichiestaOfferta =  p1.getRichiesta().getPrestazione().getNome().equals(p2.getOfferta().getPrestazione().getNome());
+		boolean oreRichiestaOfferta = p1.getRichiesta().getQuantitaOre() == p2.getOfferta().getQuantitaOre();
+		
+		if(nomeRichiestaOfferta && oreRichiestaOfferta) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	private boolean verificaOffertaRichiesta(PropostaScambio p1, PropostaScambio p2) {
+		boolean nomeOffertaRichiesta = p1.getOfferta().getPrestazione().getNome().equals(p2.getRichiesta().getPrestazione().getNome());
+		boolean oreOffertaRichiesta = p1.getOfferta().getQuantitaOre() == p2.getRichiesta().getQuantitaOre();
+		
+		if(nomeOffertaRichiesta && oreOffertaRichiesta) {
 			return true;
 		} else {
 			return false;
@@ -377,6 +534,9 @@ public class MenuFruitore extends Menu{
 		}
 	}
 	
+	/**
+	 * Metodo per poter ritirare le proposte pendenti
+	 */
 	public void ritiraProposte() {
 		ArrayList<PropostaScambio> proposte = logica.getScambi();
 		ArrayList<PropostaScambio> proposteFruit = new ArrayList<>();
