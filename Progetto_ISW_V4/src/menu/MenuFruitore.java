@@ -236,9 +236,9 @@ public class MenuFruitore extends Menu{
 	    int intero = (int) Math.floor(valore);
 	    double decimale = valore - intero;
 
-	    if (decimale < 0.5) {
+	    if (decimale <= 0.4) {
 	        return intero; // arrotonda per difetto
-	    } else if (decimale == 0.5) {
+	    } else if ( decimale < 0.6) {
 	        return intero + 0.5; // mantiene il .5
 	    } else {
 	        return intero + 1; // arrotonda per eccesso
@@ -433,15 +433,19 @@ public class MenuFruitore extends Menu{
 	
 	private boolean cercaCatena(ArrayList<PropostaScambio> catena, ArrayList<PropostaScambio> proposteValide) {
 		ArrayList<PropostaScambio> propostePendenti = new ArrayList<>(proposteValide);
-		ArrayList<PropostaScambio> nuoveProposteValide = new ArrayList<>();
+		ArrayList<PropostaScambio> nuoveProposteValide = new ArrayList<>(proposteValide);
 		for(PropostaScambio p: propostePendenti) {
 			if(verificaRichiestaOfferta(catena.get(catena.size() - 1), p)) {
+				catena.add(p);
 				if(verificaOffertaRichiesta(catena.get(0), p)) {
 					return true;
 				}
-				catena.add(p);
-				nuoveProposteValide.add(p);
-				cercaCatena(catena, nuoveProposteValide);
+				nuoveProposteValide.remove(p);
+				if(cercaCatena(catena, nuoveProposteValide)) {
+					return true;
+				}
+				
+				catena.remove(catena.size() - 1);
 			}
 			continue;
 		}
@@ -658,6 +662,7 @@ public class MenuFruitore extends Menu{
 	 */
 	public void visualizzaProposte() {
 		ArrayList<PropostaScambio> proposte = logica.getScambi();
+		ArrayList<PropostaScambio> proposteFruit = new ArrayList<>();
 		
 		if(proposte.isEmpty()) {
 			System.out.println("\nNon ci sono proposte presenti.\n");
@@ -666,9 +671,17 @@ public class MenuFruitore extends Menu{
 			
 		for(PropostaScambio p: proposte) {
 			boolean corrisponde = this.fruit.getUsername().equals(p.getAssociato().getUsername());
-			if(corrisponde) {
+			proposteFruit.add(p);
+		}
+		
+		if(proposteFruit.isEmpty()) {
+			System.out.println("\nNon ci sono proposte presenti.\n");
+			return;
+		} else {
+			for(PropostaScambio p: proposteFruit) {
 				System.out.println("\n> " + p.toString());
 			}
+				
 		}
 	}
 
