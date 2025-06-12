@@ -200,7 +200,8 @@ public class MenuFruitore extends Menu{
 		ArrayList<Double> fattori = logica.getFatConversione().prendiRiga(scelta + 1); 
 		//prendendo tutti i fdc dalla tabella uscenti da id della prestazione richiesta
 	    double valore = (fattori.get(incambio + 1) * ore);
-	    double arrotondato = new BigDecimal(valore).setScale(1, RoundingMode.HALF_UP).doubleValue();
+	    //double arrotondato = new BigDecimal(valore).setScale(1, RoundingMode.HALF_UP).doubleValue();
+	    double arrotondato = arrotondaCustom(valore);
 		Proposta offerta = new Proposta(foglie.get(incambio), TipoProposta.OFFERTA, arrotondato);
 		
 		int id = logica.recuperaId();
@@ -218,6 +219,33 @@ public class MenuFruitore extends Menu{
 			return;
 		}
 	}
+	
+	/*
+	private static double arrotondaCustom(double valore) {
+	    double intero = Math.floor(valore); // parte intera
+	    double decimale = valore - intero;  // parte decimale
+
+	    if (decimale > 0 && decimale < 0.5) {
+	        return intero + 0.5;
+	    } else {
+	        return Math.round(valore * 10.0) / 10.0;
+	    }
+	}
+	*/
+	public static double arrotondaCustom(double valore) {
+	    int intero = (int) Math.floor(valore);
+	    double decimale = valore - intero;
+
+	    if (decimale < 0.5) {
+	        return intero; // arrotonda per difetto
+	    } else if (decimale == 0.5) {
+	        return intero + 0.5; // mantiene il .5
+	    } else {
+	        return intero + 1; // arrotonda per eccesso
+	    }
+	}
+
+
 	
 	/**
 	 * Metodo che recupera le foglie disponibili nel comprensorio geografico del fruitore,
@@ -404,15 +432,16 @@ public class MenuFruitore extends Menu{
 	}
 	
 	private boolean cercaCatena(ArrayList<PropostaScambio> catena, ArrayList<PropostaScambio> proposteValide) {
-		ArrayList<PropostaScambio> propostePendenti = proposteValide;
+		ArrayList<PropostaScambio> propostePendenti = new ArrayList<>(proposteValide);
+		ArrayList<PropostaScambio> nuoveProposteValide = new ArrayList<>();
 		for(PropostaScambio p: propostePendenti) {
 			if(verificaRichiestaOfferta(catena.get(catena.size() - 1), p)) {
 				if(verificaOffertaRichiesta(catena.get(0), p)) {
 					return true;
 				}
 				catena.add(p);
-				propostePendenti.remove(p);
-				cercaCatena(catena, propostePendenti);
+				nuoveProposteValide.add(p);
+				cercaCatena(catena, nuoveProposteValide);
 			}
 			continue;
 		}
