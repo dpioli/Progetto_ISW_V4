@@ -1,5 +1,7 @@
 package menu;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 
 import applicazione.CampoCaratteristico;
@@ -197,8 +199,9 @@ public class MenuFruitore extends Menu{
 		int incambio = InputDati.leggiInteroConMINeMAX(MSG_SEL_OFFERTA, 0, foglie.size()- 1);
 		ArrayList<Double> fattori = logica.getFatConversione().prendiRiga(scelta + 1); 
 		//prendendo tutti i fdc dalla tabella uscenti da id della prestazione richiesta
-	    int valore = (int) (fattori.get(incambio + 1) * ore);
-		Proposta offerta = new Proposta(foglie.get(incambio), TipoProposta.OFFERTA, valore);
+	    double valore = (fattori.get(incambio + 1) * ore);
+	    double arrotondato = new BigDecimal(valore).setScale(1, RoundingMode.HALF_UP).doubleValue();
+		Proposta offerta = new Proposta(foglie.get(incambio), TipoProposta.OFFERTA, arrotondato);
 		
 		int id = logica.recuperaId();
 		
@@ -481,8 +484,9 @@ public class MenuFruitore extends Menu{
 	}
 	
 	private boolean verificaRichiestaOfferta(PropostaScambio p1, PropostaScambio p2) {
+		double errore = 0.5;
 		boolean nomeRichiestaOfferta =  p1.getRichiesta().getPrestazione().getNome().equals(p2.getOfferta().getPrestazione().getNome());
-		boolean oreRichiestaOfferta = p1.getRichiesta().getQuantitaOre() == p2.getOfferta().getQuantitaOre();
+		boolean oreRichiestaOfferta = p1.getRichiesta().getQuantitaOre() - p2.getOfferta().getQuantitaOre() < errore;
 		
 		if(nomeRichiestaOfferta && oreRichiestaOfferta) {
 			return true;
@@ -492,8 +496,9 @@ public class MenuFruitore extends Menu{
 	}
 	
 	private boolean verificaOffertaRichiesta(PropostaScambio p1, PropostaScambio p2) {
+		double errore = 0.5;
 		boolean nomeOffertaRichiesta = p1.getOfferta().getPrestazione().getNome().equals(p2.getRichiesta().getPrestazione().getNome());
-		boolean oreOffertaRichiesta = p1.getOfferta().getQuantitaOre() == p2.getRichiesta().getQuantitaOre();
+		boolean oreOffertaRichiesta = p1.getOfferta().getQuantitaOre() - p2.getRichiesta().getQuantitaOre() < errore;
 		
 		if(nomeOffertaRichiesta && oreOffertaRichiesta) {
 			return true;
@@ -509,8 +514,9 @@ public class MenuFruitore extends Menu{
 	 * @return true veirfica soddisfatta / false verifica non soddisfatta
 	 */
 	private boolean verificaSoddisfacimentoOre(PropostaScambio p1, PropostaScambio p2) {
-		boolean ro = p1.getRichiesta().getQuantitaOre() == p2.getOfferta().getQuantitaOre();
-		boolean or = p1.getOfferta().getQuantitaOre() == p2.getRichiesta().getQuantitaOre();
+		double errore = 0.5;
+		boolean ro = p1.getRichiesta().getQuantitaOre() - p2.getOfferta().getQuantitaOre() < errore;
+		boolean or = p1.getOfferta().getQuantitaOre() - p2.getRichiesta().getQuantitaOre() < errore;
 		
 		if(ro && or) {
 			return true;
