@@ -2,6 +2,8 @@ package applicazione;
 
 import java.util.ArrayList;
 
+import utenti.Fruitore;
+
 public class InsiemeChiuso {
 	
 	private int id;
@@ -32,20 +34,25 @@ public class InsiemeChiuso {
 		proposte.add(proposta);
 	}
 	
+	public String ottieniComprensorioInsieme() {
+		Comprensorio c = this.proposte.get(0).getAssociato().getComprensorio();
+		return c.getNome();
+	}
+	
 	@Override
 	public String toString() {
-		ArrayList<String> mailFruitoriAssociati = new ArrayList<String>();
+		ArrayList<Fruitore> fruitoriAssociati = new ArrayList<>();
 		StringBuffer sb = new StringBuffer();
 		sb.append("\n- id: ");
 		sb.append(this.id + "\n\t");
 		for(PropostaScambio p: proposte) {
 			sb.append(p.toString() + "| Proposta da: " + p.getAssociato().getMail() + "\n\t");
-			mailFruitoriAssociati.add(p.getAssociato().getMail());
+			fruitoriAssociati.add(p.getAssociato());
 		}
 		
 		sb.append("\n\tFruitori coinvolti: \n\t");
-		for(String s: mailFruitoriAssociati) {
-			sb.append("- " + s + "\n\t");
+		for(Fruitore f: fruitoriAssociati) {
+			sb.append("- " + f.getUsername() + " -> " + f.getMail() + " | " + f.getNomeComprensorio() + "\n\t");
 		}
 		return sb.toString();
 	}
