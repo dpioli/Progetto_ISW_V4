@@ -81,11 +81,29 @@ public class PropostaScambio {
 		return (statoFinale == null) ? statoIniziale : statoFinale;
 	}
 	
-	/*
-	public String toString() {
-		return "\nPropostaScambio \n> Richiesta: " + richiesta.toString() + "\n> Offerta: " + offerta.toString();
+	public String getNomeAssociato() {
+		return associato.getUsername();
 	}
-	*/
+	
+	public String getComprensorio() {
+		return associato.getNomeComprensorio();
+	}
+	
+	public double getOreRichiesta() {
+		return richiesta.getQuantitaOre();
+	}
+	
+	public double getOreOfferta() {
+		return offerta.getQuantitaOre();
+	}
+	
+	public String getNomeRichiesta() {
+		return richiesta.getPrestazione().getNome();
+	}
+	
+	public String getNomeOfferta() {
+		return offerta.getPrestazione().getNome();
+	}
 	
 	@Override
 	public String toString() {

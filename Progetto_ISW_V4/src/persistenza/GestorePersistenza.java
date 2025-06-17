@@ -33,6 +33,10 @@ public class GestorePersistenza {
 	private static final String FILE_PROPOSTE = "../Progetto_ISW_V4/src/dati/proposte.json";
 	private static final String FILE_INSIEMI_CHIUSI = "../Progetto_ISW_V4/src/dati/insiemiChiusi.json";
 	
+	private static final String MSG_ERRORE_SALVATAGGIO = "Errore durante il salvataggio: ";
+	private static final String MSG_FILE_NON_TROVATO = "File non trovato: ";
+	private static final String MSG_ERRORE_CARICAMENTO_FILE = "Errore durante il caricamento: ";
+	
 	
 	/* PER la JAR
 	private static final String FILE_CONFIGURATORI = "dati/configuratori.json";
@@ -62,7 +66,7 @@ public class GestorePersistenza {
 			gson.toJson(oggetto, wr);
 			wr.close();
 		} catch (IOException e) {
-			System.err.println("Errore durante il salvataggio: " + e.getMessage());
+			System.err.println(MSG_ERRORE_SALVATAGGIO + e.getMessage());
 		}
 	}
 	
@@ -77,13 +81,13 @@ public class GestorePersistenza {
 	    T oggetto = null;
 	    File file = new File(fpath);
 	    if (!file.exists()) {
-	    	System.err.println("File non trovato: " + fpath);
+	    	System.err.println(MSG_FILE_NON_TROVATO + fpath);
 	    	return null;
 	    }
 	    try (FileReader rd = new FileReader(fpath)){
 	        oggetto = gson.fromJson(rd, typeOfT);
 	    } catch (IOException e) {
-	        System.err.println("Errore durante il caricamento: " + e.getMessage());
+	        System.err.println(MSG_ERRORE_CARICAMENTO_FILE + e.getMessage());
 	    }
 	    return oggetto != null ? oggetto : null; // per collezioni non creiamo nuovi oggetti vuoti
 	}

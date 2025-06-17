@@ -50,6 +50,7 @@ public class MenuFruitore extends Menu{
 	private static final String MSG_SOTTOCATEG_DISP = "Sottocategorie disponibili:";
 	private static final String DOT = ". ";
 	private static final String COLON = ": ";
+	private static final String NEW_LINE = "\n";
 	private static final String MSG_VOCE_TORNA_INDIETRO = "0. Torna al menu";
 	//versione 3
 	private static final String MSG_SEL_PRESTAZIONE = "Seleziona la prestazione di interesse: ";
@@ -59,6 +60,21 @@ public class MenuFruitore extends Menu{
 	private static final String MSG_Y_N = "\nVuoi confermare ";
 	private static final String MSG_CHECK_COMPRENSORIO = "\nNon ci sono Gerarchie appartenenti al tuo comprensorio geografico.\n";
 	private static final String MSG_ANNULLATO_SCAMBIO = "Hai annullato la proposta di scambio...";
+	//versione 4
+	private static final String MSG_PRESTAZIONI_A_DISPOSIZIONE = "Prestazioni a disposizione >>\n";
+	private static final String MSG_PROPOSTA_RITIRATA = "\nLa proposta è stata ritirata.\n";
+	private static final String NEW_LINE_ARROW = "\n> ";
+	private static final String MSG_ASSENZA_PROPOSTE = "\nNon ci sono proposte presenti.\n";
+	private static final String MSG_SELEZIONA_PROPOSTA_DA_RITIRATE = "Seleziona la proposta che vuoi ritirare (annulla altrimenti) > ";
+	private static final String ANNULLA_SELEZIONE = ": Annulla selezione";
+	private static final String MSG_PROPOSTE_RITIRABILI = "Proposte ritirabili: ";
+	private static final String MSG_CONFERMA_RITIRO_PROPOSTA = "\nSei sicuro di ritirare questa proposta ";
+	private static final String MSG_OPERAZIONE_ANNULLATA = "\nOperazione annullata....\n";
+	private static final String MSG_ASSENZA_PROPOSTE_RITIRATE = "\nNon hai proposte da ritirare.\n";
+	private static final String MSG_PROPOSTA_SODDISFATTA = "\nLa tua proposta è stata soddisfatta verrai contatato a breve con tutte le informazioni!!\n";
+	private static final String MSG_PROPOSTA_NON_SODDISFATTA = "\nAl momemnto non ci sono proposte che soddisfano la tua proposta.\n"
+			+ "Sarai contattato appena verra' soddisfatta !!";
+	
 	
 	private static String[] vociFruit = {NAVIGA, RICHIEDI_PRESTAZIONI, RITIRA_PROPOSTE, VISUALIZZA_PROPOSTE, MSG_P_PRECEDENTE};
 	
@@ -200,7 +216,7 @@ public class MenuFruitore extends Menu{
 		ArrayList<Double> fattori = logica.getFatConversione().prendiRiga(scelta + 1); 
 		//prendendo tutti i fdc dalla tabella uscenti da id della prestazione richiesta
 	    double valore = (fattori.get(incambio + 1) * ore);
-	    //double arrotondato = new BigDecimal(valore).setScale(1, RoundingMode.HALF_UP).doubleValue();
+	    
 	    double arrotondato = arrotondaCustom(valore);
 		Proposta offerta = new Proposta(foglie.get(incambio), TipoProposta.OFFERTA, arrotondato);
 		
@@ -309,12 +325,12 @@ public class MenuFruitore extends Menu{
 	private void stampaPrestazioni(ArrayList<CategoriaFoglia> foglie) {
 		StringBuffer sb = new StringBuffer();
 		int i = 0; //contatore per legenda
-		sb.append("Prestazioni a disposizione >>\n");		
+		sb.append(MSG_PRESTAZIONI_A_DISPOSIZIONE);		
 		for(CategoriaFoglia f : foglie) {
 			sb.append(i++);
-			sb.append(": ");
+			sb.append(COLON);
 			sb.append(f.getNome());
-			sb.append("\n");
+			sb.append(NEW_LINE);
 		}
 		System.out.println(sb.toString());
 	}
@@ -337,8 +353,7 @@ public class MenuFruitore extends Menu{
 		
 		ArrayList<PropostaScambio> proposteValide = selezionaProposteValide(logica.getScambi(), proposta);
 		if(proposteValide.isEmpty()) {
-			System.out.println("\nAl momemnto non ci sono proposte che soddisfano la tua proposta.\n"
-					+ "Sarai contattato appena verra' soddisfatta !!");
+			System.out.println(MSG_PROPOSTA_NON_SODDISFATTA);
 			return;
 		}
 		
@@ -352,7 +367,7 @@ public class MenuFruitore extends Menu{
 				logica.aggiungiInsieme(ins);
 				GestorePersistenza.salvaInsiemiChiusi(logica.getInsiemi());
 				GestorePersistenza.salvaScambi(logica.getScambi());
-				System.out.println("\nLa tua proposta è stata soddisfatta verrai contatato a breve con tutte le informazioni!!\n");
+				System.out.println(MSG_PROPOSTA_SODDISFATTA);
 				return;
 			}
 		}
@@ -369,11 +384,10 @@ public class MenuFruitore extends Menu{
 			logica.aggiungiInsieme(insC);
 			GestorePersistenza.salvaInsiemiChiusi(logica.getInsiemi());
 			GestorePersistenza.salvaScambi(logica.getScambi());
-			System.out.println("\nLa tua proposta è stata soddisfatta verrai contatato a breve con tutte le informazioni!!\n");
+			System.out.println(MSG_PROPOSTA_SODDISFATTA);
 			return;
 		} else {
-			System.out.println("\nAl momemnto non ci sono proposte che soddisfano la tua proposta.\n"
-					+ "Sarai contattato appena verraà soddisfatta !!");
+			System.out.println(MSG_PROPOSTA_NON_SODDISFATTA);
 			return;
 		}
 		
@@ -589,25 +603,25 @@ public class MenuFruitore extends Menu{
 		}
 		
 		if(proposteFruit.isEmpty()) {
-			System.out.println("\nNon hai proposte da ritirare.\n");
+			System.out.println(MSG_ASSENZA_PROPOSTE_RITIRATE);
 			return;
 		}
 		
 		int selezionata = selezionaPropostaRitirabile(proposteFruit);
 		
 		if(selezionata == proposteFruit.size()) {
-			System.out.println("\nOperazione annullata....\n");
+			System.out.println(MSG_OPERAZIONE_ANNULLATA);
 			return;
 		}
 		
 		PropostaScambio p = proposteFruit.get(selezionata);
-		boolean conferma = InputDati.yesOrNo("\nSei sicuro di ritirare questa proposta ");
+		boolean conferma = InputDati.yesOrNo(MSG_CONFERMA_RITIRO_PROPOSTA);
 		if(conferma) {
 			aggiornaStatoARitirata(p, proposte);
 			GestorePersistenza.salvaScambi(proposte);
-			System.out.println("\nLa proposta è stata ritirata.\n");
+			System.out.println(MSG_PROPOSTA_RITIRATA);
 		} else {
-			System.out.println("\nOperazione annullata....\n");
+			System.out.println(MSG_OPERAZIONE_ANNULLATA);
 		}
 	}
 	
@@ -644,13 +658,13 @@ public class MenuFruitore extends Menu{
 	 * @return
 	 */
 	private int selezionaPropostaRitirabile(ArrayList<PropostaScambio> proposte) {
-		System.out.println("Proposte ritirabili: ");
+		System.out.println(MSG_PROPOSTE_RITIRABILI);
 		for(int i = 0; i < proposte.size(); i++) {
-			System.out.println(i + ": " + proposte.get(i).toString());
+			System.out.println(i + COLON + proposte.get(i).toString());
 		}
-		System.out.println(proposte.size() + ": Annulla selezione");
+		System.out.println(proposte.size() + ANNULLA_SELEZIONE);
 		
-		int propostaSelezionata = InputDati.leggiInteroConMINeMAX("Seleziona la proposta che vuoi ritirare (annulla altrimenti) > ", 0, proposte.size());
+		int propostaSelezionata = InputDati.leggiInteroConMINeMAX(MSG_SELEZIONA_PROPOSTA_DA_RITIRATE, 0, proposte.size());
 		
 		return propostaSelezionata;
 	}
@@ -665,7 +679,7 @@ public class MenuFruitore extends Menu{
 		ArrayList<PropostaScambio> proposteFruit = new ArrayList<>();
 		
 		if(proposte.isEmpty()) {
-			System.out.println("\nNon ci sono proposte presenti.\n");
+			System.out.println(MSG_ASSENZA_PROPOSTE);
 			return;
 		}
 			
@@ -675,11 +689,11 @@ public class MenuFruitore extends Menu{
 		}
 		
 		if(proposteFruit.isEmpty()) {
-			System.out.println("\nNon ci sono proposte presenti.\n");
+			System.out.println(MSG_ASSENZA_PROPOSTE);
 			return;
 		} else {
 			for(PropostaScambio p: proposteFruit) {
-				System.out.println("\n> " + p.toString());
+				System.out.println(NEW_LINE_ARROW + p.toString());
 			}
 				
 		}

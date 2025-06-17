@@ -18,7 +18,7 @@ public class FatConversione {
 	private static final String RICHIESTA_FDC = "\nInserire valore fattore di conversione della nuova foglia associato alla prima foglia F1 > ";
 	//MESSAGGI PER LA VISUALIZZAZIONE
 	private static final String NESSUN_FDC = "Nessun fattore di conversione presente";
-	//private static final String STAMPA_FDC = "STAMPA FAT CONVERSIONE > \n%s";
+	
 	//VALORI DI MASSIMO E MINIMO INDICATI DAL TEMA
 	private static double MAX_FDC = 2;
 	private static double MIN_FDC = 0.5;

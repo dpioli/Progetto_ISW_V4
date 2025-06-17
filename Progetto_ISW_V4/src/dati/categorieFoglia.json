@@ -25,43 +25,25 @@
   },
   {
     "id": 5,
-    "nome": "foglia5",
-    "sottoCateg": [],
-    "foglia": true
-  },
-  {
-    "id": 6,
     "nome": "foglietta1",
     "sottoCateg": [],
     "foglia": true
   },
   {
-    "id": 7,
+    "id": 6,
     "nome": "foglietta2",
     "sottoCateg": [],
     "foglia": true
   },
   {
+    "id": 7,
+    "nome": "fogliola1",
+    "sottoCateg": [],
+    "foglia": true
+  },
+  {
     "id": 8,
-    "nome": "fogliaovestramo2",
-    "sottoCateg": [],
-    "foglia": true
-  },
-  {
-    "id": 9,
-    "nome": "fogliaovestramo3",
-    "sottoCateg": [],
-    "foglia": true
-  },
-  {
-    "id": 10,
-    "nome": "nonsoquantealtrefogliehomesso",
-    "sottoCateg": [],
-    "foglia": true
-  },
-  {
-    "id": 11,
-    "nome": "fidekdinuovo",
+    "nome": "fogliola2",
     "sottoCateg": [],
     "foglia": true
   }

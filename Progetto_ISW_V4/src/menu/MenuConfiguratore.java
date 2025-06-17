@@ -73,6 +73,7 @@ public class MenuConfiguratore extends Menu {
 	private static final String MSG_CATEGORIA_FOGLIA = "Stai creando una categoria foglia: ";
 	private static final String MSG_NOME_CATEGORIA = "Inserisci il nome della categoria >";
 	private static final String MSG_NOME_CATEGORIA_NON_VALIDO = "E' già presente una categoria con questo nome.";
+	private static final String MSG_NESSUN_COMPRENSORIO = "Non è presente nessun comprensorio all'interno del sistema, creane uno prima di creare una gerarchia.";
 
 	/**
 	 * VISUALIZZA COMPRENSORI
@@ -85,9 +86,26 @@ public class MenuConfiguratore extends Menu {
 	private static final String NESSUNA_GERARCHIA = "Non è ancora presente nessuna gerarchia";
 	
 	/**
+	 * VISUALIZZA FDC
+	 */
+	private static final String LEGENDA = "----- LEGENDA -----\n";
+	
+	/**
 	 * SALVATAGGIO DATI
 	 */
 	private static final String MSG_SALVATAGGIO = "Salvataggio effettuato con successo!";
+	
+	/**
+	 * PROPOSTE
+	 */
+	private static final String MSG_SELEZIONA_PRESTAZIONE = "\nSeleziona la prestazione per cui vuoi ottenere le proposte (annulla altrimenti) > ";
+	private static final String MSG_ANNULLA = ": Annulla";
+	private static final String MSG_PRESTAZIONI_DISPONIBILI = "Prestazioni disponibili: ";
+	private static final String MSG_LISTA_INSIEMI_CHIUSI = "Lista degli insiemi chiusi: \n";
+	private static final String MSG_ASSENZA_PROPOSTE_PER_PRESTAZIONE = "\nNon è presente nessuna proposta per questa prestazione.\n";
+	private static final String FRUITORE_ASSOCIATO = "Fruitore associato: ";
+	private static final String MSG_ELENCO_PROPOSTE = "\nElenco proposte in cui è presente -> ";
+	private static final String MSG_OPERAZIONE_ANNULLATA = "\nOperazione annullata....\n";
 	
 	private static String[] vociConfig = {MSG_NUOVO_COMPRENSORIO,
 			MSG_NUOVA_GERARCHIA,
@@ -161,7 +179,7 @@ public class MenuConfiguratore extends Menu {
 	public void visualizzaLegenda() {
 		ArrayList<CategoriaFoglia> categorieFoglia = logica.getCategorieFoglia();
 		StringBuffer sb = new StringBuffer();
-		sb.append("----- LEGENDA -----\n");
+		sb.append(LEGENDA);
 		for(CategoriaFoglia f : categorieFoglia) {
 			sb.append(String.format("F%d : %s\n", f.getId(), f.getNome()));
 		}
@@ -179,7 +197,7 @@ public class MenuConfiguratore extends Menu {
 		int selezionata = selezionaCategoria(categorieFoglia);
 		
 		if(selezionata == categorieFoglia.size()) {
-			System.out.println("\nOperazione annullata....\n");
+			System.out.println(MSG_OPERAZIONE_ANNULLATA);
 			return;
 		}
 			
@@ -192,12 +210,12 @@ public class MenuConfiguratore extends Menu {
 			boolean presenteOfferta = p.getOfferta().getPrestazione().getNome().equals(f.getNome());
 			if(presenteRichiesta || presenteOfferta) {
 				if(!presenteProposta) {
-					sb.append("\nElenco proposte in cui è presente -> ")
+					sb.append(MSG_ELENCO_PROPOSTE)
 						.append(f.getNome().toUpperCase())
 						.append(":\n");
 					presenteProposta = true;
 				}
-				sb.append("> ").append(p.toString()).append("\n").append("\t").append("Fruitore associato: " + p.getAssociato().getMail() + "\n");
+				sb.append("> ").append(p.toString()).append("\n").append("\t").append(FRUITORE_ASSOCIATO + p.getAssociato().getMail() + "\n");
 				
 			}
 		}
@@ -205,7 +223,7 @@ public class MenuConfiguratore extends Menu {
 		if(presenteProposta) {
 			System.out.println(sb.toString());
 		} else {
-			System.out.println("\nNon è presente nessuna proposta per questa prestazione.\n");
+			System.out.println(MSG_ASSENZA_PROPOSTE_PER_PRESTAZIONE);
 			return;
 		}
 		
@@ -217,7 +235,7 @@ public class MenuConfiguratore extends Menu {
 	public void visualizzaInsiemiChiusi() {
 		ArrayList<InsiemeChiuso> insiemi = logica.getInsiemi();
 		StringBuffer sb = new StringBuffer();
-		sb.append("Lista degli insiemi chiusi: \n");
+		sb.append(MSG_LISTA_INSIEMI_CHIUSI);
 		for(InsiemeChiuso ic: insiemi) {
 			sb.append(ic.toString());
 		}
@@ -314,7 +332,7 @@ public class MenuConfiguratore extends Menu {
 		
 		Comprensorio comp = null;
 		if(logica.getComprensori().isEmpty()) {
-			System.out.println("Non è presente nessun comprensorio all'interno del sistema, creane uno prima di creare una gerarchia.");
+			System.out.println(MSG_NESSUN_COMPRENSORIO);
 			return;
 		} else {
 			comp = selezionaComprensorio(logica.getComprensori());
@@ -470,13 +488,13 @@ public class MenuConfiguratore extends Menu {
 	
 	
 	private int selezionaCategoria(ArrayList<CategoriaFoglia> categorieFoglia) {
-		System.out.println("Prestazioni disponibili: ");
+		System.out.println(MSG_PRESTAZIONI_DISPONIBILI);
 		for(int i = 0; i < categorieFoglia.size(); i++) {
 			System.out.println(i + ": " + categorieFoglia.get(i).getNome());
 		}
-		System.out.println(categorieFoglia.size() + ": Annulla");
+		System.out.println(categorieFoglia.size() + MSG_ANNULLA);
 		
-		int fogliaSelezionata = InputDati.leggiInteroConMINeMAX("\nSeleziona la prestazione per cui vuoi ottenere le proposte (annulla altrimenti) > ", 0, categorieFoglia.size());
+		int fogliaSelezionata = InputDati.leggiInteroConMINeMAX(MSG_SELEZIONA_PRESTAZIONE, 0, categorieFoglia.size());
 		
 		return fogliaSelezionata;
 	}
