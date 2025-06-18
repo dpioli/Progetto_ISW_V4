@@ -46,5 +46,35 @@
     "nome": "fogliola2",
     "sottoCateg": [],
     "foglia": true
+  },
+  {
+    "id": 9,
+    "nome": "foglia2",
+    "sottoCateg": [],
+    "foglia": true
+  },
+  {
+    "id": 10,
+    "nome": "foglia3",
+    "sottoCateg": [],
+    "foglia": true
+  },
+  {
+    "id": 11,
+    "nome": "foglia4",
+    "sottoCateg": [],
+    "foglia": true
+  },
+  {
+    "id": 12,
+    "nome": "foglia5",
+    "sottoCateg": [],
+    "foglia": true
+  },
+  {
+    "id": 13,
+    "nome": "foglia6",
+    "sottoCateg": [],
+    "foglia": true
   }
 ]

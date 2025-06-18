@@ -14,5 +14,13 @@
       "Bagnolo Mella",
       "Capriano Del Colle"
     ]
+  },
+  {
+    "nome": "comprensorioProva",
+    "comuni": [
+      "comune1",
+      "comune2",
+      "comune3"
+    ]
   }
 ]

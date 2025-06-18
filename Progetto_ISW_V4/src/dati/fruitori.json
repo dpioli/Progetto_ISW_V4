@@ -52,5 +52,18 @@
         "Capriano Del Colle"
       ]
     }
+  },
+  {
+    "username": "d",
+    "password": "p",
+    "mail": "dp@prova.com",
+    "comprensorio": {
+      "nome": "comprensorioProva",
+      "comuni": [
+        "comune1",
+        "comune2",
+        "comune3"
+      ]
+    }
   }
 ]

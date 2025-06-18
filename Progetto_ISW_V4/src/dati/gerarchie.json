@@ -22,13 +22,11 @@
           },
           "sottoCateg": [
             {
-              "id": 1,
               "nome": "foglia1",
               "sottoCateg": [],
               "foglia": true
             },
             {
-              "id": 2,
               "nome": "foglia2",
               "sottoCateg": [],
               "foglia": true
@@ -47,7 +45,6 @@
           },
           "sottoCateg": [
             {
-              "id": 3,
               "nome": "foglia3",
               "sottoCateg": [],
               "foglia": true
@@ -57,7 +54,6 @@
           "foglia": false
         },
         {
-          "id": 4,
           "nome": "foglia4",
           "sottoCateg": [],
           "foglia": true
@@ -101,7 +97,6 @@
           },
           "sottoCateg": [
             {
-              "id": 5,
               "nome": "foglietta1",
               "sottoCateg": [],
               "foglia": true
@@ -111,7 +106,6 @@
           "foglia": false
         },
         {
-          "id": 6,
           "nome": "foglietta2",
           "sottoCateg": [],
           "foglia": true
@@ -144,13 +138,11 @@
       },
       "sottoCateg": [
         {
-          "id": 7,
           "nome": "fogliola1",
           "sottoCateg": [],
           "foglia": true
         },
         {
-          "id": 8,
           "nome": "fogliola2",
           "sottoCateg": [],
           "foglia": true
@@ -170,6 +162,106 @@
         "Flero",
         "Bagnolo Mella",
         "Capriano Del Colle"
+      ]
+    }
+  },
+  {
+    "catRadice": {
+      "nome": "gerarchiaProva",
+      "campCaratt": {
+        "nomeCampo": "ccGerarchia",
+        "valoriCampo": {
+          "int2": "",
+          "int1": "",
+          "int3": ""
+        }
+      },
+      "sottoCateg": [
+        {
+          "nome": "intermedia1",
+          "campCaratt": {
+            "nomeCampo": "f1",
+            "valoriCampo": {
+              "f2": ""
+            }
+          },
+          "sottoCateg": [
+            {
+              "id": 9,
+              "nome": "foglia2",
+              "sottoCateg": [],
+              "foglia": true
+            }
+          ],
+          "dominio": 1,
+          "foglia": false
+        },
+        {
+          "nome": "intermedia2",
+          "campCaratt": {
+            "nomeCampo": "ccIntermedia2",
+            "valoriCampo": {
+              "f3": "",
+              "f4": ""
+            }
+          },
+          "sottoCateg": [
+            {
+              "id": 10,
+              "nome": "foglia3",
+              "sottoCateg": [],
+              "foglia": true
+            },
+            {
+              "id": 11,
+              "nome": "foglia4",
+              "sottoCateg": [],
+              "foglia": true
+            }
+          ],
+          "dominio": 2,
+          "foglia": false
+        },
+        {
+          "nome": "intermedia3",
+          "campCaratt": {
+            "nomeCampo": "ccIntermedia3",
+            "valoriCampo": {
+              "f6": "",
+              "f5": ""
+            }
+          },
+          "sottoCateg": [
+            {
+              "id": 12,
+              "nome": "foglia5",
+              "sottoCateg": [],
+              "foglia": true
+            },
+            {
+              "id": 13,
+              "nome": "foglia6",
+              "sottoCateg": [],
+              "foglia": true
+            }
+          ],
+          "dominio": 2,
+          "foglia": false
+        }
+      ],
+      "dominio": 3,
+      "foglia": false
+    },
+    "proprietario": {
+      "username": "configuratoreProva",
+      "password": "passwordProva"
+    },
+    "comprensorio": {
+      "nome": "comprensorioProva",
+      "comuni": [
+        "comune1",
+        "comune2",
+        "comune3"
       ]
     }
   }

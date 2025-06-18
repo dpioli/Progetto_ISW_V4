@@ -115,5 +115,42 @@
         ]
       }
     }
+  },
+  {
+    "id": 4,
+    "richiesta": {
+      "prestazione": {
+        "id": 2,
+        "nome": "foglia2",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "RICHIESTA",
+      "quantitaOre": 10.0
+    },
+    "offerta": {
+      "prestazione": {
+        "id": 3,
+        "nome": "foglia3",
+        "sottoCateg": [],
+        "foglia": true
+      },
+      "tipo": "OFFERTA",
+      "quantitaOre": 10.0
+    },
+    "statoIniziale": "APERTA",
+    "associato": {
+      "username": "d",
+      "password": "p",
+      "mail": "dp@prova.com",
+      "comprensorio": {
+        "nome": "comprensorioProva",
+        "comuni": [
+          "comune1",
+          "comune2",
+          "comune3"
+        ]
+      }
+    }
   }
 ]

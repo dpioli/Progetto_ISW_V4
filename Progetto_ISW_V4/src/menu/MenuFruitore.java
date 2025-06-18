@@ -212,7 +212,18 @@ public class MenuFruitore extends Menu{
 		Proposta richiesta = new Proposta(foglie.get(scelta), TipoProposta.RICHIESTA, ore);
 
 		//OFFERTA
-		int incambio = InputDati.leggiInteroConMINeMAX(MSG_SEL_OFFERTA, 0, foglie.size()- 1);
+		int incambio = 0;
+		boolean diversa = false;
+		do {
+			incambio = InputDati.leggiInteroConMINeMAX(MSG_SEL_OFFERTA, 0, foglie.size()- 1);
+			if(foglie.get(scelta).getNome().equals(foglie.get(incambio).getNome())) {
+				System.out.println("Non puoi offrire la stessa prestazione che richiedi!");
+				diversa = false;
+				continue;
+			} else {
+				diversa = true;
+			}
+		} while (!diversa);
 		ArrayList<Double> fattori = logica.getFatConversione().prendiRiga(scelta + 1); 
 		//prendendo tutti i fdc dalla tabella uscenti da id della prestazione richiesta
 	    double valore = (fattori.get(incambio + 1) * ore);
