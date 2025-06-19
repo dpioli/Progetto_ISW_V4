@@ -473,7 +473,7 @@ public class MenuFruitore extends Menu{
 	private boolean verificaRichiestaOfferta(PropostaScambio p1, PropostaScambio p2) {
 		double errore = 0.5;
 		boolean nomeRichiestaOfferta =  p1.getNomeRichiesta().equals(p2.getNomeOfferta());
-		boolean oreRichiestaOfferta = p1.getOreRichiesta() - p2.getOreOfferta() < errore;
+		boolean oreRichiestaOfferta = Math.abs(p1.getOreRichiesta() - p2.getOreOfferta()) < errore;
 		
 		if(nomeRichiestaOfferta && oreRichiestaOfferta) {
 			return true;
@@ -485,7 +485,7 @@ public class MenuFruitore extends Menu{
 	private boolean verificaOffertaRichiesta(PropostaScambio p1, PropostaScambio p2) {
 		double errore = 0.5;
 		boolean nomeOffertaRichiesta = p1.getNomeOfferta().equals(p2.getNomeRichiesta());
-		boolean oreOffertaRichiesta = p1.getOreOfferta() - p2.getOreRichiesta() < errore;
+		boolean oreOffertaRichiesta = Math.abs(p1.getOreOfferta() - p2.getOreRichiesta()) < errore;
 		
 		if(nomeOffertaRichiesta && oreOffertaRichiesta) {
 			return true;
@@ -502,8 +502,8 @@ public class MenuFruitore extends Menu{
 	 */
 	private boolean verificaSoddisfacimentoOre(PropostaScambio p1, PropostaScambio p2) {
 		double errore = 0.5;
-		boolean ro = p1.getOreRichiesta() - p2.getOreOfferta() < errore;
-		boolean or = p1.getOreOfferta() - p2.getOreRichiesta() < errore;
+		boolean ro = Math.abs(p1.getOreRichiesta() - p2.getOreOfferta()) < errore;
+		boolean or = Math.abs(p1.getOreOfferta() - p2.getOreRichiesta()) < errore;
 		
 		if(ro && or) {
 			return true;
