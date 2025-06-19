@@ -206,8 +206,8 @@ public class MenuConfiguratore extends Menu {
 		boolean presenteProposta = false;
 		
 		for(PropostaScambio p : proposte) {
-			boolean presenteRichiesta = p.getRichiesta().getPrestazione().getNome().equals(f.getNome());
-			boolean presenteOfferta = p.getOfferta().getPrestazione().getNome().equals(f.getNome());
+			boolean presenteRichiesta = p.getNomeRichiesta().equals(f.getNome());
+			boolean presenteOfferta = p.getNomeOfferta().equals(f.getNome());
 			if(presenteRichiesta || presenteOfferta) {
 				if(!presenteProposta) {
 					sb.append(MSG_ELENCO_PROPOSTE)
@@ -256,6 +256,9 @@ public class MenuConfiguratore extends Menu {
 		GestorePersistenza.salvaConfiguratori(logica.getConfiguratori());
 		salvaGerarchieEFoglie();
 		GestorePersistenza.salvaComprensori(logica.getComprensori());
+		GestorePersistenza.salvaFruitori(logica.getFruitori());
+		GestorePersistenza.salvaScambi(logica.getScambi());
+		GestorePersistenza.salvaInsiemiChiusi(logica.getInsiemi());
 		System.out.println(MSG_SALVATAGGIO);
 	}
 	

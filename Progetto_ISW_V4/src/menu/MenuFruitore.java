@@ -1,7 +1,5 @@
 package menu;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.*;
 
 import applicazione.CampoCaratteristico;
@@ -60,6 +58,7 @@ public class MenuFruitore extends Menu{
 	private static final String MSG_Y_N = "\nVuoi confermare ";
 	private static final String MSG_CHECK_COMPRENSORIO = "\nNon ci sono Gerarchie appartenenti al tuo comprensorio geografico.\n";
 	private static final String MSG_ANNULLATO_SCAMBIO = "Hai annullato la proposta di scambio...";
+	private static final String MSG_PRESTAZIONE_NON_VALIDA = "Non puoi offrire la stessa prestazione che richiedi!";
 	//versione 4
 	private static final String MSG_PRESTAZIONI_A_DISPOSIZIONE = "Prestazioni a disposizione >>\n";
 	private static final String MSG_PROPOSTA_RITIRATA = "\nLa proposta è stata ritirata.\n";
@@ -212,7 +211,14 @@ public class MenuFruitore extends Menu{
 		Proposta richiesta = new Proposta(foglie.get(scelta), TipoProposta.RICHIESTA, ore);
 
 		//OFFERTA
-		int incambio = InputDati.leggiInteroConMINeMAX(MSG_SEL_OFFERTA, 0, foglie.size()- 1);
+		int incambio = 0;
+		do {
+			incambio = InputDati.leggiInteroConMINeMAX(MSG_SEL_OFFERTA, 0, foglie.size()- 1);
+			if(incambio == scelta) {
+				System.out.println(MSG_PRESTAZIONE_NON_VALIDA);
+			}
+		} while(incambio == scelta);
+		;
 		ArrayList<Double> fattori = logica.getFatConversione().prendiRiga(scelta + 1); 
 		//prendendo tutti i fdc dalla tabella uscenti da id della prestazione richiesta
 	    double valore = (fattori.get(incambio + 1) * ore);
@@ -236,18 +242,6 @@ public class MenuFruitore extends Menu{
 		}
 	}
 	
-	/*
-	private static double arrotondaCustom(double valore) {
-	    double intero = Math.floor(valore); // parte intera
-	    double decimale = valore - intero;  // parte decimale
-
-	    if (decimale > 0 && decimale < 0.5) {
-	        return intero + 0.5;
-	    } else {
-	        return Math.round(valore * 10.0) / 10.0;
-	    }
-	}
-	*/
 	public static double arrotondaCustom(double valore) {
 	    int intero = (int) Math.floor(valore);
 	    double decimale = valore - intero;
@@ -260,8 +254,6 @@ public class MenuFruitore extends Menu{
 	        return intero + 1; // arrotonda per eccesso
 	    }
 	}
-
-
 	
 	/**
 	 * Metodo che recupera le foglie disponibili nel comprensorio geografico del fruitore,
@@ -390,59 +382,6 @@ public class MenuFruitore extends Menu{
 			System.out.println(MSG_PROPOSTA_NON_SODDISFATTA);
 			return;
 		}
-		
-		/* TENTATIVO 2
-		ArrayList<PropostaScambio> proposteValide = selezionaProposteValide(logica.getScambi(), proposta);
-		boolean trovatoCatena = false;
-		
-		ArrayList<PropostaScambio> catena = new ArrayList<PropostaScambio>();
-		catena.add(proposta);
-		
-		for(PropostaScambio p: proposteValide) {
-			if(catena.get(catena.size() - 1).getRichiesta().getPrestazione().getNome().equals(p.getOfferta().getPrestazione().getNome()) &&
-					catena.get(catena.size() - 1).getRichiesta().getQuantitaOre() == p.getOfferta().getQuantitaOre()) {
-				catena.add(p);
-				if(catena.get(0).getOfferta().getPrestazione().getNome().equals(p.getRichiesta().getPrestazione().getNome()) && 
-						catena.get(0).getOfferta().getQuantitaOre() == p.getRichiesta().getQuantitaOre()) {
-					int id = logica.recuperaIdInsiemeChiuso();
-					InsiemeChiuso insiemeC = new InsiemeChiuso(id);
-					for(PropostaScambio pC: catena) {
-						insiemeC.aggiungiProposteAInsiemeChiuso(pC);
-						aggiornaStatoAChiusa(pC, logica.getScambi());
-					}
-					GestorePersistenza.salvaInsiemiChiusi(logica.getInsiemi());
-					return true;
-				} else {
-					continue;
-				}
-			} else {
-				continue;
-			}
-		}
-		
-		return trovatoCatena;
-		*/
-		
-		/*TENTATIVO 1
-		for(PropostaScambio p: logica.getScambi()) {
-			if(verificaFruitore(proposta, p) && controlloStato(p) && verificaSoddisfacimentoNome(proposta, p) && verificaSoddisfacimentoOre(proposta, p)) {
-				aggiornaStatoAChiusa(proposta, logica.getScambi());
-				aggiornaStatoAChiusa(p, logica.getScambi());
-				
-				int id = logica.recuperaIdInsiemeChiuso();
-				InsiemeChiuso ins = new InsiemeChiuso(id);
-				
-				ins.aggiungiProposteAInsiemeChiuso(proposta);
-				ins.aggiungiProposteAInsiemeChiuso(p);
-				
-				logica.aggiungiInsieme(ins);
-				
-				GestorePersistenza.salvaInsiemiChiusi(logica.getInsiemi());
-				
-				System.out.println("\nLa tua proposta è stata accettata sarai contattato a breve!\n");
-			}
-		}
-		*/
 	}
 	
 	private boolean cercaCatena(ArrayList<PropostaScambio> catena, ArrayList<PropostaScambio> proposteValide) {
@@ -502,8 +441,8 @@ public class MenuFruitore extends Menu{
 	 * @return true se i fruitori sono diversi e se il cmprensorio è lo stesso, false altrimenti
 	 */
 	private boolean verificaFruitore(PropostaScambio p1, PropostaScambio p2) {
-		boolean f = p1.getAssociato().getUsername().equals(p2.getAssociato().getUsername());
-		boolean c = p1.getAssociato().getNomeComprensorio().equals(p2.getAssociato().getNomeComprensorio());
+		boolean f = p1.getNomeAssociato().equals(p2.getNomeAssociato());
+		boolean c = p1.getComprensorio().equals(p2.getComprensorio());
 		if(f) {
 			return false;
 		} else if (c) {
@@ -520,8 +459,8 @@ public class MenuFruitore extends Menu{
 	 * @return true veirfica soddisfatta / false verifica non soddisfatta
 	 */
 	private boolean verificaSoddisfacimentoNome(PropostaScambio p1, PropostaScambio p2) {
-		boolean ro = p1.getRichiesta().getPrestazione().getNome().equals(p2.getOfferta().getPrestazione().getNome());
-		boolean or = p1.getOfferta().getPrestazione().getNome().equals(p2.getRichiesta().getPrestazione().getNome());
+		boolean ro = p1.getNomeRichiesta().equals(p2.getNomeOfferta());
+		boolean or = p1.getNomeOfferta().equals(p2.getNomeRichiesta());
 		
 		if(ro && or) {
 			return true;
@@ -532,8 +471,8 @@ public class MenuFruitore extends Menu{
 	
 	private boolean verificaRichiestaOfferta(PropostaScambio p1, PropostaScambio p2) {
 		double errore = 0.5;
-		boolean nomeRichiestaOfferta =  p1.getRichiesta().getPrestazione().getNome().equals(p2.getOfferta().getPrestazione().getNome());
-		boolean oreRichiestaOfferta = p1.getRichiesta().getQuantitaOre() - p2.getOfferta().getQuantitaOre() < errore;
+		boolean nomeRichiestaOfferta =  p1.getNomeRichiesta().equals(p2.getNomeOfferta());
+		boolean oreRichiestaOfferta = Math.abs(p1.getOreRichiesta() - p2.getOreOfferta()) < errore;
 		
 		if(nomeRichiestaOfferta && oreRichiestaOfferta) {
 			return true;
@@ -544,8 +483,8 @@ public class MenuFruitore extends Menu{
 	
 	private boolean verificaOffertaRichiesta(PropostaScambio p1, PropostaScambio p2) {
 		double errore = 0.5;
-		boolean nomeOffertaRichiesta = p1.getOfferta().getPrestazione().getNome().equals(p2.getRichiesta().getPrestazione().getNome());
-		boolean oreOffertaRichiesta = p1.getOfferta().getQuantitaOre() - p2.getRichiesta().getQuantitaOre() < errore;
+		boolean nomeOffertaRichiesta = p1.getNomeOfferta().equals(p2.getNomeRichiesta());
+		boolean oreOffertaRichiesta = Math.abs(p1.getOreOfferta() - p2.getOreRichiesta()) < errore;
 		
 		if(nomeOffertaRichiesta && oreOffertaRichiesta) {
 			return true;
@@ -562,8 +501,8 @@ public class MenuFruitore extends Menu{
 	 */
 	private boolean verificaSoddisfacimentoOre(PropostaScambio p1, PropostaScambio p2) {
 		double errore = 0.5;
-		boolean ro = p1.getRichiesta().getQuantitaOre() - p2.getOfferta().getQuantitaOre() < errore;
-		boolean or = p1.getOfferta().getQuantitaOre() - p2.getRichiesta().getQuantitaOre() < errore;
+		boolean ro = Math.abs(p1.getOreRichiesta() - p2.getOreOfferta()) < errore;
+		boolean or = Math.abs(p1.getOreOfferta() - p2.getOreRichiesta()) < errore;
 		
 		if(ro && or) {
 			return true;

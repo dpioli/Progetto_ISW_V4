@@ -146,6 +146,8 @@ public class Autenticazione {
 		
 		logica.addConfiguratore(new Configuratore(newUsername, newPassword));
 		GestorePersistenza.salvaConfiguratori(logica.getConfiguratori());
+		
+		System.out.println(MSG_SUCC_REGIST);
 	}
 	
 	/**
