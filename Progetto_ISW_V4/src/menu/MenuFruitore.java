@@ -535,7 +535,7 @@ public class MenuFruitore extends Menu{
 		ArrayList<PropostaScambio> proposteFruit = new ArrayList<>();
 		
 		for(PropostaScambio p: proposte) {
-			boolean corrisponde = this.fruit.getUsername().equals(p.getAssociato().getUsername());
+			boolean corrisponde = this.fruit.getUsername().equals(p.getNomeAssociato());
 			if(corrisponde && (p.getStatoFinale() == null)) {
 				proposteFruit.add(p);
 			}
@@ -623,8 +623,9 @@ public class MenuFruitore extends Menu{
 		}
 			
 		for(PropostaScambio p: proposte) {
-			boolean corrisponde = this.fruit.getUsername().equals(p.getAssociato().getUsername());
-			proposteFruit.add(p);
+			boolean corrisponde = this.fruit.getUsername().equals(p.getNomeAssociato());
+			if(corrisponde)
+				proposteFruit.add(p);
 		}
 		
 		if(proposteFruit.isEmpty()) {
