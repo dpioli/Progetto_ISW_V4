@@ -37,15 +37,6 @@ public class GestorePersistenza {
 	private static final String MSG_FILE_NON_TROVATO = "File non trovato: ";
 	private static final String MSG_ERRORE_CARICAMENTO_FILE = "Errore durante il caricamento: ";
 	
-	
-	/* PER la JAR
-	private static final String FILE_CONFIGURATORI = "dati/configuratori.json";
-	private static final String FILE_GERARCHIE = "dati/gerarchie.json";
-	private static final String FILE_COMPRENSORI = "dati/comprensori.json";
-	private static final String FILE_FATT_CONVERSIONE = "dati/fattConversione.json";
-	private static final String FILE_CATEGORIEFOGLIA = "dati/categorieFoglia.json";
-	*/
-	
 	private static Gson gson;
 	
 	/**
