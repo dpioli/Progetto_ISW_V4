@@ -24,14 +24,14 @@ import utenti.Fruitore;
  */
 public class GestorePersistenza {
 	
-	private static final String FILE_CONFIGURATORI = "../Progetto_ISW_V4/src/dati/configuratori.json";
-	private static final String FILE_GERARCHIE = "../Progetto_ISW_V4/src/dati/gerarchie.json";
-	private static final String FILE_COMPRENSORI = "../Progetto_ISW_V4/src/dati/comprensori.json";
-	private static final String FILE_FATT_CONVERSIONE = "../Progetto_ISW_V4/src/dati/fattConversione.json";
-	private static final String FILE_CATEGORIEFOGLIA = "../Progetto_ISW_V4/src/dati/categorieFoglia.json";
-	private static final String FILE_FRUITORI = "../Progetto_ISW_V4/src/dati/fruitori.json";
-	private static final String FILE_PROPOSTE = "../Progetto_ISW_V4/src/dati/proposte.json";
-	private static final String FILE_INSIEMI_CHIUSI = "../Progetto_ISW_V4/src/dati/insiemiChiusi.json";
+	private static final String FILE_CONFIGURATORI = "dati/configuratori.json";
+	private static final String FILE_GERARCHIE = "dati/gerarchie.json";
+	private static final String FILE_COMPRENSORI = "dati/comprensori.json";
+	private static final String FILE_FATT_CONVERSIONE = "dati/fattConversione.json";
+	private static final String FILE_CATEGORIEFOGLIA = "dati/categorieFoglia.json";
+	private static final String FILE_FRUITORI = "dati/fruitori.json";
+	private static final String FILE_PROPOSTE = "dati/proposte.json";
+	private static final String FILE_INSIEMI_CHIUSI = "dati/insiemiChiusi.json";
 	
 	private static final String MSG_ERRORE_SALVATAGGIO = "Errore durante il salvataggio: ";
 	private static final String MSG_FILE_NON_TROVATO = "File non trovato: ";
