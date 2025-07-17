@@ -310,5 +310,29 @@ public class Autenticazione {
 	public boolean richiedeUscita(String in) {
 		return in.equalsIgnoreCase(ESC) ? true : false;
 	}
+	
+	// TEST
+	
+	public Fruitore autenticazioneFruitore(String username, String password) {
+		for (Fruitore f : logica.getFruitori()) {
+	        if (f.getUsername().equals(username)) {
+	            if (f.getPassword().equals(password)) {
+	                return f;
+	            }
+	        }
+	    }
+	    return null;
+	}
+	
+	public Configuratore autenticazioneConfiguratore(String username, String password) {
+		for (Configuratore c : logica.getConfiguratori()) {
+	        if (c.getUsername().equals(username)) {
+	            if (c.getPassword().equals(password)) {
+	                return c;
+	            }
+	        }
+	    }
+	    return null;
+	}
 
 }

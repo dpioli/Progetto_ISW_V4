@@ -281,4 +281,30 @@ public class GestorePersistenza {
 	}
 	
 	
+	// TEST
+	
+	public static <T> void salvaTest(T oggetto, String fpath) {
+		try(FileWriter wr = new FileWriter(fpath)){
+			gson.toJson(oggetto, wr);
+			wr.close();
+		} catch (IOException e) {
+			System.err.println(MSG_ERRORE_SALVATAGGIO + e.getMessage());
+		}
+	}
+	
+	public static <T> T caricaTest(Type typeOfT, String fpath) {
+	    T oggetto = null;
+	    File file = new File(fpath);
+	    if (!file.exists()) {
+	    	System.err.println(MSG_FILE_NON_TROVATO + fpath);
+	    	return null;
+	    }
+	    try (FileReader rd = new FileReader(fpath)){
+	        oggetto = gson.fromJson(rd, typeOfT);
+	    } catch (IOException e) {
+	        System.err.println(MSG_ERRORE_CARICAMENTO_FILE + e.getMessage());
+	    }
+	    return oggetto != null ? oggetto : null; // per collezioni non creiamo nuovi oggetti vuoti
+	}
+	
 }

@@ -384,6 +384,45 @@ public class MenuFruitore extends Menu{
 		}
 	}
 	
+	/**
+	 * Metodo per effettuare il testing della funzionalità
+	 * @param proposta
+	 * @param proposte
+	 * @return InsiemeChiuso
+	 */
+	public InsiemeChiuso verificaSoddisfacimentoTest(PropostaScambio proposta, ArrayList<PropostaScambio> proposte) {
+		
+		ArrayList<PropostaScambio> proposteValide = selezionaProposteValide(proposte, proposta);
+		if(proposteValide.isEmpty()) {
+			return null;
+		}
+		
+		for(PropostaScambio p: proposteValide) {
+			if(coppiaPerfetta(proposta, p)) {
+				InsiemeChiuso ins = new InsiemeChiuso(logica.recuperaIdInsiemeChiuso());
+				aggiornaStatoAChiusa(proposta, proposte);
+				aggiornaStatoAChiusa(p, proposte);
+				ins.aggiungiProposteAInsiemeChiuso(proposta);
+				ins.aggiungiProposteAInsiemeChiuso(p);
+				return ins;
+			}
+		}
+		
+		ArrayList<PropostaScambio> catena = new ArrayList<PropostaScambio>();
+		catena.add(proposta);
+		
+		if(cercaCatena(catena, proposteValide)) {
+			InsiemeChiuso insC = new InsiemeChiuso(logica.recuperaIdInsiemeChiuso());
+			for(PropostaScambio p: catena) {
+				aggiornaStatoAChiusa(p, proposte);
+				insC.aggiungiProposteAInsiemeChiuso(p);
+			}
+			return insC;
+		} else {
+			return null;
+		}
+	}
+	
 	private boolean cercaCatena(ArrayList<PropostaScambio> catena, ArrayList<PropostaScambio> proposteValide) {
 		ArrayList<PropostaScambio> propostePendenti = new ArrayList<>(proposteValide);
 		ArrayList<PropostaScambio> nuoveProposteValide = new ArrayList<>(proposteValide);
